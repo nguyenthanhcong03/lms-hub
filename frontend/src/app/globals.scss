@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .comment > span {
+    @apply mx-[2px] inline-block rounded-full bg-[#e0f3ff] px-2 py-1 text-xs font-semibold text-[#007bff];
+  }
+
+  .scrollbar-custom::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-track {
+    @apply rounded-full bg-gray-100;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gray-300;
+  }
+}
+.player-bar-animate {
+  animation: playerBar 5s linear 1;
+}
+.player-bar,
+#nprogress .bar {
+  background: linear-gradient(
+    90deg,
+    #f3ca4d 0%,
+    #ff979a 45.3125%,
+    #cbabff 100%
+  ) !important;
+}
+
+.pagination {
+  @apply flex items-center justify-center gap-5 text-gray-500;
+
+  & .page-item {
+    a {
+      @apply font-semibold;
+    }
+  }
+
+  & .page-item.active {
+    @apply border-b-2 border-primary;
+    a {
+      @apply font-bold text-primary;
+    }
+  }
+  & .previous.disabled a {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  & .next.disabled a {
+    @apply cursor-not-allowed opacity-50;
+  }
+}
+
+.pagination .next,
+.pagination .previous {
+  display: inline-block;
+
+  a {
+    @apply flex h-10 w-10 items-center justify-center rounded-full border border-primary text-primary;
+  }
+}
+
+.scroll-main {
+  scroll-padding-top: 10px;
+  scroll-padding-right: 10px;
+  scroll-padding-bottom: 10px;
+}
+
+.scroll-main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-main::-webkit-scrollbar-track {
+  border-radius: 50px;
+  background-color: #beb7b767;
+  box-shadow:
+    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+.scroll-main::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(-45deg, #ff9900, #ff99004b);
+  border-radius: 50px;
+}
+
+.scroll-main-x {
+  scroll-padding-left: 10px;
+  scroll-padding-right: 10px;
+  scroll-padding-bottom: 10px;
+}
+
+.scroll-main-x::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+}
+
+.scroll-main-x::-webkit-scrollbar-track {
+  border-radius: 50px;
+  background-color: #beb7b767;
+  box-shadow:
+    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+.scroll-main-x::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(-45deg, #ff9900, #ff99004b);
+  border-radius: 50px;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-float-main {
+  animation: floatMain 6s ease-in-out infinite;
+}
+.animate-fade-in {
+  animation: fadeIn 1s ease-out forwards;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes floatMain {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fade-and-float {
+  animation:
+    floatMain 6s ease-in-out infinite,
+    fadeIn 0.8s ease-out forwards;
+}
+.animate-fade-and-float-icon {
+  animation:
+    floatIcon 4s ease-in-out infinite,
+    fadeIn 0.8s ease-out forwards;
+}
+.animate-float-icon {
+  animation: floatIcon 4s ease-in-out infinite;
+}
+@keyframes floatIcon {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(2deg);
+  }
+}
+.animate-float-icon-delay {
+  animation: floatIcon 5s ease-in-out infinite;
+}
+@keyframes gradient-x {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 4s linear infinite;
+}
