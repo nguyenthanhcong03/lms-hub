@@ -1,0 +1,94 @@
+import { Cross2Icon } from "@radix-ui/react-icons";
+import { IconTrash } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { DataTableFacetedFilter, DataTableViewOptions } from "@/components/table";
+import { Table } from "@tanstack/react-table";
+import { FILTER_OPTIONS } from "@/constants";
+
+interface DataTableToolbarProps<TData> {
+  searchValue: string;
+  statusFilter: string[];
+  userTypeFilter: string[];
+  onSearchChange: (value: string) => void;
+  onStatusFilterChange: (values: string[]) => void;
+  onUserTypeFilterChange: (values: string[]) => void;
+  onClearFilters: () => void;
+  isLoading?: boolean;
+  table: Table<TData>;
+  onBulkDelete?: () => void;
+}
+
+const DataTableToolbar = <TData,>({
+  searchValue,
+  statusFilter,
+  userTypeFilter,
+  onSearchChange,
+  onStatusFilterChange,
+  onUserTypeFilterChange,
+  onClearFilters,
+  isLoading = false,
+  table,
+  onBulkDelete,
+}: DataTableToolbarProps<TData>) => {
+  const isFiltered = searchValue !== "" || statusFilter.length > 0 || userTypeFilter.length > 0;
+  const selectedRows = table.getFilteredSelectedRowModel().rows;
+  const hasSelectedRows = selectedRows.length > 0;
+
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2">
+        <Input
+          placeholder="Tìm kiếm người dùng..."
+          value={searchValue}
+          onChange={(event) => onSearchChange(event.target.value)}
+          className="h-8 w-[150px] lg:w-[250px]"
+          disabled={isLoading}
+        />
+        <div className="flex gap-x-2">
+          <DataTableFacetedFilter
+            title="Trạng thái"
+            options={FILTER_OPTIONS.USER_STATUS}
+            selectedValues={statusFilter}
+            onSelectionChange={onStatusFilterChange}
+            disabled={isLoading}
+          />
+          <DataTableFacetedFilter
+            title="Loại người dùng"
+            options={FILTER_OPTIONS.USER_TYPE}
+            selectedValues={userTypeFilter}
+            onSelectionChange={onUserTypeFilterChange}
+            disabled={isLoading}
+          />
+        </div>
+        {isFiltered && (
+          <Button variant="ghost" onClick={onClearFilters} className="h-8 px-2 lg:px-3" disabled={isLoading}>
+            Xóa bộ lọc
+            <Cross2Icon className="ml-2 h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2">
+        {/* Thao tác hàng loạt */}
+        {hasSelectedRows && (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onBulkDelete}
+              disabled={isLoading}
+              className="text-destructive h-8 hover:text-destructive border-destructive/20 hover:border-destructive/30"
+            >
+              <IconTrash className="mr-2 h-4 w-4" />
+              Xóa {selectedRows.length} người dùng
+            </Button>
+          </>
+        )}
+        <DataTableViewOptions table={table} />
+      </div>
+    </div>
+  );
+};
+
+export default DataTableToolbar;
