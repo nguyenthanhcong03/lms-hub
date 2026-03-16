@@ -49,12 +49,7 @@ export interface CurrentUser {
   avatar?: string; // Optional avatar URL from UploadThing
   status: string;
   userType: string;
-  roles: {
-    _id: string;
-    name: string;
-    description: string;
-    permissions: string[];
-  }[];
+  roles: string[];
   userPermissions: string[];
   courses: string[];
 }

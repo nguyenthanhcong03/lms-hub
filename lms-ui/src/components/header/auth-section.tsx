@@ -9,9 +9,8 @@ import Link from "next/link";
 
 export default function AuthSection() {
   const user = useAuthStore((state) => state.user);
-  const isAuthenticated = useAuthStore((state) => !!state.user);
 
-  if (isAuthenticated && user) {
+  if (user) {
     return <UserNav />;
   }
 
@@ -26,7 +25,7 @@ export default function AuthSection() {
         <Link href={ROUTE_CONFIG.AUTH.SIGN_IN} aria-label="Đăng nhập vào tài khoản của bạn">
           <div className="absolute inset-0   rounded-xl transition-all duration-300"></div>
           <User className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2 relative z-10 group-hover:scale-110 transition-transform duration-300" />
-          <span className="relative z-10 hidden sm:inline">Đăng Nhập</span>
+          <span className="relative z-10 hidden sm:inline">Đăng nhập</span>
         </Link>
       </Button>
       <Button
@@ -38,8 +37,8 @@ export default function AuthSection() {
           {/* Animated shine effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
           <span className="relative z-10 group-hover:scale-105 transition-transform duration-300 text-sm sm:text-base">
-            <span className="hidden sm:inline">Bắt Đầu</span>
-            <span className="sm:hidden">Học Ngay</span>
+            <span className="hidden sm:inline">Bắt đầu</span>
+            <span className="sm:hidden">Học ngay</span>
           </span>
           <span
             className="ml-1 sm:ml-2 relative z-10 group-hover:rotate-12 transition-transform duration-300 text-xs sm:text-base"

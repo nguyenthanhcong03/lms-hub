@@ -21,7 +21,7 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
 
   // Permission helper - only keep the one we actually use
-  hasPermission: (permissions: Permission) => boolean;
+  hasPermission: (permission: Permission) => boolean;
   hasAnyPermission: (permissions: Permission[]) => boolean;
 }
 
@@ -53,9 +53,11 @@ export const useAuthStore = create<AuthState>()(
           const userData = await AuthService.getAuthMe();
 
           set({ user: userData, isLoading: false });
+          setUserDataToStorage(userData);
         } catch {
           // Clear invalid token
           clearTokenFromStorage();
+          clearUserDataFromStorage();
           set({ user: null, isLoading: false });
         }
       },
@@ -69,6 +71,7 @@ export const useAuthStore = create<AuthState>()(
         }
 
         clearTokenFromStorage();
+        clearUserDataFromStorage();
         set({ user: null, isLoading: false });
       },
 
@@ -101,5 +104,35 @@ function getTokenFromStorage(): string | null {
 function clearTokenFromStorage(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem("access_token");
+  }
+}
+
+function setUserDataToStorage(user: CurrentUser): void {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("user_data", JSON.stringify(user));
+  }
+}
+
+function getUserDataFromStorage(): CurrentUser | null {
+  if (typeof window !== "undefined") {
+    const data = localStorage.getItem("user_data");
+    if (!data) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(data) as CurrentUser;
+    } catch {
+      localStorage.removeItem("user_data");
+      return null;
+    }
+  }
+
+  return null;
+}
+
+function clearUserDataFromStorage(): void {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("user_data");
   }
 }

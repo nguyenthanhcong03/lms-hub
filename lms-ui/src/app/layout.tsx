@@ -87,15 +87,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <NextTopLoader
-          height={4}
-          color="#2563eb"
-          showSpinner={false}
-          easing="ease"
-          speed={500}
-          shadow="0 0 10px rgba(37, 99, 235, 0.6), 0 0 20px rgba(124, 58, 237, 0.3)"
-          zIndex={9999}
-        />
+        <NextTopLoader height={4} showSpinner={false} easing="ease" speed={500} zIndex={9999} />
         <AuthInitializer>
           <QueryProvider>
             {children}

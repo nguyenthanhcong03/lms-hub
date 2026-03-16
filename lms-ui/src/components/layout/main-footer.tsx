@@ -74,7 +74,7 @@ const MainFooter = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Liên Kết Nhanh</h3>
+            <h3 className="text-lg font-semibold">Liên kết nhanh</h3>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.name}>
@@ -88,7 +88,7 @@ const MainFooter = () => {
 
           {/* Support */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Hỗ Trợ</h3>
+            <h3 className="text-lg font-semibold">Hỗ trợ</h3>
             <ul className="space-y-2">
               {supportLinks.map((link) => (
                 <li key={link.name}>
@@ -102,11 +102,11 @@ const MainFooter = () => {
 
           {/* Contact & Newsletter */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Kết Nối Với Chúng Tôi</h3>
+            <h3 className="text-lg font-semibold">Kết nối với chúng tôi</h3>
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-gray-600">
                 <Mail className="h-4 w-4" />
-                <span className="text-sm">support@LMShub.com</span>
+                <span className="text-sm">support@lmshub.com</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-600">
                 <Phone className="h-4 w-4" />

@@ -1,34 +1,9 @@
-"use client";
-
-import dynamic from "next/dynamic";
-
-import { HeaderLogo } from "../header/header-logo";
+import AuthSection from "../header/auth-section";
+import CartTooltip from "../header/cart-tooltip";
 import { DesktopNavigation } from "../header/desktop-navigation";
-
-const MobileMenu = dynamic(() => import("../header/mobile-menu"), {
-  ssr: false,
-  loading: () => <div className="lg:hidden h-10 w-10 p-0 animate-pulse bg-gray-200 rounded" />,
-});
-
-const SearchDialog = dynamic(() => import("../header/search-dialog"), {
-  ssr: false,
-  loading: () => <div className="h-8 w-8 sm:h-10 sm:w-10 animate-pulse bg-gray-200 rounded-full" />,
-});
-
-const CartTooltip = dynamic(() => import("../header/cart-tooltip"), {
-  ssr: false,
-  loading: () => <div className="h-8 w-8 sm:h-10 sm:w-10 animate-pulse bg-gray-200 rounded-full" />,
-});
-
-const AuthSection = dynamic(() => import("../header/auth-section"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center gap-1 sm:gap-2">
-      <div className="h-8 sm:h-10 w-16 sm:w-20 animate-pulse bg-gray-200 rounded-xl" />
-      <div className="h-8 sm:h-10 w-20 sm:w-28 animate-pulse bg-gray-200 rounded-xl" />
-    </div>
-  ),
-});
+import { HeaderLogo } from "../header/header-logo";
+import MobileMenu from "../header/mobile-menu";
+import SearchDialog from "../header/search-dialog";
 
 function MainHeader() {
   return (

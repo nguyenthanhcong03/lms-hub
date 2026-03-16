@@ -1,4 +1,4 @@
-import { AdminGuard } from "@/components/auth/auth-guard";
+import { AdminGuard } from "@/components/guards/guard";
 import { AdminLayout } from "@/components/layout/admin-layout";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {

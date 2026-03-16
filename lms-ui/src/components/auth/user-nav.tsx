@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SYSTEM_ROLE_NAMES } from "@/configs/permission";
+import { ADMIN_PANEL_PERMISSIONS } from "@/configs/permission";
 import { ROUTE_CONFIG } from "@/configs/routes";
 import { DEFAULT_AVATAR } from "@/constants";
 import { useAuthStore } from "@/stores/auth-store";
@@ -18,6 +18,7 @@ import { GoPackage } from "react-icons/go";
 export function UserNav() {
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => !!state.user);
+  const hasAnyPermission = useAuthStore((state) => state.hasAnyPermission);
 
   const { logout } = useAuthStore();
   const router = useRouter();
@@ -25,10 +26,6 @@ export function UserNav() {
   if (!isAuthenticated || !user) {
     return null;
   }
-  // Check if user has admin or superadmin role
-  const isAdminUser =
-    user?.roles?.some((role) => role.name === SYSTEM_ROLE_NAMES.ADMIN || role.name === SYSTEM_ROLE_NAMES.SUPER_ADMIN) ||
-    false;
   const handleLogout = async () => {
     await logout();
     router.push(ROUTE_CONFIG.HOME);
@@ -71,7 +68,7 @@ export function UserNav() {
 
         {/* Menu Items */}
         <div className="p-2">
-          {isAdminUser && (
+          {hasAnyPermission([...ADMIN_PANEL_PERMISSIONS]) && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>

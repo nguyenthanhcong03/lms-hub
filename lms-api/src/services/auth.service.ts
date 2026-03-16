@@ -286,6 +286,7 @@ export class AuthService {
     // Return user with permissions included and courses as array of IDs
     return {
       ...user.toObject(),
+      roles: user.roles.map((role: any) => role.name),
       userPermissions: permissions
     }
   }

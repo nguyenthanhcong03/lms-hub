@@ -24,11 +24,11 @@ import { useState } from "react";
 import { MdAdd, MdDescription, MdDragIndicator } from "react-icons/md";
 import { toast } from "sonner";
 
-import { ProtectedRoute } from "@/components/auth/protected-route";
+import { PermissionGuard } from "@/components/guards/guard";
 import Loader from "@/components/loader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { OPERATIONS, RESOURCES } from "@/configs/permission";
+import { Permission } from "@/configs/permission";
 import { PopulatedChapter } from "@/types/chapter";
 import dynamic from "next/dynamic";
 
@@ -293,109 +293,107 @@ const CourseOutlinePage = () => {
   });
 
   return (
-    <ProtectedRoute resource={RESOURCES.COURSE} action={OPERATIONS.READ}>
-      <div className="container mx-auto py-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Nội dung khóa học</h1>
-            <p className="text-gray-600 mt-1">Quản lý nội dung khóa học của bạn</p>
-          </div>
-          <Button onClick={handleAddChapter}>
-            <MdAdd className="h-4 w-4 mr-2" />
-            Thêm Chương
-          </Button>
+    <div className="container mx-auto py-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Nội dung khóa học</h1>
+          <p className="text-gray-600 mt-1">Quản lý nội dung khóa học của bạn</p>
         </div>
-
-        {/* Thống kê */}
-        <CourseStatistics
-          totalChapters={totalChapters}
-          totalLessons={totalLessons}
-          publishedLessons={publishedLessons}
-          totalDuration={totalDuration}
-          isLoading={isLoading}
-        />
-
-        <div className="space-y-4">
-          {isLoading ? (
-            Array.from({ length: 3 }).map((_, index) => <ChapterSkeleton key={index} />)
-          ) : chaptersToRender.length === 0 ? (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <div className="text-gray-400 mb-4">
-                  <MdDescription className="h-12 w-12 mx-auto" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-600 mb-2">Chưa có chương nào</h3>
-                <p className="text-gray-500 mb-6">Bắt đầu bằng cách tạo chương đầu tiên</p>
-                <Button onClick={handleAddChapter}>
-                  <MdAdd className="h-4 w-4 mr-2" />
-                  Thêm chương đầu tiên
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={chaptersToRender.map((chapter) => chapter._id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {chaptersToRender.map((chapter, index) => (
-                  <SortableChapter
-                    key={chapter._id}
-                    chapter={chapter}
-                    chapterIndex={index}
-                    isExpanded={expandedChapters.has(chapter._id)}
-                    onToggleExpanded={handleAccordionChange}
-                    onEditChapter={handleEditChapter}
-                    onDeleteChapter={handleDeleteChapter}
-                    onAddLesson={handleAddLesson}
-                    onEditLesson={handleEditLesson}
-                    onDeleteLesson={handleDeleteLesson}
-                    onToggleLessonPublish={handleToggleLessonPublish}
-                    onLessonReorder={handleLessonReorder}
-                  />
-                ))}
-              </SortableContext>
-
-              <DragOverlay>
-                {activeId ? (
-                  <div className="bg-white rounded-xs shadow-lg border border-blue-500 p-4">
-                    <div className="flex items-center gap-2">
-                      <MdDragIndicator className="h-5 w-5 text-blue-500" />
-                      <span className="font-medium">
-                        {chaptersToRender.find((c) => c._id === activeId)?.title || "Item"}
-                      </span>
-                    </div>
-                  </div>
-                ) : null}
-              </DragOverlay>
-            </DndContext>
-          )}
-        </div>
-
-        {/* Form*/}
-        <ChapterFormDialog
-          open={chapterDialogOpen}
-          onOpenChange={handleChapterDialogChange}
-          chapter={editingChapter}
-          courseId={courseId}
-        />
-
-        <LessonFormDialog
-          open={lessonDialogOpen}
-          onOpenChange={setLessonDialogOpen}
-          lessonId={editingLessonId}
-          chapterId={selectedChapterId}
-          courseId={courseId}
-          onSuccess={handleLessonSuccess}
-        />
+        <Button onClick={handleAddChapter}>
+          <MdAdd className="h-4 w-4 mr-2" />
+          Thêm Chương
+        </Button>
       </div>
-    </ProtectedRoute>
+
+      {/* Thống kê */}
+      <CourseStatistics
+        totalChapters={totalChapters}
+        totalLessons={totalLessons}
+        publishedLessons={publishedLessons}
+        totalDuration={totalDuration}
+        isLoading={isLoading}
+      />
+
+      <div className="space-y-4">
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, index) => <ChapterSkeleton key={index} />)
+        ) : chaptersToRender.length === 0 ? (
+          <Card>
+            <CardContent className="p-12 text-center">
+              <div className="text-gray-400 mb-4">
+                <MdDescription className="h-12 w-12 mx-auto" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-600 mb-2">Chưa có chương nào</h3>
+              <p className="text-gray-500 mb-6">Bắt đầu bằng cách tạo chương đầu tiên</p>
+              <Button onClick={handleAddChapter}>
+                <MdAdd className="h-4 w-4 mr-2" />
+                Thêm chương đầu tiên
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={chaptersToRender.map((chapter) => chapter._id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {chaptersToRender.map((chapter, index) => (
+                <SortableChapter
+                  key={chapter._id}
+                  chapter={chapter}
+                  chapterIndex={index}
+                  isExpanded={expandedChapters.has(chapter._id)}
+                  onToggleExpanded={handleAccordionChange}
+                  onEditChapter={handleEditChapter}
+                  onDeleteChapter={handleDeleteChapter}
+                  onAddLesson={handleAddLesson}
+                  onEditLesson={handleEditLesson}
+                  onDeleteLesson={handleDeleteLesson}
+                  onToggleLessonPublish={handleToggleLessonPublish}
+                  onLessonReorder={handleLessonReorder}
+                />
+              ))}
+            </SortableContext>
+
+            <DragOverlay>
+              {activeId ? (
+                <div className="bg-white rounded-xs shadow-lg border border-blue-500 p-4">
+                  <div className="flex items-center gap-2">
+                    <MdDragIndicator className="h-5 w-5 text-blue-500" />
+                    <span className="font-medium">
+                      {chaptersToRender.find((c) => c._id === activeId)?.title || "Item"}
+                    </span>
+                  </div>
+                </div>
+              ) : null}
+            </DragOverlay>
+          </DndContext>
+        )}
+      </div>
+
+      {/* Form*/}
+      <ChapterFormDialog
+        open={chapterDialogOpen}
+        onOpenChange={handleChapterDialogChange}
+        chapter={editingChapter}
+        courseId={courseId}
+      />
+
+      <LessonFormDialog
+        open={lessonDialogOpen}
+        onOpenChange={setLessonDialogOpen}
+        lessonId={editingLessonId}
+        chapterId={selectedChapterId}
+        courseId={courseId}
+        onSuccess={handleLessonSuccess}
+      />
+    </div>
   );
 };
 

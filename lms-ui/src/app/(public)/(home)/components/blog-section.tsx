@@ -35,15 +35,15 @@ const BlogSection = ({ blogsData }: BlogSectionProps) => {
           <div className="grid grid-cols-3 gap-4 sm:flex sm:items-center sm:justify-center sm:space-x-8 sm:gap-0 mt-6 sm:mt-8 max-w-lg sm:max-w-none mx-auto">
             <div className="text-center">
               <div className="text-lg sm:text-xl md:text-2xl font-bold text-green-600">9,000+</div>
-              <div className="text-xs sm:text-sm text-gray-500 leading-tight">Bài Viết Đã Xuất Bản</div>
+              <div className="text-xs sm:text-sm text-gray-500 leading-tight">Bài viết đã xuất bản</div>
             </div>
             <div className="text-center">
               <div className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600">5,000+</div>
-              <div className="text-xs sm:text-sm text-gray-500 leading-tight">Người Đọc Hàng Tháng</div>
+              <div className="text-xs sm:text-sm text-gray-500 leading-tight">Người đọc hàng tháng</div>
             </div>
             <div className="text-center">
               <div className="text-lg sm:text-xl md:text-2xl font-bold text-purple-600">12</div>
-              <div className="text-xs sm:text-sm text-gray-500 leading-tight">Tác Giả Chuyên Gia</div>
+              <div className="text-xs sm:text-sm text-gray-500 leading-tight">Tác giả chuyên gia</div>
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@ const BlogSection = ({ blogsData }: BlogSectionProps) => {
             href={ROUTE_CONFIG.BLOGS}
             className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors text-sm sm:text-base group"
           >
-            Xem Tất Cả Bài Viết
+            Xem tất cả bài viết
             <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Link>
         </div>
@@ -72,7 +72,7 @@ const BlogSection = ({ blogsData }: BlogSectionProps) => {
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">Hiện Chưa Có Bài Viết</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">Hiện chưa có bài viết</h3>
               <p className="text-sm sm:text-base text-gray-600">
                 Hãy quay lại sau để xem các bài viết và chia sẻ mới từ đội ngũ chuyên gia.
               </p>

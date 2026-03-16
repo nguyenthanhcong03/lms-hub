@@ -1,3 +1,5 @@
+"use client";
+
 import { ROUTE_CONFIG } from "@/configs/routes";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
