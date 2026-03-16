@@ -23,7 +23,7 @@ function CustomTooltipContent({
       <TooltipPrimitive.Content
         sideOffset={sideOffset}
         className={cn(
-          "z-50 w-fit origin-[--radix-tooltip-content-transform-origin] rounded-md px-3 py-1.5 text-sm text-gray-900 shadow-lg animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          "z-50 w-fit origin-[--radix-tooltip-content-transform-origin] rounded-xs px-3 py-1.5 text-sm text-gray-900 shadow-lg animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           className,
         )}
         {...props}
@@ -77,7 +77,7 @@ export default function CartTooltip() {
         </Button>
       </TooltipTrigger>
       <CustomTooltipContent side="bottom" className="w-72 sm:w-80 p-0 hidden sm:block">
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-hidden">
+        <div className="bg-white rounded-xs shadow-lg border border-gray-200 max-h-96 overflow-hidden">
           {!isAuthenticated ? (
             <div className="p-6 text-center">
               <ShoppingCart className="h-12 w-12 text-gray-300 mx-auto mb-3" />

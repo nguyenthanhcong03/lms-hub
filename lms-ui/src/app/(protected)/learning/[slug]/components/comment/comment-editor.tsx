@@ -20,7 +20,7 @@ interface CommentEditorProps {
   onCancel: () => void;
 }
 
-// Comment editor component - Arrow function
+// Thành phần soạn bình luận
 const CommentEditor = ({
   isComposing,
   content,
@@ -38,13 +38,13 @@ const CommentEditor = ({
     return (
       <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer" onClick={() => onComposingChange(true)}>
         <Avatar className="h-7 w-7 sm:h-8 sm:w-8">
-          <AvatarImage src={currentUser?.avatar || DEFAULT_AVATAR} alt={currentUser?.username || "User"} />
-          <AvatarFallback className="bg-gray-300 text-gray-600 text-xs sm:text-sm">
+          <AvatarImage src={currentUser?.avatar || DEFAULT_AVATAR} alt={currentUser?.username || "Người dùng"} />
+          <AvatarFallback className="bg-primary/20 text-primary text-xs sm:text-sm">
             {currentUser?.username?.charAt(0) || "U"}
           </AvatarFallback>
         </Avatar>
-        <div className="flex-1 bg-gray-100 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-gray-500 text-xs sm:text-sm">
-          Write your comment
+        <div className="flex-1 rounded-xs border border-primary/15 bg-primary/5 px-3 py-2 text-xs text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+          Viết bình luận của bạn
         </div>
       </div>
     );
@@ -53,14 +53,14 @@ const CommentEditor = ({
   return (
     <div className="flex items-start space-x-2 sm:space-x-3">
       <Avatar className="h-7 w-7 sm:h-8 sm:w-8">
-        <AvatarImage src={currentUser?.avatar || DEFAULT_AVATAR} alt={currentUser?.username || "User"} />
-        <AvatarFallback className="bg-gray-300 text-gray-600 text-xs sm:text-sm">
+        <AvatarImage src={currentUser?.avatar || DEFAULT_AVATAR} alt={currentUser?.username || "Người dùng"} />
+        <AvatarFallback className="bg-primary/20 text-primary text-xs sm:text-sm">
           {currentUser?.username?.charAt(0) || "U"}
         </AvatarFallback>
       </Avatar>
 
-      <div className="flex-1 rounded-lg overflow-hidden bg-white border border-gray-200">
-        <div className="bg-gray-50">
+      <div className="flex-1 overflow-hidden rounded-xs border border-primary/15 bg-background">
+        <div className="bg-primary/5">
           <Toolbar />
         </div>
 
@@ -71,24 +71,24 @@ const CommentEditor = ({
             variant="outline"
             size="sm"
             onClick={onCancel}
-            className="text-gray-600 border-gray-300 hover:bg-gray-100 h-8 sm:h-9 text-xs sm:text-sm"
+            className="h-8 border-primary/20 text-primary hover:bg-primary/10 sm:h-9 text-xs sm:text-sm"
           >
-            CANCEL
+            HỦY
           </Button>
           <Button
             onClick={onSubmit}
             disabled={!hasContent || isPending}
             size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white h-8 sm:h-9 text-xs sm:text-sm"
+            className="h-8 bg-primary text-primary-foreground hover:bg-primary/90 sm:h-9 text-xs sm:text-sm"
           >
             {isPending ? (
               <>
                 <Loader2 className="h-3 w-3 mr-1.5 sm:mr-2 animate-spin" />
-                <span className="hidden sm:inline">SENDING...</span>
+                <span className="hidden sm:inline">ĐANG GỬI...</span>
                 <span className="sm:hidden">...</span>
               </>
             ) : (
-              "COMMENT"
+              "BÌNH LUẬN"
             )}
           </Button>
         </div>

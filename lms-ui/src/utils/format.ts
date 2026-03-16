@@ -3,6 +3,7 @@
  */
 
 import dayjs from "dayjs";
+import "dayjs/locale/vi";
 
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat("vi-VN", {
@@ -44,17 +45,15 @@ export const formatDuration = (seconds: number) => {
 };
 
 /**
- * Format date to readable string using dayjs
- */
-export const formatLastUpdated = (date: Date | string, format: string = "MMM YYYY") => {
-  return dayjs(date).format(format);
-};
-
-/**
  * Format date with more options using dayjs
  */
-export const formatDate = (date: Date | string, format: string = "MMM DD, YYYY") => {
-  return dayjs(date).format(format);
+
+export const formatDate = (date: Date | string, format: string = "DD MMMM YYYY") => {
+  return dayjs(date).locale("vi").format(format);
+};
+
+export const formatRelativeTime = (date: Date | string) => {
+  return dayjs(date).locale("vi").fromNow();
 };
 
 /**

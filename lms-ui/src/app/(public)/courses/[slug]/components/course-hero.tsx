@@ -6,10 +6,11 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Play, Star, Users, Clock, Globe, Calendar, ChevronLeft } from "lucide-react";
 import { IPublicCourse } from "@/types/course";
-import { formatDuration } from "@/utils/format";
+import { formatDate, formatDuration, formatStudentCount } from "@/utils/format";
 import { ROUTE_CONFIG } from "@/configs/routes";
 import { DEFAULT_AVATAR, DEFAULT_THUMBNAIL } from "@/constants";
 import dynamic from "next/dynamic";
+import { getCourseLevelLabel } from "@/helpers";
 const VideoModal = dynamic(() => import("./video-modal"), { ssr: false });
 
 interface CourseHeroProps {
@@ -19,14 +20,7 @@ interface CourseHeroProps {
 const CourseHero = ({ course }: CourseHeroProps) => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
-  const formatStudentCount = (count: number) => {
-    if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}k`;
-    }
-    return count.toString();
-  };
-
-  // Check if course has a valid intro video URL
+  // Nếu có intro video, hiển thị nút play và cho phép mở modal, ngược lại không có tương tác
   const hasIntroVideo = course.introUrl && course.introUrl.trim() !== "";
 
   return (
@@ -92,7 +86,7 @@ const CourseHero = ({ course }: CourseHeroProps) => {
                   </div>
                   <span className="font-medium">{course.averageRating || 4.5}</span>
                   <span className="text-gray-400 hidden sm:inline">
-                    ({formatStudentCount(course.totalReviews || 0)} reviews)
+                    ({formatStudentCount(course.totalReviews || 0)} đánh giá)
                   </span>
                 </div>
 
@@ -100,7 +94,7 @@ const CourseHero = ({ course }: CourseHeroProps) => {
                   <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>
                     {formatStudentCount(course.enrolledStudents || 0)}{" "}
-                    <span className="hidden sm:inline">students</span>
+                    <span className="hidden sm:inline">học viên</span>
                   </span>
                 </div>
 
@@ -122,7 +116,7 @@ const CourseHero = ({ course }: CourseHeroProps) => {
                   />
                 </div>
                 <div>
-                  <p className="text-xs sm:text-sm text-gray-400">Created by</p>
+                  <p className="text-xs sm:text-sm text-gray-400">Giảng viên</p>
                   <p className="text-sm sm:text-base font-medium">{course.author?.username || "Unknown Instructor"}</p>
                 </div>
               </div>
@@ -130,27 +124,12 @@ const CourseHero = ({ course }: CourseHeroProps) => {
               {/* Course Details */}
               <div className="flex flex-wrap items-center gap-3 sm:gap-4 lg:gap-6 text-xs sm:text-sm text-gray-400">
                 <div className="flex items-center space-x-1">
-                  <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span>English</span>
-                </div>
-                <div className="flex items-center space-x-1">
                   <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">
-                    Last updated{" "}
-                    {new Date(course.updatedAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                    })}
-                  </span>
-                  <span className="sm:hidden">
-                    {new Date(course.updatedAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
+                  <span className="hidden sm:inline">Cập nhật {formatDate(course.updatedAt)}</span>
+                  <span className="sm:hidden">{formatDate(course.updatedAt)}</span>
                 </div>
                 <Badge variant="outline" className="text-xs sm:text-sm text-gray-300 border-gray-600">
-                  {course.level.charAt(0).toUpperCase() + course.level.slice(1)}
+                  {getCourseLevelLabel(course.level)}
                 </Badge>
               </div>
             </div>
@@ -158,7 +137,7 @@ const CourseHero = ({ course }: CourseHeroProps) => {
             {/* Right Content - Video Preview */}
             <div className="relative order-first lg:order-last">
               <div
-                className={`relative aspect-video bg-gray-800 rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl group ${
+                className={`relative aspect-video bg-gray-800 rounded-xl sm:rounded-sm overflow-hidden shadow-2xl group ${
                   hasIntroVideo ? "cursor-pointer" : ""
                 }`}
                 onClick={() => {
@@ -195,23 +174,23 @@ const CourseHero = ({ course }: CourseHeroProps) => {
 
               {/* Course Features */}
               <div className="mt-4 sm:mt-6 grid grid-cols-2 gap-2 sm:gap-3 lg:gap-4">
-                <div className="text-center p-3 sm:p-4 bg-white/5 rounded-lg backdrop-blur-sm">
+                <div className="text-center p-3 sm:p-4 bg-white/5 rounded-sm backdrop-blur-sm">
                   <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-400">
                     {course.totalLessons || 0}
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-400">Lessons</div>
+                  <div className="text-xs sm:text-sm text-gray-400">Bài giảng</div>
                 </div>
-                <div className="text-center p-3 sm:p-4 bg-white/5 rounded-lg backdrop-blur-sm">
+                <div className="text-center p-3 sm:p-4 bg-white/5 rounded-sm backdrop-blur-sm">
                   <div className="text-lg sm:text-xl lg:text-2xl font-bold text-green-400">25</div>
-                  <div className="text-xs sm:text-sm text-gray-400">Resources</div>
+                  <div className="text-xs sm:text-sm text-gray-400">Tài nguyên</div>
                 </div>
-                <div className="text-center p-3 sm:p-4 bg-white/5 rounded-lg backdrop-blur-sm">
+                <div className="text-center p-3 sm:p-4 bg-white/5 rounded-sm backdrop-blur-sm">
                   <div className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-400">∞</div>
-                  <div className="text-xs sm:text-sm text-gray-400">Lifetime Access</div>
+                  <div className="text-xs sm:text-sm text-gray-400">Truy cập trọn đời</div>
                 </div>
-                <div className="text-center p-3 sm:p-4 bg-white/5 rounded-lg backdrop-blur-sm">
+                <div className="text-center p-3 sm:p-4 bg-white/5 rounded-sm backdrop-blur-sm">
                   <div className="text-lg sm:text-xl lg:text-2xl font-bold text-yellow-400">⭐</div>
-                  <div className="text-xs sm:text-sm text-gray-400">Certificate</div>
+                  <div className="text-xs sm:text-sm text-gray-400">Chứng chỉ</div>
                 </div>
               </div>
             </div>

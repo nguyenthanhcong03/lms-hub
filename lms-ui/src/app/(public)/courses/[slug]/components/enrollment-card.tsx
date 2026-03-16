@@ -46,20 +46,16 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
   // Add to cart mutation using the custom hook
   const addToCartMutation = useAddToCart();
 
-  // Get last lesson from localStorage for current course
-  const getLastLessonId = (): string | null => {
-    return getLastLessonForCourse(course.slug);
-  };
-
   const handleEnrollNow = () => {
     if (!user) {
       toast.warning("Please login to enroll in the course");
       return;
     }
+
     enrollFreeMutation.mutate(course._id, {
       onSuccess: () => {
         toast.success("Successfully enrolled in the course!");
-        router.push(getRoutes.learning(course.slug, getLastLessonId() || lastLessonId || undefined));
+        router.push(getRoutes.learning(course.slug, getLastLessonForCourse(course.slug) || lastLessonId || undefined));
       },
       onError: (error: Error) => {
         toast.error(error.message || "Failed to enroll in the course");
@@ -68,7 +64,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
   };
 
   const handleContinueLearning = () => {
-    const url = getRoutes.learning(course.slug, getLastLessonId() || lastLessonId || undefined);
+    const url = getRoutes.learning(course.slug, getLastLessonForCourse(course.slug) || lastLessonId || undefined);
     router.push(url);
   };
 
@@ -136,23 +132,23 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
   const daysRemaining = calculateDaysRemaining();
 
   const featureIcons = {
-    "on-demand video": Clock,
-    "downloadable resources": Download,
-    "Full lifetime access": Infinity,
-    "Access on mobile and TV": Smartphone,
-    "Certificate of completion": Award,
+    "Video theo yêu cầu": Clock,
+    "Tài nguyên có thể tải xuống": Download,
+    "Truy cập trọn đời": Infinity,
+    "Xem trên điện thoại và TV": Smartphone,
+    "Chứng chỉ hoàn thành": Award,
   };
 
   const features = [
-    `${formatDuration(course.totalDuration || 0)} of on-demand video`,
-    `${course.totalLessons || 25} lessons`,
-    "Full lifetime access",
-    "Access on mobile and TV",
-    "Certificate of completion",
+    `${formatDuration(course.totalDuration || 0)} Video theo yêu cầu`,
+    `${course.totalLessons || 25} bài học`,
+    "Truy cập trọn đời",
+    "Xem trên điện thoại và TV",
+    "Chứng chỉ hoàn thành",
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-xs shadow-lg border border-gray-200 overflow-hidden">
       {/* Video Preview */}
       <div className="relative aspect-video bg-gray-900 group cursor-pointer">
         <Image
@@ -167,7 +163,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
       <div className="p-4 sm:p-6">
         <div className="mb-4 sm:mb-6">
           {course.isFree ? (
-            <div className="text-2xl sm:text-3xl font-bold text-green-600">Free</div>
+            <div className="text-2xl sm:text-3xl font-bold text-green-600">Miễn phí</div>
           ) : (
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -178,7 +174,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
                       {formatPrice(course.oldPrice)}
                     </span>
                     <Badge className="bg-red-600 text-white hover:bg-red-700 text-xs sm:text-sm font-bold px-2 py-1 shadow-sm">
-                      {discountPercentage}% OFF
+                      {discountPercentage}% Giảm giá
                     </Badge>
                   </>
                 )}
@@ -187,7 +183,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
                 <div className="flex items-center gap-1 text-red-600">
                   <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="text-xs sm:text-sm font-medium">
-                    {daysRemaining} {daysRemaining === 1 ? "day" : "days"} left at this price!
+                    {daysRemaining} {daysRemaining === 1 ? "ngày" : "ngày"} còn lại với giá này!
                   </span>
                 </div>
               )}
@@ -205,7 +201,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
               onClick={handleContinueLearning}
             >
               <PlayCircle className="h-4 w-4 mr-2" />
-              Continue Learning
+              Tiếp tục học
             </Button>
           ) : course.isFree ? (
             // Course is free and user is not enrolled - show enroll button
@@ -216,10 +212,10 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
               disabled={enrollFreeMutation.isPending}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              {enrollFreeMutation.isPending ? "Enrolling..." : "Enroll Now"}
+              {enrollFreeMutation.isPending ? "Đang đăng ký..." : "Đăng ký ngay"}
             </Button>
           ) : (
-            // Course is paid and user is not enrolled - show purchase options
+            // Nếu khóa học có phí và người dùng chưa đăng ký - hiển thị nút thêm vào giỏ hàng và mua ngay
             <>
               <Button
                 size="lg"
@@ -228,7 +224,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
                 disabled={addToCartMutation.isPending}
               >
                 <ShoppingCart className="h-4 w-4 mr-2" />
-                {addToCartMutation.isPending ? "Adding..." : "Add to Cart"}
+                {addToCartMutation.isPending ? "Đang thêm..." : "Thêm vào giỏ hàng"}
               </Button>
               <Button
                 variant="outline"
@@ -237,7 +233,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
                 onClick={handleBuyNow}
                 disabled={addToCartMutation.isPending}
               >
-                {addToCartMutation.isPending ? "Processing..." : "Buy Now"}
+                {addToCartMutation.isPending ? "Đang xử lý..." : "Mua ngay"}
               </Button>
             </>
           )}
@@ -254,8 +250,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
             }`}
           >
             <Heart className={`h-3 w-3 sm:h-4 sm:w-4 sm:mr-1 ${isWishlisted ? "fill-current" : ""}`} />
-            <span className="hidden sm:inline">{isWishlisted ? "Wishlisted" : "Wishlist"}</span>
-            <span className="sm:hidden mt-1">Wish</span>
+            <span>Yêu thích</span>
           </Button>
           <Button
             variant="ghost"
@@ -263,8 +258,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
             className="flex flex-col sm:flex-row items-center justify-center h-auto py-2 text-xs sm:text-sm text-gray-600"
           >
             <Share2 className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-            <span className="hidden sm:inline">Share</span>
-            <span className="sm:hidden mt-1">Share</span>
+            <span>Chia sẻ</span>
           </Button>
           <Button
             variant="ghost"
@@ -272,21 +266,20 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
             className="flex flex-col sm:flex-row items-center justify-center h-auto py-2 text-xs sm:text-sm text-gray-600"
           >
             <Gift className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-            <span className="hidden sm:inline">Gift</span>
-            <span className="sm:hidden mt-1">Gift</span>
+            <span>Quà tặng</span>
           </Button>
         </div>
 
         {/* Money-back Guarantee */}
         {!course.isFree && (
           <div className="text-center mb-4 sm:mb-6 p-2.5 sm:p-3 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-xs sm:text-sm text-green-800 font-medium">30-Day Money-Back Guarantee</p>
+            <p className="text-xs sm:text-sm text-green-800 font-medium">Cam kết hoàn tiền trong 30 ngày</p>
           </div>
         )}
 
         {/* Course Includes */}
         <div>
-          <h4 className="font-medium text-sm sm:text-base text-gray-900 mb-2 sm:mb-3">This course includes:</h4>
+          <h4 className="font-medium text-sm sm:text-base text-gray-900 mb-2 sm:mb-3">Khóa học này bao gồm:</h4>
           <div className="space-y-1.5 sm:space-y-2">
             {features.map((feature, index) => {
               const getIcon = (feature: string) => {

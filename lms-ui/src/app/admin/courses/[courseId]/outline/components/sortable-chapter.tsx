@@ -129,58 +129,62 @@ const SortableChapter = ({
         <AccordionItem value={chapter._id} className="border-0">
           {/* Chu thich tieng Viet */}
           <div className="group/chapter">
-            <AccordionTrigger
-              className={`flex items-center justify-between p-4 hover:no-underline transition-colors ${
+            <div
+              className={`flex items-start justify-between gap-3 p-4 transition-colors ${
                 isExpanded ? "border-b border-border" : ""
               }`}
             >
-              <div className="flex items-start gap-3 flex-1 min-w-0">
-                {/* Chu thich tieng Viet */}
-                <div
-                  {...attributes}
-                  {...listeners}
-                  className="cursor-grab hover:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <MdDragIndicator className="h-4 w-4" />
-                </div>
-
-                <div className="flex  flex-col gap-1 flex-1 min-w-0">
-                  <div className="flex items-center gap-1">
-                    <span className="text-sm font-medium ">{chapterIndex + 1}.</span>
-                    <h3 className="font-medium text-card-foreground truncate">{chapter.title}</h3>
-                  </div>
+              <AccordionTrigger className="flex-1 p-0 hover:no-underline">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
                   {/* Chu thich tieng Viet */}
-                  <div className="flex items-center gap-4 mt-1 text-sm font-normal">
-                    {/* Chu thich tieng Viet */}
-                    <div className="flex items-center gap-1">
-                      <div
-                        className={`w-2 h-2 rounded-full ${chapter.isPublished ? "bg-green-500" : "bg-yellow-500"}`}
-                      />
-                      <span className="text-muted-foreground">{chapter.isPublished ? "Đã xuất bản" : "Bản nháp"}</span>
-                    </div>
+                  <div
+                    {...attributes}
+                    {...listeners}
+                    className="cursor-grab hover:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MdDragIndicator className="h-4 w-4" />
+                  </div>
 
-                    {/* Chu thich tieng Viet */}
+                  <div className="flex flex-col gap-1 flex-1 min-w-0">
                     <div className="flex items-center gap-1">
-                      <MdMenuBook className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        bài học: {publishedLessons}/{totalLessons}
-                      </span>
+                      <span className="text-sm font-medium ">{chapterIndex + 1}.</span>
+                      <h3 className="font-medium text-card-foreground truncate">{chapter.title}</h3>
                     </div>
-
                     {/* Chu thich tieng Viet */}
-                    <div className="flex items-center gap-1">
-                      <MdAccessTime className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        Thời lượng: {secondsToTimeString(totalChapterDuration)}
-                      </span>
+                    <div className="flex items-center gap-4 mt-1 text-sm font-normal">
+                      {/* Chu thich tieng Viet */}
+                      <div className="flex items-center gap-1">
+                        <div
+                          className={`w-2 h-2 rounded-full ${chapter.isPublished ? "bg-green-500" : "bg-yellow-500"}`}
+                        />
+                        <span className="text-muted-foreground">
+                          {chapter.isPublished ? "Đã xuất bản" : "Bản nháp"}
+                        </span>
+                      </div>
+
+                      {/* Chu thich tieng Viet */}
+                      <div className="flex items-center gap-1">
+                        <MdMenuBook className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">
+                          bài học: {publishedLessons}/{totalLessons}
+                        </span>
+                      </div>
+
+                      {/* Chu thich tieng Viet */}
+                      <div className="flex items-center gap-1">
+                        <MdAccessTime className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">
+                          Thời lượng: {secondsToTimeString(totalChapterDuration)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </AccordionTrigger>
 
               {/* Chu thich tieng Viet */}
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <Button
                   variant="outline"
                   size="sm"
@@ -191,7 +195,7 @@ const SortableChapter = ({
                   className="h-8 px-3 text-xs"
                 >
                   <MdAdd className="h-3 w-3 mr-1" />
-                  Thêm Bài Học
+                  Thêm bài học
                 </Button>
 
                 <DropdownMenu modal={false}>
@@ -225,7 +229,7 @@ const SortableChapter = ({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-            </AccordionTrigger>
+            </div>
           </div>
 
           {/* Chu thich tieng Viet */}

@@ -187,7 +187,7 @@ function QuestionEditor({ question, onSave, onCancel }: QuestionEditorProps) {
     <Card className="border-2 shadow-sm">
       <CardContent className="p-6">
         <div className="pb-3 mb-4 border-b">
-          <h4 className="text-xl font-semibold text-gray-900">Chỉnh Sửa Câu Hỏi</h4>
+          <h4 className="text-xl font-semibold text-gray-900">Chỉnh sửa câu hỏi</h4>
         </div>
 
         <div className="space-y-4">
@@ -560,12 +560,12 @@ const LessonFormDialog = ({ open, onOpenChange, lessonId, chapterId, courseId, o
             {isEditing ? (
               <>
                 <MdEdit className="h-5 w-5" />
-                Chỉnh sửa Bài học
+                Chỉnh sửa bài học
               </>
             ) : (
               <>
                 <MdAdd className="h-5 w-5" />
-                Thêm Bài học mới
+                Thêm bài học mới
               </>
             )}
           </DialogTitle>

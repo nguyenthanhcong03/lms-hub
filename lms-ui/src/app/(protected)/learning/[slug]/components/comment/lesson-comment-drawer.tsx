@@ -26,12 +26,12 @@ interface LessonCommentDrawerProps {
   onOpenChange: (open: boolean) => void;
 }
 
-// Lesson comment drawer component - Arrow function
+// Thành phần ngăn bình luận bài học
 const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDrawerProps) => {
-  // Get current user from auth store
+  // Lấy người dùng hiện tại từ auth store
   const currentUser = useAuthStore((state) => state.user);
 
-  // React Query hooks - only fetch data when drawer is open
+  // React Query hooks - chỉ tải dữ liệu khi drawer mở
   const {
     data: commentsData,
     isLoading,
@@ -45,7 +45,7 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
   const createCommentMutation = useCreateComment();
   const { loadReplies, loadingReplies } = useLoadReplies(lessonId);
 
-  // Local state
+  // State cục bộ
   const [isComposing, setIsComposing] = useState(false);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyingToSpecific, setReplyingToSpecific] = useState<string | null>(null);
@@ -56,14 +56,14 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
   const [mainEditor, setMainEditor] = useState<TipTapEditor | null>(null);
   const [replyEditor, setReplyEditor] = useState<TipTapEditor | null>(null);
 
-  // Ref for the scrollable container
+  // Ref cho vùng cuộn
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Get comments from API data - flatten infinite query pages
+  // Lấy danh sách bình luận từ dữ liệu API
   const comments = commentsData?.pages.flatMap((page) => page.comments) || [];
   const totalComments = commentsData?.pages[0]?.pagination?.total || 0;
 
-  // Scroll detection for infinite loading
+  // Bắt sự kiện cuộn để tải thêm
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container || !hasNextPage || isFetchingNextPage) return;
@@ -71,13 +71,13 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
     const { scrollTop, scrollHeight, clientHeight } = container;
     const scrolledPercentage = (scrollTop + clientHeight) / scrollHeight;
 
-    // Trigger when scrolled 90% to the bottom
+    // Kích hoạt khi cuộn gần đáy (90%)
     if (scrolledPercentage > 0.9) {
       fetchNextPage();
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // Attach scroll listener
+  // Gắn listener cuộn
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -86,7 +86,7 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
     return () => container.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // Don't render if no current user (not authenticated)
+  // Không render nếu chưa đăng nhập
   if (!currentUser) {
     return null;
   }
@@ -104,7 +104,7 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
         setMainEditorContent("");
         setIsComposing(false);
 
-        // Clear editor content
+        // Xóa nội dung editor
         if (mainEditor) {
           mainEditor.commands.clearContent();
         }
@@ -148,7 +148,7 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
         setReplyingTo(null);
         setReplyingToSpecific(null);
 
-        // Clear editor content
+        // Xóa nội dung editor
         if (replyEditor) {
           replyEditor.commands.clearContent();
         }
@@ -184,7 +184,7 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
   };
 
   const handleReply = (commentId: string, userName: string) => {
-    // Recursive function to find comment by ID or username
+    // Hàm đệ quy để tìm comment theo ID hoặc username
     const findComment = (
       comments: IComment[],
       searchId: string,
@@ -204,28 +204,27 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
       return null;
     };
 
-    // Find the target comment
+    // Tìm bình luận mục tiêu
     const found = findComment(comments, commentId);
     if (!found) {
       return;
     }
 
-    // For replies, the parentId should be the comment we're replying to
-    // NOT its parent (which would be going up one more level)
-    const parentCommentId = commentId; // Always use the comment we're replying to as parent
+    // Khi trả lời, parentId là chính comment đang được trả lời
+    const parentCommentId = commentId;
     const specificCommentId = commentId;
     const parentLevel = found.comment.level || 1;
 
-    // Check if we can add replies at this level (max 5 levels)
+    // Kiểm tra giới hạn cấp phản hồi (tối đa 5 cấp)
     if (!CommentsService.canAddReply(parentLevel)) {
-      toast.error("Cannot reply at this level. Maximum 5 levels allowed.");
+      toast.error("Không thể trả lời ở cấp này. Tối đa 5 cấp phản hồi.");
       return;
     }
 
     setReplyingTo(parentCommentId);
     setReplyingToSpecific(specificCommentId);
 
-    // Find userId for mention
+    // Tìm userId để gắn mention
     const foundUser = findComment(comments, commentId, userName);
     const userId = foundUser?.comment.userId || commentId;
 
@@ -239,7 +238,7 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
           replyEditor.commands.setContent(mentionHTML);
           replyEditor.commands.focus("end");
         } catch (error) {
-          console.warn("Editor not ready yet:", error);
+          console.warn("Editor chưa sẵn sàng:", error);
         }
       }
     }, 100);
@@ -270,27 +269,27 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
       dismissible={true}
       shouldScaleBackground={false}
     >
-      <DrawerContent className="h-full !w-full sm:!w-[600px] md:!w-[700px] lg:!w-[800px] !max-w-[800px]">
+      <DrawerContent className="h-full w-full! sm:w-150! md:w-175! lg:w-200! max-w-200!">
         <div className="w-full h-full">
-          <DrawerHeader className="border-b border-gray-200 pb-3 sm:pb-4 px-4 sm:px-6">
+          <DrawerHeader className="border-b border-primary/15 bg-primary/5 px-4 pb-3 sm:px-6 sm:pb-4">
             <div className="flex items-center justify-between gap-2">
               <div className="flex-1 min-w-0">
-                <DrawerTitle className="text-base sm:text-lg font-semibold text-gray-900 truncate">
+                <DrawerTitle className="truncate text-base font-semibold text-foreground sm:text-lg">
                   {isLoading ? (
                     <div className="flex items-center gap-2">
                       <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
-                      <span className="text-sm sm:text-base">Loading...</span>
+                      <span className="text-sm sm:text-base">Đang tải...</span>
                     </div>
                   ) : (
-                    `${totalComments} comments`
+                    `${totalComments} bình luận`
                   )}
                 </DrawerTitle>
-                <DrawerDescription className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1 hidden sm:block">
-                  If you see spam comments, please report them to admin
+                <DrawerDescription className="mt-0.5 hidden text-xs text-muted-foreground sm:mt-1 sm:block sm:text-sm">
+                  Nếu thấy bình luận rác, vui lòng báo quản trị viên.
                 </DrawerDescription>
               </div>
               <DrawerClose asChild>
-                <Button variant="ghost" size="sm" className="h-7 w-7 sm:h-8 sm:w-8 p-0 flex-shrink-0">
+                <Button variant="ghost" size="sm" className="h-7 w-7 shrink-0 rounded-xs p-0 sm:h-8 sm:w-8">
                   <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
               </DrawerClose>
@@ -336,20 +335,20 @@ const LessonCommentDrawer = ({ lessonId, isOpen, onOpenChange }: LessonCommentDr
                 onRefetch={refetch}
               />
 
-              {/* Infinite scroll loading indicator */}
+              {/* Chỉ báo tải thêm khi cuộn vô hạn */}
               {isFetchingNextPage && (
                 <div className="flex justify-center py-3 sm:py-4">
-                  <div className="flex items-center gap-1.5 sm:gap-2 text-gray-500">
+                  <div className="flex items-center gap-1.5 text-muted-foreground sm:gap-2">
                     <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
-                    <span className="text-xs sm:text-sm">Loading more...</span>
+                    <span className="text-xs sm:text-sm">Đang tải thêm...</span>
                   </div>
                 </div>
               )}
 
-              {/* No more comments indicator */}
+              {/* Chỉ báo đã tải hết bình luận */}
               {!hasNextPage && comments.length > 0 && (
                 <div className="flex justify-center py-3 sm:py-4">
-                  <span className="text-xs sm:text-sm text-gray-400">All comments loaded</span>
+                  <span className="text-xs text-muted-foreground/70 sm:text-sm">Đã tải hết bình luận</span>
                 </div>
               )}
             </div>

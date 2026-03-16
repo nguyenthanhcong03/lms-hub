@@ -18,7 +18,7 @@ interface ReplyEditorProps {
   avatarSize?: "sm" | "md";
 }
 
-// Reply editor component - Arrow function
+// Thành phần soạn phản hồi
 const ReplyEditor = ({
   content,
   isPending,
@@ -38,13 +38,13 @@ const ReplyEditor = ({
       <div className="flex items-start space-x-2 sm:space-x-3">
         <Avatar className={avatarClasses}>
           <AvatarImage src="" />
-          <AvatarFallback className={`bg-gray-300 text-gray-600 ${avatarTextSize}`}>
+          <AvatarFallback className={`bg-primary/20 text-primary ${avatarTextSize}`}>
             {currentUser?.username?.charAt(0) || "U"}
           </AvatarFallback>
         </Avatar>
 
-        <div className="flex-1 rounded-lg overflow-hidden bg-white border border-gray-200">
-          <div className="bg-gray-50">
+        <div className="flex-1 overflow-hidden rounded-xs border border-primary/15 bg-background">
+          <div className="bg-primary/5">
             <Toolbar />
           </div>
 
@@ -55,24 +55,24 @@ const ReplyEditor = ({
               variant="outline"
               size="sm"
               onClick={onCancel}
-              className="text-gray-600 border-gray-300 hover:bg-gray-100 h-8 sm:h-9 text-xs sm:text-sm"
+              className="h-8 border-primary/20 text-primary hover:bg-primary/10 sm:h-9 text-xs sm:text-sm"
             >
-              CANCEL
+              HỦY
             </Button>
             <Button
               onClick={onSubmit}
               disabled={!hasContent || isPending}
               size="sm"
-              className="bg-blue-600 hover:bg-blue-700 text-white h-8 sm:h-9 text-xs sm:text-sm"
+              className="h-8 bg-primary text-primary-foreground hover:bg-primary/90 sm:h-9 text-xs sm:text-sm"
             >
               {isPending ? (
                 <>
                   <Loader2 className="h-3 w-3 mr-1.5 sm:mr-2 animate-spin" />
-                  <span className="hidden sm:inline">SENDING...</span>
+                  <span className="hidden sm:inline">ĐANG GỬI...</span>
                   <span className="sm:hidden">...</span>
                 </>
               ) : (
-                "REPLY"
+                "PHẢN HỒI"
               )}
             </Button>
           </div>

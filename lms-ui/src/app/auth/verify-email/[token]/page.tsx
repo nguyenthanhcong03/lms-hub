@@ -147,7 +147,7 @@ const VerifyEmailPage = () => {
                 </div>
                 <p className="text-sm text-muted-foreground">Đang chuyển bạn đến trang đăng nhập sau vài giây...</p>
                 <Button asChild size="lg" className="w-full">
-                  <Link href="/auth/sign-in">Tiếp Tục Đăng Nhập</Link>
+                  <Link href="/auth/sign-in">Tiếp tục đăng nhập</Link>
                 </Button>
               </div>
             )}

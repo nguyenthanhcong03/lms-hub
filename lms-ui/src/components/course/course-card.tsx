@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, Users, Clock, BookOpen } from "lucide-react";
 import { IPublicCourse } from "@/types/course";
-import { formatPrice, formatStudentCount, formatDuration, formatLastUpdated, formatRating } from "@/utils/format";
+import { formatPrice, formatStudentCount, formatDuration, formatDate, formatRating } from "@/utils/format";
 import { FaRegEye } from "react-icons/fa6";
 import { DEFAULT_THUMBNAIL } from "@/constants";
 interface CourseCardProps {
@@ -61,7 +61,7 @@ export function CourseCard({ course }: CourseCardProps) {
           <span className="font-medium text-blue-600  capitalize bg-blue-50 px-2.5 py-1 rounded-full">
             {course.category?.name}
           </span>
-          <span>{formatLastUpdated(course.updatedAt)}</span>
+          <span>{formatDate(course.updatedAt)}</span>
         </div>
 
         {/* Title */}
@@ -146,7 +146,7 @@ export function CourseCard({ course }: CourseCardProps) {
             aria-label={`${course?.isFree ? "Bắt đầu học" : "Đăng ký"} ${course.title}`}
           >
             <BookOpen className="h-4 w-4 mr-2" />
-            {course?.isFree ? "Bắt Đầu Học" : "Đăng Ký Ngay"}
+            {course?.isFree ? "Bắt đầu học" : "Đăng ký ngay"}
           </Link>
         </Button>
       </div>

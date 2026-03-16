@@ -87,11 +87,25 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <NextTopLoader height={4} showSpinner={false} easing="ease" speed={500} zIndex={9999} />
+        <NextTopLoader
+          color="#333333!important"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={true}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #333,0 0 5px #333"
+          template='<div class="bar" role="bar"><div class="peg"></div></div> 
+  <div class="spinner" role="spinner"><div class="spinner-icon"></div></div>'
+          zIndex={1600}
+          showAtBottom={false}
+        />
         <AuthInitializer>
           <QueryProvider>
             {children}
-            <Toaster position="top-right" />
+            <Toaster position="top-center" />
           </QueryProvider>
         </AuthInitializer>
       </body>
