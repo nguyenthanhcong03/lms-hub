@@ -13,6 +13,7 @@ import {
   googleLoginSchema,
   googleRegisterSchema,
   loginSchema,
+  refreshTokenSchema,
   registerSchema,
   resetPasswordSchema,
   updateProfileSchema
@@ -29,6 +30,9 @@ router.post('/register', createAccountRateLimit, validate(registerSchema), async
 
 // User login
 router.post('/login', authRateLimit, validate(loginSchema), asyncHandler(AuthController.login))
+
+// Refresh access token
+router.post('/refresh', authRateLimit, validate(refreshTokenSchema), asyncHandler(AuthController.refreshToken))
 
 // Email verification
 router.post('/verify-email', authRateLimit, asyncHandler(AuthController.verifyEmail))
@@ -75,6 +79,9 @@ router.use(loadUserPermissions)
 
 // Get current user profile
 router.get('/me', asyncHandler(AuthController.getAuthMe))
+
+// Logout current user
+router.post('/logout', asyncHandler(AuthController.logout))
 
 // Update user profile
 router.put('/profile', validate(updateProfileSchema), asyncHandler(AuthController.updateProfile))

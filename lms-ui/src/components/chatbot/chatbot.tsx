@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useChatbot } from "@/hooks/use-chatbot";
-import { useIsAuthenticated } from "@/stores/auth-store";
+import { useAuthStore } from "@/stores/auth-store";
 
 const ChatbotButton = dynamic(() => import("./chatbot-button"), {
   ssr: false,
@@ -13,7 +13,7 @@ const ChatbotDialog = dynamic(() => import("./chatbot-dialog"), {
 });
 
 const Chatbot = () => {
-  const isAuthenticated = useIsAuthenticated();
+  const isAuthenticated = useAuthStore((state) => !!state.user);
   const { isOpen, messages, isLoading, toggleChat, closeChat, sendMessage } = useChatbot();
 
   return (

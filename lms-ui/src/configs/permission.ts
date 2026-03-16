@@ -78,39 +78,59 @@ export const PERMISSIONS = {
   ORDER_DELETE: "order:delete",
 } as const;
 
-// Resource definitions for UI generation
-export const RESOURCES = {
-  USER: "user",
-  COURSE: "course",
-  CHAPTER: "chapter",
-  LESSON: "lesson",
-  COUPON: "coupon",
-  CATEGORY: "category",
-  BLOG: "blog",
-  REVIEW: "review",
-  COMMENT: "comment",
-  ROLE: "role",
-  QUIZ_QUESTION: "quiz_question",
-  ORDER: "order",
-} as const;
-
-// CRUD operations
-export const OPERATIONS = {
-  CREATE: "create",
-  READ: "read",
-  UPDATE: "update",
-  DELETE: "delete",
-} as const;
+export const ADMIN_PANEL_PERMISSIONS: Permission[] = [
+  PERMISSIONS.USER_CREATE,
+  PERMISSIONS.USER_READ,
+  PERMISSIONS.USER_UPDATE,
+  PERMISSIONS.USER_DELETE,
+  PERMISSIONS.COURSE_CREATE,
+  PERMISSIONS.COURSE_READ,
+  PERMISSIONS.COURSE_UPDATE,
+  PERMISSIONS.COURSE_DELETE,
+  PERMISSIONS.CHAPTER_CREATE,
+  PERMISSIONS.CHAPTER_READ,
+  PERMISSIONS.CHAPTER_UPDATE,
+  PERMISSIONS.CHAPTER_DELETE,
+  PERMISSIONS.LESSON_CREATE,
+  PERMISSIONS.LESSON_READ,
+  PERMISSIONS.LESSON_UPDATE,
+  PERMISSIONS.LESSON_DELETE,
+  PERMISSIONS.CATEGORY_CREATE,
+  PERMISSIONS.CATEGORY_READ,
+  PERMISSIONS.CATEGORY_UPDATE,
+  PERMISSIONS.CATEGORY_DELETE,
+  PERMISSIONS.BLOG_CREATE,
+  PERMISSIONS.BLOG_READ,
+  PERMISSIONS.BLOG_UPDATE,
+  PERMISSIONS.BLOG_DELETE,
+  PERMISSIONS.COUPON_CREATE,
+  PERMISSIONS.COUPON_READ,
+  PERMISSIONS.COUPON_UPDATE,
+  PERMISSIONS.COUPON_DELETE,
+  PERMISSIONS.REVIEW_CREATE,
+  PERMISSIONS.REVIEW_READ,
+  PERMISSIONS.REVIEW_UPDATE,
+  PERMISSIONS.REVIEW_DELETE,
+  PERMISSIONS.COMMENT_CREATE,
+  PERMISSIONS.COMMENT_READ,
+  PERMISSIONS.COMMENT_UPDATE,
+  PERMISSIONS.COMMENT_DELETE,
+  PERMISSIONS.ROLE_CREATE,
+  PERMISSIONS.ROLE_READ,
+  PERMISSIONS.ROLE_UPDATE,
+  PERMISSIONS.ROLE_DELETE,
+  PERMISSIONS.QUIZ_QUESTION_CREATE,
+  PERMISSIONS.QUIZ_QUESTION_READ,
+  PERMISSIONS.QUIZ_QUESTION_UPDATE,
+  PERMISSIONS.QUIZ_QUESTION_DELETE,
+  PERMISSIONS.ORDER_READ,
+  PERMISSIONS.ORDER_UPDATE,
+  PERMISSIONS.ORDER_DELETE,
+] as const;
 
 // Helper function to generate permission strings
 export const generatePermission = (resource: string, operation: string): string => {
   return `${resource}:${operation}`;
-};
-
-// Helper function to get all permissions for a resource
-export const getResourcePermissions = (resource: keyof typeof RESOURCES): string[] => {
-  const resourceName = RESOURCES[resource];
-  return Object.values(OPERATIONS).map((op) => generatePermission(resourceName, op));
 };
 
 // All permissions as an array
@@ -119,51 +139,91 @@ export const ALL_PERMISSIONS = Object.values(PERMISSIONS);
 export const PERMISSION_GROUPS = {
   user: {
     label: "Quản lý người dùng",
-    permissions: getResourcePermissions("USER"),
+    permissions: [PERMISSIONS.USER_CREATE, PERMISSIONS.USER_READ, PERMISSIONS.USER_UPDATE, PERMISSIONS.USER_DELETE],
   },
   course: {
     label: "Quản lý khóa học",
-    permissions: getResourcePermissions("COURSE"),
+    permissions: [
+      PERMISSIONS.COURSE_CREATE,
+      PERMISSIONS.COURSE_READ,
+      PERMISSIONS.COURSE_UPDATE,
+      PERMISSIONS.COURSE_DELETE,
+    ],
   },
   chapter: {
     label: "Quản lý chương",
-    permissions: getResourcePermissions("CHAPTER"),
+    permissions: [
+      PERMISSIONS.CHAPTER_CREATE,
+      PERMISSIONS.CHAPTER_READ,
+      PERMISSIONS.CHAPTER_UPDATE,
+      PERMISSIONS.CHAPTER_DELETE,
+    ],
   },
   lesson: {
     label: "Quản lý bài học",
-    permissions: getResourcePermissions("LESSON"),
+    permissions: [
+      PERMISSIONS.LESSON_CREATE,
+      PERMISSIONS.LESSON_READ,
+      PERMISSIONS.LESSON_UPDATE,
+      PERMISSIONS.LESSON_DELETE,
+    ],
   },
   category: {
     label: "Quản lý danh mục",
-    permissions: getResourcePermissions("CATEGORY"),
+    permissions: [
+      PERMISSIONS.CATEGORY_CREATE,
+      PERMISSIONS.CATEGORY_READ,
+      PERMISSIONS.CATEGORY_UPDATE,
+      PERMISSIONS.CATEGORY_DELETE,
+    ],
   },
   blog: {
     label: "Quản lý bài viết",
-    permissions: getResourcePermissions("BLOG"),
+    permissions: [PERMISSIONS.BLOG_CREATE, PERMISSIONS.BLOG_READ, PERMISSIONS.BLOG_UPDATE, PERMISSIONS.BLOG_DELETE],
   },
   coupon: {
     label: "Quản lý mã giảm giá",
-    permissions: getResourcePermissions("COUPON"),
+    permissions: [
+      PERMISSIONS.COUPON_CREATE,
+      PERMISSIONS.COUPON_READ,
+      PERMISSIONS.COUPON_UPDATE,
+      PERMISSIONS.COUPON_DELETE,
+    ],
   },
   review: {
     label: "Quản lý đánh giá",
-    permissions: getResourcePermissions("REVIEW"),
+    permissions: [
+      PERMISSIONS.REVIEW_CREATE,
+      PERMISSIONS.REVIEW_READ,
+      PERMISSIONS.REVIEW_UPDATE,
+      PERMISSIONS.REVIEW_DELETE,
+    ],
   },
   comment: {
     label: "Quản lý bình luận",
-    permissions: getResourcePermissions("COMMENT"),
+    permissions: [
+      PERMISSIONS.COMMENT_CREATE,
+      PERMISSIONS.COMMENT_READ,
+      PERMISSIONS.COMMENT_UPDATE,
+      PERMISSIONS.COMMENT_DELETE,
+    ],
   },
   role: {
     label: "Quản lý vai trò",
-    permissions: getResourcePermissions("ROLE"),
+    permissions: [PERMISSIONS.ROLE_CREATE, PERMISSIONS.ROLE_READ, PERMISSIONS.ROLE_UPDATE, PERMISSIONS.ROLE_DELETE],
   },
   quiz_question: {
     label: "Quản lý câu hỏi quiz",
-    permissions: getResourcePermissions("QUIZ_QUESTION"),
+    permissions: [
+      PERMISSIONS.QUIZ_QUESTION_CREATE,
+      PERMISSIONS.QUIZ_QUESTION_READ,
+      PERMISSIONS.QUIZ_QUESTION_UPDATE,
+      PERMISSIONS.QUIZ_QUESTION_DELETE,
+    ],
   },
   order: {
     label: "Quản lý đơn hàng",
-    permissions: getResourcePermissions("ORDER"),
+    permissions: [PERMISSIONS.ORDER_READ, PERMISSIONS.ORDER_UPDATE, PERMISSIONS.ORDER_DELETE],
   },
 } as const;
 
@@ -177,4 +237,4 @@ export const SYSTEM_ROLE_NAMES = {
 
 export type SystemRoleName = (typeof SYSTEM_ROLE_NAMES)[keyof typeof SYSTEM_ROLE_NAMES];
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
-export type PermissionGroup = keyof typeof PERMISSION_GROUPS;
+// export type PermissionGroup = keyof typeof PERMISSION_GROUPS;

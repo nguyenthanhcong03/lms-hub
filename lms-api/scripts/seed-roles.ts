@@ -15,8 +15,7 @@ const rolesData = [
   {
     name: SYSTEM_ROLE_NAMES.SUPER_ADMIN,
     description: 'Ultimate system administrator with all permissions and system access',
-    permissions: ALL_PERMISSIONS,
-    inherits: []
+    permissions: ALL_PERMISSIONS
   },
   {
     name: SYSTEM_ROLE_NAMES.ADMIN,
@@ -60,8 +59,7 @@ const rolesData = [
       PERMISSIONS.ORDER_UPDATE,
       PERMISSIONS.ORDER_MODERATE,
       PERMISSIONS.STATS_READ
-    ],
-    inherits: []
+    ]
   },
   {
     name: SYSTEM_ROLE_NAMES.STUDENT,
@@ -78,14 +76,12 @@ const rolesData = [
       PERMISSIONS.BLOG_READ,
       PERMISSIONS.ORDER_CREATE,
       PERMISSIONS.ORDER_READ
-    ],
-    inherits: []
+    ]
   },
   {
     name: SYSTEM_ROLE_NAMES.GUEST,
     description: 'Guest user with limited read-only access to public content',
-    permissions: [PERMISSIONS.COURSE_READ, PERMISSIONS.CATEGORY_READ, PERMISSIONS.BLOG_READ, PERMISSIONS.REVIEW_READ],
-    inherits: []
+    permissions: [PERMISSIONS.COURSE_READ, PERMISSIONS.CATEGORY_READ, PERMISSIONS.BLOG_READ, PERMISSIONS.REVIEW_READ]
   }
 ]
 

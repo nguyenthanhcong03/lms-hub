@@ -1,12 +1,16 @@
-import th from 'zod/v4/locales/th.js'
 import { UserStatus, UserType } from '../enums'
 import { User, Role } from '../models'
 import {
   comparePassword,
+  compareTokenHash,
+  generateRefreshToken,
   generateToken,
+  getTokenExpiryDate,
+  hashToken,
   generateVerificationToken,
   generatePasswordResetToken,
   hashPassword,
+  verifyRefreshToken,
   verifyToken
 } from '../utils/auth'
 import { EmailService } from '../utils/email'
@@ -46,6 +50,10 @@ export interface ResetPasswordData {
   newPassword: string
 }
 
+export interface RefreshTokenData {
+  refreshToken: string
+}
+
 export interface GoogleRegisterData {
   idToken: string
 }
@@ -63,6 +71,20 @@ export interface FacebookLoginData {
 }
 
 export class AuthService {
+  private static async issueAuthTokens(userId: string): Promise<{ token: string; refreshToken: string }> {
+    const token = generateToken(userId)
+    const refreshToken = generateRefreshToken(userId)
+    const refreshTokenHash = hashToken(refreshToken)
+    const refreshTokenExpiresAt = getTokenExpiryDate(refreshToken)
+
+    await User.findByIdAndUpdate(userId, {
+      refreshTokenHash,
+      refreshTokenExpiresAt
+    })
+
+    return { token, refreshToken }
+  }
+
   static async register(data: RegisterData) {
     const { username, email, password, userType = UserType.DEFAULT } = data
 
@@ -174,12 +196,80 @@ export class AuthService {
       throw new AuthenticationError('Invalid email or password', ErrorCodes.INVALID_CREDENTIALS)
     }
 
-    // Generate JWT token
-    const token = generateToken(user._id.toString())
+    return await this.issueAuthTokens(user._id.toString())
+  }
 
-    // Return user without password
+  static async refreshToken(data: RefreshTokenData) {
+    const { refreshToken } = data
 
-    return { token }
+    try {
+      const decoded = verifyRefreshToken(refreshToken) as {
+        userId: string
+        type?: string
+      }
+
+      if (decoded.type !== 'refresh_token') {
+        throw new AuthenticationError('Invalid refresh token', ErrorCodes.TOKEN_INVALID)
+      }
+
+      const user = await User.findById(decoded.userId).select('status refreshTokenHash refreshTokenExpiresAt')
+
+      if (!user) {
+        throw new AuthenticationError('Invalid refresh token', ErrorCodes.TOKEN_INVALID)
+      }
+
+      if (user.status === UserStatus.INACTIVE) {
+        throw new AuthenticationError('Account is not active', ErrorCodes.ACCOUNT_INACTIVE)
+      }
+
+      if (user.status === UserStatus.BANNED) {
+        throw new AuthenticationError('Account is banned', ErrorCodes.ACCOUNT_BANNED)
+      }
+
+      if (!user.refreshTokenHash || !user.refreshTokenExpiresAt) {
+        throw new AuthenticationError('Refresh token is not recognized', ErrorCodes.TOKEN_INVALID)
+      }
+
+      if (new Date(user.refreshTokenExpiresAt) < new Date()) {
+        await User.findByIdAndUpdate(user._id, {
+          refreshTokenHash: null,
+          refreshTokenExpiresAt: null
+        })
+        throw new AuthenticationError('Refresh token has expired', ErrorCodes.TOKEN_EXPIRED)
+      }
+
+      const isRefreshTokenValid = compareTokenHash(refreshToken, user.refreshTokenHash)
+
+      if (!isRefreshTokenValid) {
+        throw new AuthenticationError('Invalid refresh token', ErrorCodes.TOKEN_INVALID)
+      }
+
+      return await this.issueAuthTokens(user._id.toString())
+    } catch (error) {
+      if (error instanceof AuthenticationError) {
+        throw error
+      }
+
+      if (error instanceof Error) {
+        if (error.name === 'TokenExpiredError') {
+          throw new AuthenticationError('Refresh token has expired', ErrorCodes.TOKEN_EXPIRED)
+        }
+        if (error.name === 'JsonWebTokenError') {
+          throw new AuthenticationError('Invalid refresh token', ErrorCodes.TOKEN_INVALID)
+        }
+      }
+
+      throw error
+    }
+  }
+
+  static async logout(userId: string) {
+    await User.findByIdAndUpdate(userId, {
+      refreshTokenHash: null,
+      refreshTokenExpiresAt: null
+    })
+
+    return { message: 'Logout successful' }
   }
 
   static async getAuthMe(userId: string) {
@@ -235,7 +325,9 @@ export class AuthService {
 
     // Update password
     await User.findByIdAndUpdate(userId, {
-      password: hashedNewPassword
+      password: hashedNewPassword,
+      refreshTokenHash: null,
+      refreshTokenExpiresAt: null
     })
 
     return { message: 'Password changed successfully' }
@@ -388,12 +480,7 @@ export class AuthService {
       throw new AuthenticationError('Account is not active', ErrorCodes.ACCOUNT_INACTIVE)
     }
 
-    // Generate JWT token
-    const token = generateToken(user._id.toString())
-
-    return {
-      token
-    }
+    return await this.issueAuthTokens(user._id.toString())
   }
 
   static async facebookLogin(data: FacebookLoginData) {
@@ -418,12 +505,7 @@ export class AuthService {
       throw new AuthenticationError('Account is not active', ErrorCodes.ACCOUNT_INACTIVE)
     }
 
-    // Generate JWT token
-    const token = generateToken(user._id.toString())
-
-    return {
-      token
-    }
+    return await this.issueAuthTokens(user._id.toString())
   }
 
   static async facebookRegister(data: FacebookRegisterData) {

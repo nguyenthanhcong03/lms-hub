@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ROUTE_CONFIG } from "@/configs/routes";
 import { cn } from "@/lib/utils";
-import { useIsAuthenticated, useUser } from "@/stores/auth-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,8 +21,8 @@ const navigation = [
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const user = useUser();
-  const isAuthenticated = useIsAuthenticated();
+  const isAuthenticated = useAuthStore((state) => !!state.user);
+  const user = useAuthStore((state) => state.user);
 
   // Close mobile menu when route changes
   useEffect(() => {

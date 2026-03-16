@@ -13,7 +13,7 @@ export class RoleController {
   private static roleService = new RoleService()
 
   /**
-   * Get all roles with optional inheritance information
+   * Get all roles
    */
   static async getRoles(req: Request, res: Response): Promise<void> {
     const roles = await RoleController.roleService.getAllRoles()
@@ -21,38 +21,42 @@ export class RoleController {
     sendSuccess.ok(res, 'Roles retrieved successfully', roles)
   }
 
+  static async getPublicRoles(req: Request, res: Response): Promise<void> {
+    const roles = await RoleController.roleService.getPublicRoles()
+
+    sendSuccess.ok(res, 'Public roles retrieved successfully', roles)
+  }
+
   /**
-   * Get role by ID with optional inheritance information
+   * Get role by ID
    */
   static async getRoleById(req: Request, res: Response): Promise<void> {
-    const { roleId } = req.params
-    const { includeInheritance = false } = req.query
+    const roleId = Array.isArray(req.params.roleId) ? req.params.roleId[0] : req.params.roleId
 
-    const role = await RoleController.roleService.getRoleById(roleId, includeInheritance === 'true')
+    const role = await RoleController.roleService.getRoleById(roleId)
 
     sendSuccess.ok(res, 'Role retrieved successfully', role)
   }
 
   /**
-   * Create new role with inheritance support
+   * Create new role
    */
   static async createRole(req: Request, res: Response): Promise<void> {
-    const { name, description, permissions, inherits } = req.body
+    const { name, description, permissions } = req.body
     const role = await RoleController.roleService.createRole({
       name,
       description,
-      permissions,
-      inherits
+      permissions
     })
 
     sendSuccess.created(res, 'Role created successfully', role)
   }
 
   /**
-   * Update role with inheritance support
+   * Update role
    */
   static async updateRole(req: Request, res: Response): Promise<void> {
-    const { roleId } = req.params
+    const roleId = Array.isArray(req.params.roleId) ? req.params.roleId[0] : req.params.roleId
     const updateData = req.body
 
     const role = await RoleController.roleService.updateRole(roleId, updateData)
@@ -64,7 +68,7 @@ export class RoleController {
    * Delete role with dependency checking
    */
   static async deleteRole(req: Request, res: Response): Promise<void> {
-    const { roleId } = req.params
+    const roleId = Array.isArray(req.params.roleId) ? req.params.roleId[0] : req.params.roleId
 
     await RoleController.roleService.deleteRole(roleId)
 
@@ -72,10 +76,10 @@ export class RoleController {
   }
 
   /**
-   * Get user's permissions including inherited ones
+   * Get user's permissions
    */
   static async getUserPermissions(req: Request, res: Response): Promise<void> {
-    const { userId } = req.params
+    const userId = Array.isArray(req.params.userId) ? req.params.userId[0] : req.params.userId
 
     // Check if user can view other users' permissions or only their own
     const canViewAnyUser = hasPermission(req.userPermissions || [], PERMISSIONS.USER_READ)
@@ -91,10 +95,10 @@ export class RoleController {
   }
 
   /**
-   * Get all permissions for a role (including inherited)
+   * Get all permissions for a role
    */
   static async getRolePermissions(req: Request, res: Response): Promise<void> {
-    const { roleId } = req.params
+    const roleId = Array.isArray(req.params.roleId) ? req.params.roleId[0] : req.params.roleId
 
     const permissions = await RoleController.roleService.getAllPermissions(roleId)
 

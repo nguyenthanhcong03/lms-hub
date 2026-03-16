@@ -6,7 +6,6 @@ export interface IRole extends Document {
   name: string
   description: string
   permissions: Permission[]
-  inherits: mongoose.Types.ObjectId[] // Array of role ObjectIds this role inherits from
   createdAt: Date
   updatedAt: Date
 }
@@ -28,12 +27,6 @@ const roleSchema = new Schema<IRole>(
       {
         type: String,
         required: true
-      }
-    ],
-    inherits: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Role'
       }
     ]
   },

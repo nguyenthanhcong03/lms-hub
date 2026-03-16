@@ -3,6 +3,19 @@ import { AuthService } from '../services/auth.service'
 import { ValidationError } from '../utils/errors'
 import { sendSuccess } from '../utils/success'
 
+const REFRESH_COOKIE_NAME = 'refresh_token'
+
+const getRefreshCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === 'production'
+
+  return {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
+    path: '/api/v1/auth'
+  }
+}
+
 export class AuthController {
   // Register a new user
   static async register(req: Request, res: Response): Promise<void> {
@@ -26,7 +39,24 @@ export class AuthController {
 
     const result = await AuthService.login({ email, password })
 
-    sendSuccess.ok(res, 'Login successful', result)
+    res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, getRefreshCookieOptions())
+
+    sendSuccess.ok(res, 'Login successful', { token: result.token })
+  }
+
+  // Refresh access token using refresh token rotation
+  static async refreshToken(req: Request, res: Response): Promise<void> {
+    const refreshToken = req.cookies?.[REFRESH_COOKIE_NAME] || req.body?.refreshToken
+
+    if (!refreshToken) {
+      throw new ValidationError('Refresh token is required')
+    }
+
+    const result = await AuthService.refreshToken({ refreshToken })
+
+    res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, getRefreshCookieOptions())
+
+    sendSuccess.ok(res, 'Token refreshed successfully', { token: result.token })
   }
 
   // Get user profile
@@ -45,7 +75,6 @@ export class AuthController {
   // Update user profile
   static async updateProfile(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
-    // Validation is now handled by Zod middleware
     const { username, avatar } = req.body
 
     if (!userId) {
@@ -76,6 +105,24 @@ export class AuthController {
     })
 
     sendSuccess.ok(res, 'Password changed successfully')
+  }
+
+  // Logout and revoke current refresh token
+  static async logout(req: Request, res: Response): Promise<void> {
+    const userId = req.user?.userId
+
+    if (!userId) {
+      throw new ValidationError('User ID is required')
+    }
+
+    await AuthService.logout(userId)
+
+    res.clearCookie(REFRESH_COOKIE_NAME, {
+      ...getRefreshCookieOptions(),
+      maxAge: 0
+    })
+
+    sendSuccess.ok(res, 'Logout successful')
   }
 
   // Verify email
@@ -120,7 +167,9 @@ export class AuthController {
 
     const result = await AuthService.googleLogin({ idToken })
 
-    sendSuccess.ok(res, 'Google login successful', result)
+    res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, getRefreshCookieOptions())
+
+    sendSuccess.ok(res, 'Google login successful', { token: result.token })
   }
 
   // Facebook Register
@@ -134,6 +183,9 @@ export class AuthController {
   static async facebookLogin(req: Request, res: Response): Promise<void> {
     const { accessToken } = req.body
     const result = await AuthService.facebookLogin({ accessToken })
-    sendSuccess.ok(res, 'Facebook login successful', result)
+
+    res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, getRefreshCookieOptions())
+
+    sendSuccess.ok(res, 'Facebook login successful', { token: result.token })
   }
 }

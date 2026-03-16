@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { usePermissions } from "@/hooks/use-permissions";
 import {
   MdAdminPanelSettings,
   MdDelete,
@@ -20,7 +19,8 @@ import {
   MdShield,
 } from "react-icons/md";
 
-import { OPERATIONS, RESOURCES } from "@/configs/permission";
+import { PERMISSIONS } from "@/configs/permission";
+import { useAuthStore } from "@/stores/auth-store";
 import { IRole } from "@/types/role";
 
 // Role icons mapping - aligned with actual system roles
@@ -74,10 +74,9 @@ interface RoleListItemProps {
 }
 
 function RoleListItem({ role, onEditRole }: RoleListItemProps) {
-  const { UPDATE, DELETE } = usePermissions(RESOURCES.ROLE, [
-    OPERATIONS.UPDATE,
-    OPERATIONS.DELETE,
-  ]);
+  const hasPermission = useAuthStore((state) => state.hasPermission);
+  const UPDATE = hasPermission(PERMISSIONS.ROLE_UPDATE);
+  const DELETE = hasPermission(PERMISSIONS.ROLE_DELETE);
 
   const IconComponent = getRoleIcon(role.name);
   const colorClass = getRoleColor(role.name);
@@ -94,63 +93,26 @@ function RoleListItem({ role, onEditRole }: RoleListItemProps) {
       <div className="p-4 grid grid-cols-12 gap-4 items-center">
         {/* Role Info - 4 columns */}
         <div className="col-span-12 md:col-span-4 flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${colorClass} flex-shrink-0`}>
+          <div className={`p-2 rounded-lg ${colorClass} shrink-0`}>
             <IconComponent className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <h3 className="font-semibold text-base capitalize leading-tight">
-              {role.name.replace("_", " ")}
-            </h3>
-            <p className="text-sm text-muted-foreground truncate max-w-[200px]">
-              {role.description}
-            </p>
+            <h3 className="font-semibold text-base capitalize leading-tight">{role.name.replace("_", " ")}</h3>
+            <p className="text-sm text-muted-foreground truncate max-w-50">{role.description}</p>
           </div>
         </div>
 
         {/* Permissions - 2 columns */}
         <div className="col-span-6 md:col-span-2 flex items-center gap-2">
-          <span className="text-sm text-muted-foreground hidden md:block">
-            Permissions:
-          </span>
+          <span className="text-sm text-muted-foreground hidden md:block">Permissions:</span>
           <Badge variant="secondary" className="font-semibold">
             {role.permissions.length}
           </Badge>
         </div>
 
-        {/* Inherited Roles - 3 columns */}
+        {/* Role Summary - 3 columns */}
         <div className="col-span-6 md:col-span-3">
-          {role.inherits && role.inherits.length > 0 ? (
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground hidden md:block">
-                  Inherits:
-                </span>
-                <Badge variant="outline" className="text-xs">
-                  {role.inherits.length}
-                </Badge>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {role.inherits.slice(0, 2).map((inheritedRole) => (
-                  <Badge
-                    key={inheritedRole._id}
-                    variant="secondary"
-                    className="text-xs px-2 py-0.5"
-                  >
-                    {inheritedRole.name}
-                  </Badge>
-                ))}
-                {role.inherits.length > 2 && (
-                  <Badge variant="outline" className="text-xs px-2 py-0.5">
-                    +{role.inherits.length - 2}
-                  </Badge>
-                )}
-              </div>
-            </div>
-          ) : (
-            <span className="text-sm text-muted-foreground">
-              No inheritance
-            </span>
-          )}
+          <span className="text-sm text-muted-foreground">Direct permission set</span>
         </div>
 
         {/* Metadata - 2 columns */}
@@ -159,9 +121,7 @@ function RoleListItem({ role, onEditRole }: RoleListItemProps) {
             <MdPeople className="h-3.5 w-3.5" />
             <span>{role?.totalUsers || 0} users</span>
           </div>
-          <div className="text-xs text-muted-foreground">
-            {new Date(role.createdAt).toLocaleDateString()}
-          </div>
+          <div className="text-xs text-muted-foreground">{new Date(role.createdAt).toLocaleDateString()}</div>
         </div>
 
         {/* Actions - 1 column */}
@@ -185,10 +145,7 @@ function RoleListItem({ role, onEditRole }: RoleListItemProps) {
                   </DropdownMenuItem>
                 )}
                 {DELETE && (
-                  <DropdownMenuItem
-                    className="text-destructive gap-2"
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <DropdownMenuItem className="text-destructive gap-2" onClick={(e) => e.stopPropagation()}>
                     <MdDelete className="h-4 w-4" />
                     Delete Role
                   </DropdownMenuItem>
@@ -209,18 +166,10 @@ const RolesList = ({ roles = [], onEditRole }: RolesListProps) => {
       <div className="bg-muted/50 border-b border-border">
         <div className="p-4 grid grid-cols-12 gap-4 text-sm font-medium text-muted-foreground">
           <div className="col-span-12 md:col-span-4">Role</div>
-          <div className="col-span-6 md:col-span-2 hidden md:block">
-            Permissions
-          </div>
-          <div className="col-span-6 md:col-span-3 hidden md:block">
-            Inheritance
-          </div>
-          <div className="col-span-6 md:col-span-2 hidden md:block">
-            Users & Date
-          </div>
-          <div className="col-span-6 md:col-span-1 hidden md:block">
-            Actions
-          </div>
+          <div className="col-span-6 md:col-span-2 hidden md:block">Permissions</div>
+          <div className="col-span-6 md:col-span-3 hidden md:block">Details</div>
+          <div className="col-span-6 md:col-span-2 hidden md:block">Users & Date</div>
+          <div className="col-span-6 md:col-span-1 hidden md:block">Actions</div>
         </div>
       </div>
 

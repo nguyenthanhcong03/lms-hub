@@ -10,16 +10,14 @@ import {
 import { SYSTEM_ROLE_NAMES } from "@/configs/permission";
 import { ROUTE_CONFIG } from "@/configs/routes";
 import { DEFAULT_AVATAR } from "@/constants";
-import { useAuthStore, useIsAuthenticated, useUser } from "@/stores/auth-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { LogOut, Settings, ShieldCheck, User } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GoPackage } from "react-icons/go";
 export function UserNav() {
-  const user = useUser();
-  const isAuthenticated = useIsAuthenticated();
-  const { data: session } = useSession();
+  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => !!state.user);
 
   const { logout } = useAuthStore();
   const router = useRouter();
@@ -32,9 +30,6 @@ export function UserNav() {
     user?.roles?.some((role) => role.name === SYSTEM_ROLE_NAMES.ADMIN || role.name === SYSTEM_ROLE_NAMES.SUPER_ADMIN) ||
     false;
   const handleLogout = async () => {
-    if (session && (session.provider === "google" || session.provider === "facebook")) {
-      await signOut({ redirect: false });
-    }
     await logout();
     router.push(ROUTE_CONFIG.HOME);
   };

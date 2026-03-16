@@ -26,69 +26,95 @@ import {
 } from "react-icons/md";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useUser, useAuthStore } from "@/stores/auth-store";
-import { signOut, useSession } from "next-auth/react";
+import { useAuthStore } from "@/stores/auth-store";
 import { ROUTE_CONFIG } from "@/configs/routes";
+import { ADMIN_PANEL_PERMISSIONS, PERMISSIONS } from "@/configs/permission";
 
 const menuItems = [
   {
     title: "Bảng điều khiển",
     url: "/admin/dashboard",
     icon: MdDashboard,
+    permissions: [...ADMIN_PANEL_PERMISSIONS],
   },
   {
     title: "Người dùng",
     url: "/admin/users",
     icon: MdPeople,
+    permissions: [PERMISSIONS.USER_CREATE, PERMISSIONS.USER_READ, PERMISSIONS.USER_UPDATE, PERMISSIONS.USER_DELETE],
   },
   {
     title: "Khóa học",
     url: "/admin/courses",
     icon: MdSchool,
+    permissions: [
+      PERMISSIONS.COURSE_CREATE,
+      PERMISSIONS.COURSE_READ,
+      PERMISSIONS.COURSE_UPDATE,
+      PERMISSIONS.COURSE_DELETE,
+    ],
   },
   {
     title: "Danh mục",
     url: "/admin/categories",
     icon: MdCategory,
+    permissions: [
+      PERMISSIONS.CATEGORY_CREATE,
+      PERMISSIONS.CATEGORY_READ,
+      PERMISSIONS.CATEGORY_UPDATE,
+      PERMISSIONS.CATEGORY_DELETE,
+    ],
   },
   {
     title: "Bài viết",
     url: "/admin/blogs",
     icon: MdArticle,
+    permissions: [PERMISSIONS.BLOG_CREATE, PERMISSIONS.BLOG_READ, PERMISSIONS.BLOG_UPDATE, PERMISSIONS.BLOG_DELETE],
   },
   {
     title: "Bình luận",
     url: "/admin/comments",
     icon: MdComment,
+    permissions: [
+      PERMISSIONS.COMMENT_CREATE,
+      PERMISSIONS.COMMENT_READ,
+      PERMISSIONS.COMMENT_UPDATE,
+      PERMISSIONS.COMMENT_DELETE,
+    ],
   },
   {
     title: "Mã giảm giá",
     url: "/admin/coupons",
     icon: MdLocalOffer,
+    permissions: [
+      PERMISSIONS.COUPON_CREATE,
+      PERMISSIONS.COUPON_READ,
+      PERMISSIONS.COUPON_UPDATE,
+      PERMISSIONS.COUPON_DELETE,
+    ],
   },
   {
     title: "Đơn hàng",
     url: "/admin/orders",
     icon: MdShoppingCart,
+    permissions: [PERMISSIONS.ORDER_CREATE, PERMISSIONS.ORDER_READ, PERMISSIONS.ORDER_UPDATE, PERMISSIONS.ORDER_DELETE],
   },
   {
     title: "Vai trò & Quyền",
     url: "/admin/roles",
     icon: MdSecurity,
+    permissions: [PERMISSIONS.ROLE_CREATE, PERMISSIONS.ROLE_READ, PERMISSIONS.ROLE_UPDATE, PERMISSIONS.ROLE_DELETE],
   },
 ];
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const user = useUser();
-  const { data: session } = useSession();
+  const user = useAuthStore((state) => state.user);
   const { logout } = useAuthStore();
+  const hasAnyPermission = useAuthStore((state) => state.hasAnyPermission);
 
   const handleLogout = async () => {
-    if (session && (session?.provider === "google" || session?.provider === "facebook")) {
-      await signOut({ redirect: false });
-    }
     await logout();
     router.push("/auth/sign-in");
   };
@@ -109,16 +135,21 @@ export function AdminSidebar() {
 
       <SidebarContent className="flex-1 px-4 py-4 min-h-0 overflow-x-hidden">
         <SidebarMenu>
-          {menuItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild isActive={pathname === item.url}>
-                <Link href={item.url} className="flex items-center gap-3 px-3 py-2 min-w-0">
-                  <item.icon className="h-4 w-4 shrink-0" />
-                  <span className="truncate">{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          {menuItems.map((item) => {
+            if (!hasAnyPermission(item.permissions)) {
+              return null;
+            }
+            return (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild isActive={pathname === item.url}>
+                  <Link href={item.url} className="flex items-center gap-3 px-3 py-2 min-w-0">
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    <span className="truncate">{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
 
         <SidebarSeparator className="my-4" />
@@ -138,7 +169,7 @@ export function AdminSidebar() {
       <SidebarFooter className="p-4 border-t shrink-0">
         <div className="flex items-center gap-3 min-w-0">
           <Avatar className="h-8 w-8 shrink-0">
-            <AvatarImage src="/avatar.jpg" alt={user?.username} />
+            <AvatarImage src="/images/default-avatar.jpg" alt={user?.username} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">

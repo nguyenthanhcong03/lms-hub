@@ -3,13 +3,13 @@
 import { UserNav } from "@/components/auth/user-nav";
 import { Button } from "@/components/ui/button";
 import { ROUTE_CONFIG } from "@/configs/routes";
-import { useIsAuthenticated, useUser } from "@/stores/auth-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { User } from "lucide-react";
 import Link from "next/link";
 
 export default function AuthSection() {
-  const user = useUser();
-  const isAuthenticated = useIsAuthenticated();
+  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => !!state.user);
 
   if (isAuthenticated && user) {
     return <UserNav />;

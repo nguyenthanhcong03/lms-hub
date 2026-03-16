@@ -1,6 +1,5 @@
 import { AuthInitializer } from "@/components/auth/auth-initializer";
 import { QueryProvider } from "@/components/providers/query-provider";
-import NextAuthSessionProvider from "@/components/providers/session-provider";
 import { StructuredData } from "@/components/seo/structured-data";
 import { SEO_CONFIG, STRUCTURED_DATA } from "@/configs/seo";
 import type { Metadata, Viewport } from "next";
@@ -97,14 +96,12 @@ export default function RootLayout({
           shadow="0 0 10px rgba(37, 99, 235, 0.6), 0 0 20px rgba(124, 58, 237, 0.3)"
           zIndex={9999}
         />
-        <NextAuthSessionProvider>
-          <AuthInitializer>
-            <QueryProvider>
-              {children}
-              <Toaster position="top-right" />
-            </QueryProvider>
-          </AuthInitializer>
-        </NextAuthSessionProvider>
+        <AuthInitializer>
+          <QueryProvider>
+            {children}
+            <Toaster position="top-right" />
+          </QueryProvider>
+        </AuthInitializer>
       </body>
     </html>
   );

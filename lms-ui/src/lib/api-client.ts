@@ -29,6 +29,7 @@ const customParamsSerializer = (params: Record<string, unknown>) => {
 const API_CONFIG = {
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 10000, // 10 seconds
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -40,6 +41,26 @@ const API_CONFIG = {
 
 // Create the main Axios instance
 export const apiClient: AxiosInstance = axios.create(API_CONFIG);
+
+type QueueItem = {
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+};
+
+let isRefreshing = false;
+let failedQueue: QueueItem[] = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((item) => {
+    if (error) {
+      item.reject(error);
+    } else if (token) {
+      item.resolve(token);
+    }
+  });
+
+  failedQueue = [];
+};
 
 // Request interceptor
 apiClient.interceptors.request.use(
@@ -61,9 +82,75 @@ apiClient.interceptors.request.use(
 // Response interceptor
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
+    const originalRequest = error.config as (AxiosError["config"] & { _retry?: boolean }) | undefined;
+
+    const status = error.response?.status;
+    const requestUrl = originalRequest?.url || "";
+
+    // Avoid refresh loops for auth endpoints
+    const isAuthRequest =
+      requestUrl.includes("/auth/login") ||
+      requestUrl.includes("/auth/register") ||
+      requestUrl.includes("/auth/refresh") ||
+      requestUrl.includes("/auth/forgot-password") ||
+      requestUrl.includes("/auth/reset-password") ||
+      requestUrl.includes("/auth/verify-email");
+
+    if (status === 401 && originalRequest && !originalRequest._retry && !isAuthRequest) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve: (newToken: string) => {
+              originalRequest.headers = originalRequest.headers || {};
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              resolve(apiClient(originalRequest));
+            },
+            reject,
+          });
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const refreshResponse = await axios.post(
+          `${API_CONFIG.baseURL}/auth/refresh`,
+          {},
+          {
+            timeout: API_CONFIG.timeout,
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true,
+            adapter: "fetch",
+          },
+        );
+
+        const refreshedData = refreshResponse.data?.data;
+        const newAccessToken: string | undefined = refreshedData?.token;
+
+        if (!newAccessToken) {
+          throw new Error("Invalid refresh token response");
+        }
+
+        setAccessToken(newAccessToken);
+        processQueue(null, newAccessToken);
+
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        handleUnauthorized();
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
     // Handle common error scenarios
-    if (error.response?.status === 401) {
+    if (status === 401 && !isAuthRequest) {
       handleUnauthorized();
     }
 
@@ -80,11 +167,16 @@ function getAuthToken(): string | null {
   return null;
 }
 
+function setAccessToken(accessToken: string): void {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("access_token", accessToken);
+  }
+}
+
 function handleUnauthorized(): void {
   // Clear auth tokens
   if (typeof window !== "undefined") {
     localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
     // Redirect to login page
     // window.location.href = "/auth/sign-in";
   }

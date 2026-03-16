@@ -1,10 +1,5 @@
 ﻿"use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Row } from "@tanstack/react-table";
-import { IconEdit, IconTrash, IconList } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,9 +9,14 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { usePermissions } from "@/hooks/use-permissions";
-import { RESOURCES, OPERATIONS } from "@/configs/permission";
+import { PERMISSIONS } from "@/configs/permission";
+import { useAuthStore } from "@/stores/auth-store";
 import { ICourse } from "@/types/course";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { IconEdit, IconList, IconTrash } from "@tabler/icons-react";
+import { Row } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import CoursesActionDialog from "./courses-action-dialog";
 import CoursesDeleteDialog from "./courses-delete-dialog";
 
@@ -29,7 +29,7 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const router = useRouter();
 
-  const { UPDATE, DELETE } = usePermissions(RESOURCES.COURSE, [OPERATIONS.UPDATE, OPERATIONS.DELETE]);
+  const hasPermission = useAuthStore((state) => state.hasPermission);
 
   const course = row.original;
 
@@ -55,26 +55,28 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40">
-          {UPDATE && (
+          {hasPermission(PERMISSIONS.COURSE_CREATE) && (
             <DropdownMenuItem onClick={handleOutlineClick}>
-              Ná»™i dung
+              Nội dung
               <DropdownMenuShortcut>
                 <IconList size={16} />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
           )}
-          {UPDATE && (
+          {hasPermission(PERMISSIONS.COURSE_UPDATE) && (
             <DropdownMenuItem onClick={handleEditClick}>
-              Chá»‰nh sá»­a
+              Chỉnh sửa
               <DropdownMenuShortcut>
                 <IconEdit size={16} />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
           )}
-          {(UPDATE || DELETE) && <DropdownMenuSeparator />}
-          {DELETE && (
+          {(hasPermission(PERMISSIONS.COURSE_UPDATE) || hasPermission(PERMISSIONS.COURSE_DELETE)) && (
+            <DropdownMenuSeparator />
+          )}
+          {hasPermission(PERMISSIONS.COURSE_DELETE) && (
             <DropdownMenuItem onClick={handleDeleteClick} className="text-red-500!">
-              XÃ³a
+              Xóa
               <DropdownMenuShortcut>
                 <IconTrash size={16} />
               </DropdownMenuShortcut>
@@ -84,12 +86,12 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
       </DropdownMenu>
 
       {/* Hộp thoại chỉnh sửa - Chỉ hiển thị khi có quyền UPDATE và đang mở */}
-      {UPDATE && editDialogOpen && (
+      {hasPermission(PERMISSIONS.COURSE_UPDATE) && editDialogOpen && (
         <CoursesActionDialog mode="edit" course={course} open={editDialogOpen} onOpenChange={setEditDialogOpen} />
       )}
 
       {/* Hộp thoại xóa - Chỉ hiển thị khi có quyền DELETE và đang mở */}
-      {DELETE && deleteDialogOpen && (
+      {hasPermission(PERMISSIONS.COURSE_DELETE) && deleteDialogOpen && (
         <CoursesDeleteDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} currentRow={course} />
       )}
     </>

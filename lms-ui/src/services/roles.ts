@@ -1,53 +1,52 @@
-import {ApiService} from "@/lib/api-service";
-import type {
-	CreateRoleRequest,
-	IRole,
-	RolesFilterParams,
-	UpdateRoleRequest,
-} from "@/types/role";
+import { ApiService } from "@/lib/api-service";
+import type { CreateRoleRequest, IRole, RolesFilterParams, UpdateRoleRequest } from "@/types/role";
 
 const ENDPOINTS = {
-	ROLES: "/roles",
-	ROLE: (id: string) => `/roles/${id}`,
-	ROLE_STATS: "/roles/stats",
+  ROLES: "/roles",
+  ROLE: (id: string) => `/roles/${id}`,
+  ROLE_STATS: "/roles/stats",
+  ROLES_PUBLIC: "/roles/available",
 } as const;
 
 export class RolesService {
-	// Get roles
-	static async getRoles(params?: RolesFilterParams): Promise<IRole[]> {
-		try {
-			return await ApiService.get<IRole[]>(
-				ENDPOINTS.ROLES,
-				params as Record<string, unknown>
-			);
-		} catch {
-			return [];
-		}
-	}
+  // Get roles
+  static async getRoles(params?: RolesFilterParams): Promise<IRole[]> {
+    try {
+      return await ApiService.get<IRole[]>(ENDPOINTS.ROLES, params as Record<string, unknown>);
+    } catch {
+      return [];
+    }
+  }
 
-	// Get role by ID
-	static async getRole(id: string): Promise<IRole> {
-		return ApiService.get<IRole>(ENDPOINTS.ROLE(id));
-	}
+  // Get public roles
+  static async getPublicRoles(): Promise<IRole[]> {
+    try {
+      return await ApiService.get<IRole[]>(ENDPOINTS.ROLES_PUBLIC);
+    } catch {
+      return [];
+    }
+  }
 
-	// Create role
-	static async createRole(roleData: CreateRoleRequest): Promise<IRole> {
-		return ApiService.post<IRole, CreateRoleRequest>(ENDPOINTS.ROLES, roleData);
-	}
+  // Get role by ID
+  static async getRole(id: string): Promise<IRole> {
+    return ApiService.get<IRole>(ENDPOINTS.ROLE(id));
+  }
 
-	// Update role
-	static async updateRole(roleData: UpdateRoleRequest): Promise<IRole> {
-		const {id, ...updateData} = roleData;
-		return ApiService.put<IRole, Omit<UpdateRoleRequest, "id">>(
-			ENDPOINTS.ROLE(id),
-			updateData
-		);
-	}
+  // Create role
+  static async createRole(roleData: CreateRoleRequest): Promise<IRole> {
+    return ApiService.post<IRole, CreateRoleRequest>(ENDPOINTS.ROLES, roleData);
+  }
 
-	// Delete role
-	static async deleteRole(id: string): Promise<void> {
-		return ApiService.delete<void>(ENDPOINTS.ROLE(id));
-	}
+  // Update role
+  static async updateRole(roleData: UpdateRoleRequest): Promise<IRole> {
+    const { id, ...updateData } = roleData;
+    return ApiService.put<IRole, Omit<UpdateRoleRequest, "id">>(ENDPOINTS.ROLE(id), updateData);
+  }
+
+  // Delete role
+  static async deleteRole(id: string): Promise<void> {
+    return ApiService.delete<void>(ENDPOINTS.ROLE(id));
+  }
 }
 
 export default RolesService;

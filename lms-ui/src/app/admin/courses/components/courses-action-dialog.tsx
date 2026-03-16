@@ -156,13 +156,13 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
 
     if (mode === "create") {
       await createCourseMutation.mutateAsync(courseData);
-      toast.success("Táº¡o khÃ³a há»c thÃ nh cÃ´ng!");
+      toast.success("Tạo khóa học thành công!");
     } else if (course) {
       await updateCourseMutation.mutateAsync({
         id: course._id,
         ...courseData,
       });
-      toast.success("Cáº­p nháº­t khÃ³a há»c thÃ nh cÃ´ng!");
+      toast.success("Cập nhật khóa học thành công!");
     }
 
     onOpenChange(false);
@@ -172,11 +172,9 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[900px] h-[90vh] flex flex-col p-0">
         <DialogHeader className="flex-shrink-0 px-6 pt-6 pb-2 border-b">
-          <DialogTitle>{mode === "create" ? "Táº¡o khÃ³a há»c má»›i" : "Chá»‰nh sá»­a khÃ³a há»c"}</DialogTitle>
+          <DialogTitle>{mode === "create" ? "Tạo khóa học mới" : "Chỉnh sửa khóa học"}</DialogTitle>
           <DialogDescription>
-            {mode === "create"
-              ? "ThÃªm khÃ³a há»c má»›i vÃ o ná»n táº£ng."
-              : "Cáº­p nháº­t thÃ´ng tin vÃ  cÃ i Ä‘áº·t khÃ³a há»c."}
+            {mode === "create" ? "Thêm khóa học mới vào nền tảng." : "Cập nhật thông tin và cài đặt khóa học."}
           </DialogDescription>
         </DialogHeader>
 
@@ -187,7 +185,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
               <div className="space-y-6">
                 {/* Phần thông tin cơ bản */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">ThÃ´ng Tin CÆ¡ Báº£n</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Thông tin cơ bản</h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                     <FormField
@@ -196,10 +194,10 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            TiÃªu Ä‘á» <span className="text-red-500">*</span>
+                            Tiêu đề <span className="text-red-500">*</span>
                           </FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="TiÃªu Ä‘á» khÃ³a há»c" />
+                            <Input {...field} placeholder="Tiêu đề khóa học" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -212,7 +210,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            ÄÆ°á»ng dáº«n <span className="text-red-500">*</span>
+                            Đường dẫn <span className="text-red-500">*</span>
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -234,17 +232,17 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Tráº¡ng thÃ¡i <span className="text-red-500">*</span>
+                            Trạng thái <span className="text-red-500">*</span>
                           </FormLabel>
                           <Select value={field.value} onValueChange={field.onChange}>
                             <FormControl>
                               <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Chá»n tráº¡ng thÃ¡i" />
+                                <SelectValue placeholder="Chọn trạng thái" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value={CourseStatus.DRAFT}>NhÃ¡p</SelectItem>
-                              <SelectItem value={CourseStatus.PUBLISHED}>ÄÃ£ xuáº¥t báº£n</SelectItem>
+                              <SelectItem value={CourseStatus.DRAFT}>Nháp</SelectItem>
+                              <SelectItem value={CourseStatus.PUBLISHED}>Đã xuất bản</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -256,7 +254,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                       name="introUrl"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>URL Video Giá»›i Thiá»‡u</FormLabel>
+                          <FormLabel>URL video giới thiệu</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="https://example.com/intro-video.mp4" />
                           </FormControl>
@@ -273,18 +271,18 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Danh má»¥c <span className="text-red-500">*</span>
+                            Danh mục <span className="text-red-500">*</span>
                           </FormLabel>
                           <Select value={field.value} onValueChange={field.onChange}>
                             <FormControl>
                               <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Chá»n danh má»¥c" />
+                                <SelectValue placeholder="Chọn danh mục" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               {categoriesLoading ? (
                                 <SelectItem value="__loading__" disabled>
-                                  Äang táº£i danh má»¥c...
+                                  Đang tải danh mục...
                                 </SelectItem>
                               ) : categories?.length ? (
                                 categories.map((category) => (
@@ -294,7 +292,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                 ))
                               ) : (
                                 <SelectItem value="__no_categories__" disabled>
-                                  KhÃ´ng cÃ³ danh má»¥c
+                                  Khôngh có danh mục
                                 </SelectItem>
                               )}
                             </SelectContent>
@@ -310,12 +308,12 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Cáº¥p Ä‘á»™ <span className="text-red-500">*</span>
+                            Cấp độ <span className="text-red-500">*</span>
                           </FormLabel>
                           <Select value={field.value} onValueChange={field.onChange}>
                             <FormControl>
                               <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Chá»n cáº¥p Ä‘á»™" />
+                                <SelectValue placeholder="Chọn cấp độ" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -339,15 +337,13 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          TÃ³m táº¯t{" "}
-                          <span className="text-gray-500 text-xs font-normal">
-                            (TÃ³m táº¯t ngáº¯n, tá»‘i Ä‘a 300 kÃ½ tá»±)
-                          </span>
+                          Tóm tắt{" "}
+                          <span className="text-gray-500 text-xs font-normal">(Tóm tắt ngắn, tối đa 300 ký tự)</span>
                         </FormLabel>
                         <FormControl>
                           <textarea
                             {...field}
-                            placeholder="TÃ³m táº¯t ngáº¯n vá» khÃ³a há»c..."
+                            placeholder="Tóm tắt ngắn về khóa học..."
                             className="w-full min-h-[80px] px-3 py-2 text-sm border border-gray-300 rounded-md    resize-y"
                             maxLength={300}
                           />
@@ -368,7 +364,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                     name="image"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>HÃ¬nh áº£nh</FormLabel>
+                        <FormLabel>Hình ảnh</FormLabel>
                         <FormControl>
                           <ImageUpload
                             value={field.value}
@@ -389,7 +385,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>MÃ´ táº£</FormLabel>
+                        <FormLabel>Mô tả</FormLabel>
                         <FormControl>
                           <div className="border rounded-md overflow-hidden">
                             <Toolbar />
@@ -409,7 +405,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                 {/* Phần học phí */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between border-b pb-2">
-                    <h3 className="text-lg font-semibold text-gray-900">Há»c PhÃ­</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Học Phí</h3>
                     <div className="flex items-center space-x-6">
                       <FormField
                         control={form.control}
@@ -419,7 +415,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                             <FormControl>
                               <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
-                            <FormLabel className="text-sm font-medium m-0">KhÃ³a há»c miá»…n phÃ­</FormLabel>
+                            <FormLabel className="text-sm font-medium m-0">Khóa học miễn phí</FormLabel>
                           </FormItem>
                         )}
                       />
@@ -444,9 +440,9 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                               customInput={Input}
                               thousandSeparator=","
                               decimalSeparator="."
-                              suffix=" â‚«"
+                              suffix=" đ"
                               allowNegative={false}
-                              placeholder="0 â‚«"
+                              placeholder="0 đ"
                               disabled={form.watch("isFree")}
                               onValueChange={(values) => onChange(values.floatValue)}
                             />
@@ -461,7 +457,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                       name="oldPrice"
                       render={({ field: { onChange, onBlur, name, value, ref } }) => (
                         <FormItem>
-                          <FormLabel>GiÃ¡ Gá»‘c </FormLabel>
+                          <FormLabel>Giá gốc </FormLabel>
                           <FormControl>
                             <NumericFormat
                               name={name}
@@ -471,9 +467,9 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                               customInput={Input}
                               thousandSeparator=","
                               decimalSeparator="."
-                              suffix=" â‚«"
+                              suffix=" đ"
                               allowNegative={false}
-                              placeholder="0 â‚«"
+                              placeholder="0 đ"
                               disabled={form.watch("isFree")}
                               onValueChange={(values) => onChange(values.floatValue)}
                             />
@@ -486,13 +482,13 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                 </div>
                 {/* Phần chi tiết khóa học */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Chi tiáº¿t khÃ³a há»c</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Chi tiết khóa học</h3>
                   {/* Yêu cầu và lợi ích */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Yêu cầu */}
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label className="text-sm font-medium text-gray-700">YÃªu cáº§u</Label>
+                        <Label className="text-sm font-medium text-gray-700">Yêu cầu</Label>
                         <Button
                           type="button"
                           variant="outline"
@@ -517,7 +513,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                   draft.requirements[index] = e.target.value;
                                 })
                               }
-                              placeholder={`YÃªu cáº§u ${index + 1}`}
+                              placeholder={`Yêu cầu ${index + 1}`}
                               className="text-sm"
                             />
                             <Button
@@ -531,12 +527,12 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                 })
                               }
                             >
-                              Ã—
+                              ×
                             </Button>
                           </div>
                         ))}
                         {courseInfo.requirements.length === 0 && (
-                          <p className="text-sm text-gray-500 italic text-center py-4">ChÆ°a cÃ³ yÃªu cáº§u nÃ o</p>
+                          <p className="text-sm text-gray-500 italic text-center py-4">Chưa có yêu cầu nào</p>
                         )}
                       </div>
                     </div>
@@ -544,7 +540,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                     {/* Lợi ích */}
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label className="text-sm font-medium text-gray-700">Lá»£i Ã­ch</Label>
+                        <Label className="text-sm font-medium text-gray-700">Lợi ích</Label>
                         <Button
                           type="button"
                           variant="outline"
@@ -569,7 +565,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                   draft.benefits[index] = e.target.value;
                                 })
                               }
-                              placeholder={`Lá»£i Ã­ch ${index + 1}`}
+                              placeholder={`Lợi ích ${index + 1}`}
                               className="flex-1 text-sm"
                             />
                             <Button
@@ -583,12 +579,12 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                 })
                               }
                             >
-                              Ã—
+                              ×
                             </Button>
                           </div>
                         ))}
                         {courseInfo.benefits.length === 0 && (
-                          <p className="text-sm text-gray-500 italic text-center py-4">ChÆ°a cÃ³ lá»£i Ã­ch nÃ o</p>
+                          <p className="text-sm text-gray-500 italic text-center py-4">Chưa có lợi ích nào</p>
                         )}
                       </div>
                     </div>
@@ -599,7 +595,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                     {/* Kỹ thuật */}
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label className="text-sm font-medium text-gray-700">Ká»¹ thuáº­t</Label>
+                        <Label className="text-sm font-medium text-gray-700">Kỹ thuật</Label>
                         <Button
                           type="button"
                           variant="outline"
@@ -624,7 +620,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                   draft.techniques[index] = e.target.value;
                                 })
                               }
-                              placeholder={`Ká»¹ thuáº­t ${index + 1}`}
+                              placeholder={`Kỹ thuật ${index + 1}`}
                               className="flex-1 text-sm"
                             />
                             <Button
@@ -638,12 +634,12 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                 })
                               }
                             >
-                              Ã—
+                              ×
                             </Button>
                           </div>
                         ))}
                         {courseInfo.techniques.length === 0 && (
-                          <p className="text-sm text-gray-500 italic text-center py-4">ChÆ°a cÃ³ ká»¹ thuáº­t nÃ o</p>
+                          <p className="text-sm text-gray-500 italic text-center py-4">Chưa có kỹ thuật nào</p>
                         )}
                       </div>
                     </div>
@@ -651,7 +647,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                     {/* Tài liệu */}
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Label className="text-sm font-medium text-gray-700">TÃ i liá»‡u</Label>
+                        <Label className="text-sm font-medium text-gray-700">Tài liệu</Label>
                         <Button
                           type="button"
                           variant="outline"
@@ -676,7 +672,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                   draft.documents[index] = e.target.value;
                                 })
                               }
-                              placeholder={`TÃ i liá»‡u ${index + 1}`}
+                              placeholder={`Tài liệu ${index + 1}`}
                               className="flex-1 text-sm"
                             />
                             <Button
@@ -690,12 +686,12 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                 })
                               }
                             >
-                              Ã—
+                              ×
                             </Button>
                           </div>
                         ))}
                         {courseInfo.documents.length === 0 && (
-                          <p className="text-sm text-gray-500 italic text-center py-4">ChÆ°a cÃ³ tÃ i liá»‡u nÃ o</p>
+                          <p className="text-sm text-gray-500 italic text-center py-4">Chưa có tài liệu nào</p>
                         )}
                       </div>
                     </div>
@@ -717,7 +713,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                       }
                     >
                       <MdAdd className="h-4 w-4 mr-2" />
-                      ThÃªm Q&A
+                      Thêm Q&A
                     </Button>
                   </div>
 
@@ -725,7 +721,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                     {courseInfo.qa.map((qaItem, index) => (
                       <div key={index} className="p-4 border rounded-lg bg-gray-50/50 space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm font-medium text-gray-600">Há»i & ÄÃ¡p #{index + 1}</span>
+                          <span className="text-sm font-medium text-gray-600">Hỏi & Đáp #{index + 1}</span>
                           <Button
                             type="button"
                             variant="outline"
@@ -737,12 +733,12 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                               })
                             }
                           >
-                            Ã—
+                            ×
                           </Button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div className="space-y-1">
-                            <Label className="text-xs text-gray-500">CÃ¢u há»i</Label>
+                            <Label className="text-xs text-gray-500">Câu hỏi</Label>
                             <Input
                               value={qaItem.question}
                               onChange={(e) =>
@@ -750,12 +746,12 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                   draft.qa[index].question = e.target.value;
                                 })
                               }
-                              placeholder="Nháº­p cÃ¢u há»i"
+                              placeholder="Nhập câu hỏi"
                               className="text-sm"
                             />
                           </div>
                           <div className="space-y-1">
-                            <Label className="text-xs text-gray-500">CÃ¢u tráº£ lá»i</Label>
+                            <Label className="text-xs text-gray-500">Câu trả lời</Label>
                             <Input
                               value={qaItem.answer}
                               onChange={(e) =>
@@ -763,7 +759,7 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                                   draft.qa[index].answer = e.target.value;
                                 })
                               }
-                              placeholder="Nháº­p cÃ¢u tráº£ lá»i"
+                              placeholder="Nhập câu trả lời"
                               className="text-sm"
                             />
                           </div>
@@ -772,8 +768,8 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
                     ))}
                     {courseInfo.qa.length === 0 && (
                       <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
-                        <p className="text-sm text-gray-500">ChÆ°a cÃ³ cÃ¢u há»i nÃ o</p>
-                        <p className="text-xs text-gray-400 mt-1">Nháº¥n &ldquo;ThÃªm Q&A&rdquo; Ä‘á»ƒ báº¯t Ä‘áº§u</p>
+                        <p className="text-sm text-gray-500">Chưa có câu hỏi nào</p>
+                        <p className="text-xs text-gray-400 mt-1">Nhấn &ldquo;Thêm Q&A&rdquo; để bắt đầu</p>
                       </div>
                     )}
                   </div>
@@ -784,17 +780,17 @@ const CoursesActionDialog = ({ mode = "create", course, open, onOpenChange }: Co
             {/* Chân trang cố định */}
             <DialogFooter className="flex-shrink-0 border-t px-6 py-4">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Há»§y
+                Hủy
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting || createCourseMutation.isPending || updateCourseMutation.isPending}
               >
                 {isSubmitting || createCourseMutation.isPending || updateCourseMutation.isPending
-                  ? "Äang lÆ°u..."
+                  ? "Đang lưu..."
                   : mode === "create"
-                    ? "Táº¡o khÃ³a há»c"
-                    : "Cáº­p nháº­t"}
+                    ? "Tạo khóa học"
+                    : "Cập nhật"}
               </Button>
             </DialogFooter>
           </form>

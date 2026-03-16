@@ -5,7 +5,7 @@ import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
 import { ROUTE_CONFIG } from "@/configs/routes";
 import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/lib/utils";
-import { useIsAuthenticated } from "@/stores/auth-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { formatPrice } from "@/utils/format";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { ShoppingCart } from "lucide-react";
@@ -43,7 +43,7 @@ function CustomTooltipContent({
 }
 
 export default function CartTooltip() {
-  const isAuthenticated = useIsAuthenticated();
+  const isAuthenticated = useAuthStore((state) => !!state.user);
   const { data: cart, isLoading: cartLoading } = useCart({
     enabled: isAuthenticated,
   });

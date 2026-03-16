@@ -17,6 +17,12 @@ export const loginSchema = z.object({
   })
 })
 
+export const refreshTokenSchema = z.object({
+  body: z.object({
+    refreshToken: z.string().min(1, 'Refresh token is required').optional()
+  })
+})
+
 export const updateProfileSchema = z.object({
   body: z.object({
     username: usernameSchema.optional(),
@@ -71,6 +77,7 @@ export const facebookLoginSchema = z.object({
 // Auth response types (inferred from schemas)
 export type RegisterRequest = z.infer<typeof registerSchema>
 export type LoginRequest = z.infer<typeof loginSchema>
+export type RefreshTokenRequest = z.infer<typeof refreshTokenSchema>
 export type UpdateProfileRequest = z.infer<typeof updateProfileSchema>
 export type ChangePasswordRequest = z.infer<typeof changePasswordSchema>
 export type ForgotPasswordRequest = z.infer<typeof forgotPasswordSchema>

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useRoles } from "@/hooks/use-roles";
+import { usePublicRoles } from "@/hooks/use-roles";
 import { useUpdateUser } from "@/hooks/use-users";
 import { IRole } from "@/types/role";
 import { IUser, UpdateUserRequest } from "@/types/user";
@@ -43,7 +43,7 @@ interface UserActionDialogProps {
 const UsersActionDialog = ({ user, open, onOpenChange }: UserActionDialogProps) => {
   // Hook API
   const updateUserMutation = useUpdateUser();
-  const { data: rolesResponse } = useRoles();
+  const { data: rolesResponse } = usePublicRoles();
   const roles = rolesResponse || [];
   const isLoading = updateUserMutation.isPending;
 

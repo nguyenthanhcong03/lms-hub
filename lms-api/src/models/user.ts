@@ -6,6 +6,8 @@ export interface IUser extends Document {
   username: string
   email: string
   password: string
+  refreshTokenHash?: string | null
+  refreshTokenExpiresAt?: Date | null
   status: UserStatus
   avatar?: string
   courses: mongoose.Types.ObjectId[]
@@ -32,6 +34,16 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: false // Make password optional for Google users
+    },
+    refreshTokenHash: {
+      type: String,
+      required: false,
+      default: null
+    },
+    refreshTokenExpiresAt: {
+      type: Date,
+      required: false,
+      default: null
     },
     status: {
       type: String,

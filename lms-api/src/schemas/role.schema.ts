@@ -16,10 +16,8 @@ export const createRoleSchema = z.object({
     description: z
       .string()
       .min(5, 'Description must be at least 5 characters')
-      .max(200, 'Description must not exceed 200 characters')
-      .optional(),
-    permissions: z.array(z.enum(ALL_PERMISSIONS as [string, ...string[]])).optional(),
-    inherits: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid role ID format')).optional()
+      .max(200, 'Description must not exceed 200 characters'),
+    permissions: z.array(z.enum(ALL_PERMISSIONS as [string, ...string[]])).optional()
   })
 })
 
@@ -40,8 +38,7 @@ export const updateRoleSchema = z.object({
       .min(5, 'Description must be at least 5 characters')
       .max(200, 'Description must not exceed 200 characters')
       .optional(),
-    permissions: z.array(z.enum(ALL_PERMISSIONS as [string, ...string[]])).optional(),
-    inherits: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid role ID format')).optional()
+    permissions: z.array(z.enum(ALL_PERMISSIONS as [string, ...string[]])).optional()
   })
 })
 
@@ -49,15 +46,6 @@ export const updateRoleSchema = z.object({
 export const getRoleByIdSchema = z.object({
   params: z.object({
     roleId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid role ID format')
-  }),
-  query: z.object({
-    includeInheritance: z
-      .string()
-      .optional()
-      .refine(
-        (val) => val === undefined || val === 'true' || val === 'false',
-        'includeInheritance must be true or false'
-      )
   })
 })
 

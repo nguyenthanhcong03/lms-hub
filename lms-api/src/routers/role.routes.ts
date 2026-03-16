@@ -17,6 +17,8 @@ import {
 
 const router = Router()
 
+router.get('/available', asyncHandler(RoleController.getPublicRoles))
+
 // Apply auth and permission loading middleware to all routes
 router.use(authMiddleware)
 router.use(loadUserPermissions)
