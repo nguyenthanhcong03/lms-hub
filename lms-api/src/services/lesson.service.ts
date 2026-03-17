@@ -102,7 +102,7 @@ export class LessonService {
   static async createLesson(lessonData: CreateLessonInput): Promise<ILesson> {
     // Validate that resource is provided
     if (!lessonData.resource) {
-      throw new ValidationError('resource is required', ErrorCodes.REQUIRED_FIELD_MISSING)
+      throw new ValidationError('resource là bắt buộc', ErrorCodes.REQUIRED_FIELD_MISSING)
     }
     const session = await mongoose.startSession()
 
@@ -164,7 +164,7 @@ export class LessonService {
             break
           }
           default:
-            throw new ValidationError('Invalid content type', ErrorCodes.INVALID_INPUT_FORMAT)
+            throw new ValidationError('Loại nội dung không hợp lệ', ErrorCodes.INVALID_INPUT_FORMAT)
         }
 
         const lastLesson = await Lesson.findOne({ chapterId: lessonData.chapterId })
@@ -203,7 +203,7 @@ export class LessonService {
       return result
     } catch (error) {
       throw new DatabaseError(
-        error instanceof Error ? error.message : 'Failed to create lesson',
+        error instanceof Error ? error.message : 'Tạo bài học thất bại',
         ErrorCodes.DB_OPERATION_FAILED
       )
     } finally {
@@ -282,7 +282,7 @@ export class LessonService {
         break
       }
       default:
-        throw new ValidationError('Invalid content type', ErrorCodes.INVALID_INPUT_FORMAT)
+        throw new ValidationError('Loại nội dung không hợp lệ', ErrorCodes.INVALID_INPUT_FORMAT)
     }
 
     return {
@@ -341,7 +341,7 @@ export class LessonService {
 
           const updatedLesson = await Lesson.findByIdAndUpdate(lessonId, lessonUpdateData, { new: true, session })
           if (!updatedLesson) {
-            throw new DatabaseError('Failed to update lesson', ErrorCodes.DB_OPERATION_FAILED)
+            throw new DatabaseError('Cập nhật bài học thất bại', ErrorCodes.DB_OPERATION_FAILED)
           }
 
           return updatedLesson
@@ -350,7 +350,7 @@ export class LessonService {
         return result!
       } catch (error) {
         throw new DatabaseError(
-          error instanceof Error ? error.message : 'Failed to update lesson',
+          error instanceof Error ? error.message : 'Cập nhật bài học thất bại',
           ErrorCodes.DB_OPERATION_FAILED
         )
       } finally {
@@ -358,7 +358,7 @@ export class LessonService {
       }
     }
 
-    throw new ValidationError('resource is required for lesson updates', ErrorCodes.REQUIRED_FIELD_MISSING)
+    throw new ValidationError('resource là bắt buộc cho cập nhật bài học', ErrorCodes.REQUIRED_FIELD_MISSING)
   }
 
   /**
@@ -391,7 +391,7 @@ export class LessonService {
       })
     } catch (error) {
       throw new DatabaseError(
-        error instanceof Error ? error.message : 'Failed to delete lesson',
+        error instanceof Error ? error.message : 'Xóa bài học thất bại',
         ErrorCodes.DB_OPERATION_FAILED
       )
     } finally {
@@ -499,7 +499,7 @@ export class LessonService {
         return selectQuery ? await query.select(selectQuery).lean() : await query.lean()
       }
       default:
-        throw new ValidationError('Invalid content type', ErrorCodes.INVALID_INPUT_FORMAT)
+        throw new ValidationError('Loại nội dung không hợp lệ', ErrorCodes.INVALID_INPUT_FORMAT)
     }
   }
 
@@ -550,7 +550,7 @@ export class LessonService {
         return updatedQuiz
       }
       default:
-        throw new ValidationError('Invalid content type', ErrorCodes.INVALID_INPUT_FORMAT)
+        throw new ValidationError('Loại nội dung không hợp lệ', ErrorCodes.INVALID_INPUT_FORMAT)
     }
   }
 
@@ -587,7 +587,7 @@ export class LessonService {
         break
       }
       default:
-        throw new ValidationError('Invalid content type', ErrorCodes.INVALID_INPUT_FORMAT)
+        throw new ValidationError('Loại nội dung không hợp lệ', ErrorCodes.INVALID_INPUT_FORMAT)
     }
   }
 }

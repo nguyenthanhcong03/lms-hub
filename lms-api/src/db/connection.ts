@@ -15,7 +15,7 @@ class DatabaseConnection {
 
   public async connect(): Promise<void> {
     if (this.isConnected) {
-      console.log('Already connected to MongoDB')
+      console.log('Đã kết nối MongoDB trước đó')
       return
     }
 
@@ -25,25 +25,25 @@ class DatabaseConnection {
       await mongoose.connect(mongoUri)
 
       this.isConnected = true
-      console.log('Successfully connected to MongoDB')
+      console.log('Kết nối MongoDB thành công')
 
-      // Handle connection events
+      // Xử lý sự kiện kết nối
       mongoose.connection.on('error', (error) => {
-        console.error('MongoDB connection error:', error)
+        console.error('Lỗi kết nối MongoDB:', error)
         this.isConnected = false
       })
 
       mongoose.connection.on('disconnected', () => {
-        console.log('MongoDB disconnected')
+        console.log('MongoDB đã ngắt kết nối')
         this.isConnected = false
       })
 
       mongoose.connection.on('reconnected', () => {
-        console.log('MongoDB reconnected')
+        console.log('MongoDB đã kết nối lại')
         this.isConnected = true
       })
     } catch (error) {
-      console.error('Failed to connect to MongoDB:', error)
+      console.error('Kết nối MongoDB thất bại:', error)
       this.isConnected = false
       throw error
     }
@@ -57,9 +57,9 @@ class DatabaseConnection {
     try {
       await mongoose.disconnect()
       this.isConnected = false
-      console.log('Disconnected from MongoDB')
+      console.log('Đã ngắt kết nối MongoDB')
     } catch (error) {
-      console.error('Error disconnecting from MongoDB:', error)
+      console.error('Lỗi khi ngắt kết nối MongoDB:', error)
       throw error
     }
   }

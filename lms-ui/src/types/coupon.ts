@@ -97,7 +97,7 @@ export interface CouponsListParams {
 	[key: string]: unknown;
 }
 
-// Pagination interface for coupon lists
+// Interface phân trang cho coupon lists
 export interface CouponPagination {
 	page: number;
 	limit: number;

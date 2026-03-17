@@ -151,7 +151,7 @@ export class AuthService {
       await user.save()
 
       return {
-        message: 'Email verified successfully. You can now log in to your account.'
+        message: 'Xác minh email thành công. You can now log in to your account.'
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -163,7 +163,7 @@ export class AuthService {
         }
         if (error.name === 'JsonWebTokenError') {
           throw new ValidationError(
-            'Invalid verification token. Please check your verification link.',
+            'Token xác thực không hợp lệ. Vui lòng kiểm tra lại liên kết xác thực.',
             ErrorCodes.TOKEN_INVALID
           )
         }
@@ -181,7 +181,7 @@ export class AuthService {
     const user = await User.findOne({ email }).populate('roles')
 
     if (!user) {
-      throw new AuthenticationError('Invalid email or password', ErrorCodes.INVALID_CREDENTIALS)
+      throw new AuthenticationError('Email hoặc mật khẩu không hợp lệ', ErrorCodes.INVALID_CREDENTIALS)
     }
 
     // Check if user is active
@@ -193,7 +193,7 @@ export class AuthService {
     const isPasswordValid = await comparePassword(password, user.password)
 
     if (!isPasswordValid) {
-      throw new AuthenticationError('Invalid email or password', ErrorCodes.INVALID_CREDENTIALS)
+      throw new AuthenticationError('Email hoặc mật khẩu không hợp lệ', ErrorCodes.INVALID_CREDENTIALS)
     }
 
     return await this.issueAuthTokens(user._id.toString())
@@ -209,13 +209,13 @@ export class AuthService {
       }
 
       if (decoded.type !== 'refresh_token') {
-        throw new AuthenticationError('Invalid refresh token', ErrorCodes.TOKEN_INVALID)
+        throw new AuthenticationError('Refresh token không hợp lệ', ErrorCodes.TOKEN_INVALID)
       }
 
       const user = await User.findById(decoded.userId).select('status refreshTokenHash refreshTokenExpiresAt')
 
       if (!user) {
-        throw new AuthenticationError('Invalid refresh token', ErrorCodes.TOKEN_INVALID)
+        throw new AuthenticationError('Refresh token không hợp lệ', ErrorCodes.TOKEN_INVALID)
       }
 
       if (user.status === UserStatus.INACTIVE) {
@@ -241,7 +241,7 @@ export class AuthService {
       const isRefreshTokenValid = compareTokenHash(refreshToken, user.refreshTokenHash)
 
       if (!isRefreshTokenValid) {
-        throw new AuthenticationError('Invalid refresh token', ErrorCodes.TOKEN_INVALID)
+        throw new AuthenticationError('Refresh token không hợp lệ', ErrorCodes.TOKEN_INVALID)
       }
 
       return await this.issueAuthTokens(user._id.toString())
@@ -255,7 +255,7 @@ export class AuthService {
           throw new AuthenticationError('Refresh token has expired', ErrorCodes.TOKEN_EXPIRED)
         }
         if (error.name === 'JsonWebTokenError') {
-          throw new AuthenticationError('Invalid refresh token', ErrorCodes.TOKEN_INVALID)
+          throw new AuthenticationError('Refresh token không hợp lệ', ErrorCodes.TOKEN_INVALID)
         }
       }
 
@@ -269,7 +269,7 @@ export class AuthService {
       refreshTokenExpiresAt: null
     })
 
-    return { message: 'Logout successful' }
+    return { message: 'Đăng xuất thành công' }
   }
 
   static async getAuthMe(userId: string) {
@@ -331,7 +331,7 @@ export class AuthService {
       refreshTokenExpiresAt: null
     })
 
-    return { message: 'Password changed successfully' }
+    return { message: 'Đổi mật khẩu thành công' }
   }
 
   static async forgotPassword(data: ForgotPasswordData) {
@@ -380,7 +380,7 @@ export class AuthService {
 
       // Ensure this is a password reset token
       if (decoded.type !== 'password_reset') {
-        throw new ValidationError('Invalid password reset token', ErrorCodes.TOKEN_INVALID)
+        throw new ValidationError('Token đặt lại mật khẩu không hợp lệ', ErrorCodes.TOKEN_INVALID)
       }
 
       // Find the user
@@ -399,7 +399,7 @@ export class AuthService {
       })
 
       return {
-        message: 'Password has been reset successfully. You can now log in with your new password.'
+        message: 'Mật khẩu đã được đặt lại thành công. Bạn có thể đăng nhập bằng mật khẩu mới của mình.'
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -411,7 +411,7 @@ export class AuthService {
         }
         if (error.name === 'JsonWebTokenError') {
           throw new ValidationError(
-            'Invalid password reset token. Please check your reset link.',
+            'Token đặt lại mật khẩu không hợp lệ. Please check your reset link.',
             ErrorCodes.TOKEN_INVALID
           )
         }

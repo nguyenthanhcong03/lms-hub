@@ -1,117 +1,117 @@
-import {IRole} from "./role";
+import { IRole } from './role'
 
-// Base user interface representing the user entity
+// Giao diện cơ sở biểu diễn thực thể người dùng
 export interface IUser {
-	_id: string;
-	username: string;
-	email: string;
-	password: string; // Hashed password (not exposed in API responses)
-	status: "active" | "inactive" | "banned";
-	avatar?: string;
-	courses: string[]; // Array of course IDs
-	userType: "facebook" | "google" | "default";
-	roles: IRole[]; // Array of role objects
-	createdAt: string;
-	updatedAt: string;
+  _id: string
+  username: string
+  email: string
+  password: string // Mật khẩu đã băm (không trả về trong API)
+  status: 'active' | 'inactive' | 'banned'
+  avatar?: string
+  courses: string[] // Mảng ID khóa học
+  userType: 'facebook' | 'google' | 'default'
+  roles: IRole[] // Mảng đối tượng vai trò
+  createdAt: string
+  updatedAt: string
 }
 
-// User status enum matching your schema
-export type UserStatus = "active" | "inactive" | "banned";
+// Enum trạng thái người dùng khớp với schema
+export type UserStatus = 'active' | 'inactive' | 'banned'
 
-// User type enum matching your schema
-export type UserType = "facebook" | "google" | "default";
+// Enum loại người dùng khớp với schema
+export type UserType = 'facebook' | 'google' | 'default'
 
-// Form data interface for creating/updating users
+// Interface dữ liệu form để tạo/cập nhật users
 export interface UserFormData {
-	username: string;
-	email: string;
-	status: UserStatus;
-	avatar?: string;
-	courses: string[];
-	userType: UserType;
-	roles: string[];
-	password?: string; // Only for creation
+  username: string
+  email: string
+  status: UserStatus
+  avatar?: string
+  courses: string[]
+  userType: UserType
+  roles: string[]
+  password?: string // Chỉ dùng khi tạo mới
 }
 
-// Statistics interface for user metrics
+// Interface thống kê cho user metrics
 export interface UserStats {
-	totalUsers: number;
-	activeUsers: number;
-	inactiveUsers: number;
-	bannedUsers: number;
-	facebookUsers: number;
-	googleUsers: number;
-	defaultUsers: number;
+  totalUsers: number
+  activeUsers: number
+  inactiveUsers: number
+  bannedUsers: number
+  facebookUsers: number
+  googleUsers: number
+  defaultUsers: number
 }
 
-// User with additional computed properties
+// Người dùng với các thuộc tính tính toán bổ sung
 export interface IUserWithStats extends IUser {
-	coursesCount?: number; // Number of courses the user is enrolled in
-	completedCoursesCount?: number; // Number of completed courses
+  coursesCount?: number // Số khóa học người dùng đã ghi danh
+  completedCoursesCount?: number // Số khóa học đã hoàn thành
 }
 
-// Pagination interface for user lists
+// Interface phân trang cho user lists
 export interface UserPagination {
-	page: number;
-	limit: number;
-	total: number;
-	totalPages: number;
-	hasNextPage?: boolean;
-	hasPrevPage?: boolean;
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+  hasNextPage?: boolean
+  hasPrevPage?: boolean
 }
 
-// Users list response
+// Phản hồi danh sách người dùng
 export interface UsersListResponse {
-	users: IUser[];
-	pagination: UserPagination;
+  users: IUser[]
+  pagination: UserPagination
 }
 
-// Filter and search parameters for users
+// Tham số lọc và tìm kiếm cho người dùng
 export interface UsersFilterParams {
-	page?: number;
-	limit?: number;
-	search?: string;
-	status?: string[];
-	userType?: string[];
-	role?: string;
-	sortBy?: string;
-	sortOrder?: "asc" | "desc";
-	[key: string]: unknown;
+  page?: number
+  limit?: number
+  search?: string
+  status?: string[]
+  userType?: string[]
+  role?: string
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
+  [key: string]: unknown
 }
 
-// Request interfaces for API calls
+// Các interface request cho API
 export interface CreateUserRequest {
-	username: string;
-	email: string;
-	password: string;
-	status?: UserStatus;
-	avatar?: string;
-	courses?: string[];
-	userType?: UserType;
-	roles?: string[];
+  username: string
+  email: string
+  password: string
+  status?: UserStatus
+  avatar?: string
+  courses?: string[]
+  userType?: UserType
+  roles?: string[]
 }
 
 export interface UpdateUserRequest {
-	id: string;
-	username?: string;
-	email?: string;
-	status?: UserStatus;
-	avatar?: string;
-	courses?: string[];
-	userType?: UserType;
-	roles?: string[];
+  id: string
+  username?: string
+  email?: string
+  status?: UserStatus
+  avatar?: string
+  courses?: string[]
+  userType?: UserType
+  roles?: string[]
 }
 export interface UpdateUserStatusRequest {
-	id: string;
-	status: UserStatus;
+  id: string
+  status: UserStatus
 }
 
 export interface UpdateUserRolesRequest {
-	id: string;
-	roles: string[];
+  id: string
+  roles: string[]
 }
 
 export interface UpdateUserCoursesRequest {
-	id: string;
-	courses: string[];
+  id: string
+  courses: string[]
 }

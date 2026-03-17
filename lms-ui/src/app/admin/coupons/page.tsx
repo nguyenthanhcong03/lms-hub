@@ -29,11 +29,11 @@ const CouponsPage = () => {
   return (
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
-        <AdminHeading title='Coupons' description='Manage discount coupons and promotional codes' />
+        <AdminHeading title='Mã giảm giá' description='Quản lý mã giảm giá và mã khuyến mãi' />
         {hasPermission(PERMISSIONS.COUPON_CREATE) && (
           <Button onClick={handleCreateClick}>
             <MdAdd className='mr-2 h-4 w-4' />
-            Add Coupon
+            Thêm mã giảm giá
           </Button>
         )}
       </div>

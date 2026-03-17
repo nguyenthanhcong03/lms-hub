@@ -1,185 +1,152 @@
-"use client";
+'use client'
 
-import {Badge} from "@/components/ui/badge";
-import {Button} from "@/components/ui/button";
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import {useUpdateOrderStatus} from "@/hooks/use-orders";
-import {IOrder} from "@/types/order";
-import {Loader2} from "lucide-react";
-import {useState} from "react";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useUpdateOrderStatus } from '@/hooks/use-orders'
+import { IOrder } from '@/types/order'
+import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
 
-// Status configuration
+// Cấu hình trạng thái
 const STATUS_CONFIG = {
-	pending: {
-		label: "Chờ thanh toán",
-		className: "bg-amber-50 text-amber-700 border-amber-200",
-		variant: "secondary" as const,
-	},
-	completed: {
-		label: "Hoàn thành",
-		className: "bg-emerald-50 text-emerald-700 border-emerald-200",
-		variant: "default" as const,
-	},
-	cancelled: {
-		label: "Đã hủy",
-		className: "bg-red-50 text-red-700 border-red-200",
-		variant: "destructive" as const,
-	},
-};
-
-interface OrderStatusDialogProps {
-	order: IOrder;
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
+  pending: {
+    label: 'Chờ thanh toán',
+    className: 'bg-amber-50 text-amber-700 border-amber-200',
+    variant: 'secondary' as const
+  },
+  completed: {
+    label: 'Hoàn thành',
+    className: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    variant: 'default' as const
+  },
+  cancelled: {
+    label: 'Đã hủy',
+    className: 'bg-red-50 text-red-700 border-red-200',
+    variant: 'destructive' as const
+  }
 }
 
-const OrderStatusDialog = ({
-	order,
-	open,
-	onOpenChange,
-}: OrderStatusDialogProps) => {
-	const [selectedStatus, setSelectedStatus] = useState<string>(order.status);
+interface OrderStatusDialogProps {
+  order: IOrder
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
 
-	// Use the mutation hook for updating order status
-	const {mutate: updateOrderStatus, isPending} = useUpdateOrderStatus();
+const OrderStatusDialog = ({ order, open, onOpenChange }: OrderStatusDialogProps) => {
+  const [selectedStatus, setSelectedStatus] = useState<string>(order.status)
 
-	const currentStatusConfig = STATUS_CONFIG[order.status];
-	const newStatusConfig =
-		STATUS_CONFIG[selectedStatus as keyof typeof STATUS_CONFIG];
+  // Dùng hook mutation để cập nhật trạng thái đơn hàng
+  const { mutate: updateOrderStatus, isPending } = useUpdateOrderStatus()
 
-	const handleUpdateStatus = () => {
-		if (selectedStatus === order.status) {
-			onOpenChange(false);
-			return;
-		}
+  const currentStatusConfig = STATUS_CONFIG[order.status]
+  const newStatusConfig = STATUS_CONFIG[selectedStatus as keyof typeof STATUS_CONFIG]
 
-		updateOrderStatus(
-			{
-				orderId: order._id,
-				status: selectedStatus,
-			},
-			{
-				onSuccess: () => {
-					onOpenChange(false);
-				},
-			}
-		);
-	};
+  const handleUpdateStatus = () => {
+    if (selectedStatus === order.status) {
+      onOpenChange(false)
+      return
+    }
 
-	const handleClose = () => {
-		if (!isPending) {
-			setSelectedStatus(order.status); // Reset to original status
-			onOpenChange(false);
-		}
-	};
+    updateOrderStatus(
+      {
+        orderId: order._id,
+        status: selectedStatus
+      },
+      {
+        onSuccess: () => {
+          onOpenChange(false)
+        }
+      }
+    )
+  }
 
-	return (
-		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent className="sm:max-w-md">
-				<DialogHeader>
-					<DialogTitle>Update Order Status</DialogTitle>
-					<DialogDescription>
-						Change the status for order #{order.code}
-					</DialogDescription>
-				</DialogHeader>
+  const handleClose = () => {
+    if (!isPending) {
+      setSelectedStatus(order.status) // Đặt lại về trạng thái ban đầu
+      onOpenChange(false)
+    }
+  }
 
-				<div className="space-y-4">
-					{/* Current Status */}
-					<div>
-						<label className="text-sm font-medium text-muted-foreground">
-							Current Status
-						</label>
-						<div className="mt-1">
-							<Badge className={currentStatusConfig.className}>
-								{currentStatusConfig.label}
-							</Badge>
-						</div>
-					</div>
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className='sm:max-w-md'>
+        <DialogHeader>
+          <DialogTitle>Cập nhật trạng thái đơn hàng</DialogTitle>
+          <DialogDescription>Thay đổi trạng thái cho đơn hàng #{order.code}</DialogDescription>
+        </DialogHeader>
 
-					{/* New Status */}
-					<div>
-						<label className="text-sm font-medium text-muted-foreground">
-							New Status
-						</label>
-						<Select
-							value={selectedStatus}
-							onValueChange={setSelectedStatus}
-							disabled={isPending}
-						>
-							<SelectTrigger className="mt-1 w-full">
-								<SelectValue placeholder="Select new status" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="pending">
-									<div className="flex items-center gap-2">
-										<span>⏳</span>
-										<span>Chờ thanh toán</span>
-									</div>
-								</SelectItem>
-								<SelectItem value="completed">
-									<div className="flex items-center gap-2">
-										<span>✅</span>
-										<span>Hoàn thành</span>
-									</div>
-								</SelectItem>
-								<SelectItem value="cancelled">
-									<div className="flex items-center gap-2">
-										<span>❌</span>
-										<span>Đã hủy</span>
-									</div>
-								</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
+        <div className='space-y-4'>
+          {/* Trạng thái hiện tại */}
+          <div>
+            <label className='text-muted-foreground text-sm font-medium'>Trạng thái hiện tại</label>
+            <div className='mt-1'>
+              <Badge className={currentStatusConfig.className}>{currentStatusConfig.label}</Badge>
+            </div>
+          </div>
 
-					{/* Preview */}
-					{selectedStatus !== order.status && (
-						<div className="p-3 bg-muted rounded-lg">
-							<p className="text-sm text-muted-foreground mb-2">Preview:</p>
-							<div className="flex items-center gap-2">
-								<span className="text-sm">Status will change to:</span>
-								<Badge className={newStatusConfig.className}>
-									{newStatusConfig.label}
-								</Badge>
-							</div>
-						</div>
-					)}
-				</div>
+          {/* Trạng thái mới */}
+          <div>
+            <label className='text-muted-foreground text-sm font-medium'>Trạng thái mới</label>
+            <Select value={selectedStatus} onValueChange={setSelectedStatus} disabled={isPending}>
+              <SelectTrigger className='mt-1 w-full'>
+                <SelectValue placeholder='Chọn trạng thái mới' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='pending'>
+                  <div className='flex items-center gap-2'>
+                    <span>⏳</span>
+                    <span>Chờ thanh toán</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value='completed'>
+                  <div className='flex items-center gap-2'>
+                    <span>✅</span>
+                    <span>Hoàn thành</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value='cancelled'>
+                  <div className='flex items-center gap-2'>
+                    <span>❌</span>
+                    <span>Đã hủy</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-				<DialogFooter>
-					<Button
-						type="button"
-						variant="outline"
-						onClick={handleClose}
-						disabled={isPending}
-					>
-						Cancel
-					</Button>
-					<Button
-						onClick={handleUpdateStatus}
-						disabled={isPending || selectedStatus === order.status}
-					>
-						{isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-						Update Status
-					</Button>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
-	);
-};
+          {/* Xem trước */}
+          {selectedStatus !== order.status && (
+            <div className='bg-muted rounded-lg p-3'>
+              <p className='text-muted-foreground mb-2 text-sm'>Xem trước:</p>
+              <div className='flex items-center gap-2'>
+                <span className='text-sm'>Trạng thái sẽ đổi thành:</span>
+                <Badge className={newStatusConfig.className}>{newStatusConfig.label}</Badge>
+              </div>
+            </div>
+          )}
+        </div>
 
-export default OrderStatusDialog;
+        <DialogFooter>
+          <Button type='button' variant='outline' onClick={handleClose} disabled={isPending}>
+            Hủy
+          </Button>
+          <Button onClick={handleUpdateStatus} disabled={isPending || selectedStatus === order.status}>
+            {isPending && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+            Cập nhật trạng thái
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export default OrderStatusDialog

@@ -12,7 +12,7 @@ export class StatsController {
    */
   static async getDashboardStats(req: Request, res: Response): Promise<void> {
     const stats = await StatsService.getDashboardStats()
-    sendSuccess.ok(res, 'Dashboard statistics retrieved successfully', stats)
+    sendSuccess.ok(res, 'Dashboard statistics được lấy thành công', stats)
   }
 
   /**
@@ -20,7 +20,7 @@ export class StatsController {
    */
   static async getMonthlyRevenueOverview(req: Request, res: Response): Promise<void> {
     const overview = await StatsService.getMonthlyRevenueOverview()
-    sendSuccess.ok(res, 'Monthly revenue overview retrieved successfully', overview)
+    sendSuccess.ok(res, 'Monthly revenue overview được lấy thành công', overview)
   }
 
   /**
@@ -29,6 +29,6 @@ export class StatsController {
   static async getRecentSalesWithSummary(req: Request, res: Response): Promise<void> {
     const limit = parseInt(req.query.limit as string) || 10
     const data = await StatsService.getRecentSalesWithSummary(limit)
-    sendSuccess.ok(res, 'Recent sales with summary retrieved successfully', data)
+    sendSuccess.ok(res, 'Recent sales with summary được lấy thành công', data)
   }
 }

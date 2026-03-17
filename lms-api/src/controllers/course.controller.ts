@@ -21,7 +21,7 @@ export class CourseController {
     }
 
     const course = await CourseService.createCourse(courseData)
-    sendSuccess.created(res, 'Course created successfully', { course })
+    sendSuccess.created(res, 'Course được tạo thành công', { course })
   }
 
   /**
@@ -29,7 +29,7 @@ export class CourseController {
    */
   static async getCourses(req: Request, res: Response): Promise<void> {
     const result = await CourseService.getCourses(req.query)
-    sendSuccess.ok(res, 'Courses retrieved successfully', result)
+    sendSuccess.ok(res, 'Courses được lấy thành công', result)
   }
 
   /**
@@ -37,7 +37,7 @@ export class CourseController {
    */
   static async getPublicCourses(req: Request, res: Response): Promise<void> {
     const result = await CourseService.getPublicCourses(req.query)
-    sendSuccess.ok(res, 'Public courses retrieved successfully', result)
+    sendSuccess.ok(res, 'Public courses được lấy thành công', result)
   }
 
   /**
@@ -45,7 +45,7 @@ export class CourseController {
    */
   static async getFreeCourses(req: Request, res: Response): Promise<void> {
     const result = await CourseService.getFreeCourses(req.query)
-    sendSuccess.ok(res, 'Free courses retrieved successfully', result)
+    sendSuccess.ok(res, 'Free courses được lấy thành công', result)
   }
 
   /**
@@ -65,7 +65,7 @@ export class CourseController {
       CourseService.incrementView(courseId)
     }
 
-    sendSuccess.ok(res, 'Course retrieved successfully', { course })
+    sendSuccess.ok(res, 'Course được lấy thành công', { course })
   }
 
   /**
@@ -81,7 +81,7 @@ export class CourseController {
       CourseService.incrementView(course._id.toString())
     }
 
-    sendSuccess.ok(res, 'Course retrieved successfully', course)
+    sendSuccess.ok(res, 'Course được lấy thành công', course)
   }
 
   /**
@@ -90,7 +90,7 @@ export class CourseController {
   static async updateCourse(req: Request, res: Response): Promise<void> {
     const { courseId } = req.params
     const course = await CourseService.updateCourse(courseId, req.body)
-    sendSuccess.ok(res, 'Course updated successfully', { course })
+    sendSuccess.ok(res, 'Course được cập nhật thành công', { course })
   }
 
   /**
@@ -99,7 +99,7 @@ export class CourseController {
   static async deleteCourse(req: Request, res: Response): Promise<void> {
     const { courseId } = req.params
     await CourseService.deleteCourse(courseId)
-    sendSuccess.ok(res, 'Course deleted successfully')
+    sendSuccess.ok(res, 'Course được xóa thành công')
   }
 
   /**
@@ -109,11 +109,11 @@ export class CourseController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new AuthenticationError('User not authenticated', ErrorCodes.INVALID_CREDENTIALS)
+      throw new AuthenticationError('Người dùng chưa được xác thực', ErrorCodes.INVALID_CREDENTIALS)
     }
     const courses = await CourseService.getMyCourses(userId)
 
-    sendSuccess.ok(res, 'Your courses retrieved successfully', courses)
+    sendSuccess.ok(res, 'Your courses được lấy thành công', courses)
   }
 
   /**
@@ -123,7 +123,7 @@ export class CourseController {
     const { q: search } = req.query
 
     if (!search || typeof search !== 'string') {
-      throw new ValidationError('Search query is required', ErrorCodes.REQUIRED_FIELD_MISSING)
+      throw new ValidationError('Từ khóa tìm kiếm là bắt buộc', ErrorCodes.REQUIRED_FIELD_MISSING)
     }
 
     const result = await CourseService.getCourses({
@@ -135,7 +135,7 @@ export class CourseController {
       sortOrder: 'desc'
     })
 
-    sendSuccess.ok(res, 'Course search completed', result)
+    sendSuccess.ok(res, 'Tìm kiếm khóa học hoàn tất', result)
   }
 
   /**
@@ -150,7 +150,7 @@ export class CourseController {
       page: '1'
     })
 
-    sendSuccess.ok(res, 'Featured courses retrieved successfully', result)
+    sendSuccess.ok(res, 'Featured courses được lấy thành công', result)
   }
 
   /**
@@ -165,7 +165,7 @@ export class CourseController {
       page: '1'
     })
 
-    sendSuccess.ok(res, 'Popular courses retrieved successfully', result)
+    sendSuccess.ok(res, 'Popular courses được lấy thành công', result)
   }
 
   /**
@@ -180,7 +180,7 @@ export class CourseController {
       page: '1'
     })
 
-    sendSuccess.ok(res, 'Latest courses retrieved successfully', result)
+    sendSuccess.ok(res, 'Latest courses được lấy thành công', result)
   }
 
   /**
@@ -190,7 +190,7 @@ export class CourseController {
     const { courseIds } = req.body
 
     await CourseService.bulkDelete(courseIds)
-    sendSuccess.ok(res, 'Courses deleted successfully')
+    sendSuccess.ok(res, 'Courses được xóa thành công')
   }
 
   /**
@@ -200,7 +200,7 @@ export class CourseController {
     const { courseId } = req.params
 
     await CourseService.incrementSold(courseId)
-    sendSuccess.ok(res, 'Successfully enrolled in course')
+    sendSuccess.ok(res, 'Đăng ký khóa học thành công')
   }
 
   /**
@@ -211,11 +211,11 @@ export class CourseController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new AuthenticationError('User authentication required', ErrorCodes.INVALID_CREDENTIALS)
+      throw new AuthenticationError('Yêu cầu xác thực người dùng', ErrorCodes.INVALID_CREDENTIALS)
     }
 
     await CourseService.enrollInFreeCourse(courseId, userId)
-    sendSuccess.ok(res, 'Successfully enrolled in free course')
+    sendSuccess.ok(res, 'Đăng ký khóa học miễn phí thành công')
   }
 
   /**
@@ -226,6 +226,6 @@ export class CourseController {
     const limit = parseInt(req.query.limit as string) || 5
 
     const result = await CourseService.getRelatedCourses(courseId, limit)
-    sendSuccess.ok(res, 'Related courses retrieved successfully', result)
+    sendSuccess.ok(res, 'Related courses được lấy thành công', result)
   }
 }

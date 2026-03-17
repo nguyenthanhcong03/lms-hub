@@ -1,173 +1,141 @@
-"use client";
+'use client'
 
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { Button } from "@/components/ui/button";
+import * as React from 'react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useUpdateCommentStatus } from "@/hooks/use-comments";
-import { MdEdit } from "react-icons/md";
-import { toast } from "sonner";
-import {
-  IComment,
-  CommentStatus,
-  UpdateCommentStatusRequest,
-} from "@/types/comment";
-import { formatDistanceToNow } from "date-fns";
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useUpdateCommentStatus } from '@/hooks/use-comments'
+import { MdEdit } from 'react-icons/md'
+import { toast } from 'sonner'
+import { IComment, CommentStatus, UpdateCommentStatusRequest } from '@/types/comment'
+import { formatDistanceToNow } from 'date-fns'
 
-// Validation schema for status update only
+// Schema xác thực chỉ cho cập nhật trạng thái
 const commentValidationSchema = yup.object().shape({
   status: yup
     .mixed<CommentStatus>()
-    .oneOf(Object.values(CommentStatus), "Please select a valid status")
-    .required("Status is required"),
-});
+    .oneOf(Object.values(CommentStatus), 'Vui lòng chọn trạng thái hợp lệ')
+    .required('Trạng thái là bắt buộc')
+})
 
-type CommentFormData = yup.InferType<typeof commentValidationSchema>;
+type CommentFormData = yup.InferType<typeof commentValidationSchema>
 
 interface CommentStatusDialogProps {
-  comment: IComment;
-  onSuccess?: (comment: IComment) => void;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  comment: IComment
+  onSuccess?: (comment: IComment) => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-const CommentStatusDialog = ({
-  comment,
-  onSuccess,
-  open = false,
-  onOpenChange,
-}: CommentStatusDialogProps) => {
-  // API hooks
-  const updateCommentMutation = useUpdateCommentStatus();
-  const isLoading = updateCommentMutation.isPending;
+const CommentStatusDialog = ({ comment, onSuccess, open = false, onOpenChange }: CommentStatusDialogProps) => {
+  // Hook gọi API
+  const updateCommentMutation = useUpdateCommentStatus()
+  const isLoading = updateCommentMutation.isPending
 
-  // Initialize form
+  // Khởi tạo form
   const form = useForm<CommentFormData>({
     resolver: yupResolver(commentValidationSchema),
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      status: comment.status,
-    },
-  });
+      status: comment.status
+    }
+  })
 
-  // Reset form when dialog opens/closes or comment changes
+  // Reset form khi dialog mở/đóng hoặc bình luận thay đổi
   React.useEffect(() => {
     if (open && comment) {
       form.reset({
-        status: comment.status,
-      });
+        status: comment.status
+      })
     }
-  }, [open, comment, form]);
+  }, [open, comment, form])
 
   const onSubmit = async (data: CommentFormData) => {
     try {
       const updateData: UpdateCommentStatusRequest = {
         id: comment._id,
-        status: data.status,
-      };
+        status: data.status
+      }
 
-      const result = await updateCommentMutation.mutateAsync(updateData);
-      toast.success("Comment status updated successfully");
+      const result = await updateCommentMutation.mutateAsync(updateData)
+      toast.success('Trạng thái bình luận đã được cập nhật thành công')
 
-      onOpenChange?.(false);
-      form.reset();
-      onSuccess?.(result);
+      onOpenChange?.(false)
+      form.reset()
+      onSuccess?.(result)
     } catch (error: unknown) {
-      // Handle API errors
+      // Xử lý lỗi API
       const errorMessage =
         error instanceof Error
           ? error.message
-          : (error as { response?: { data?: { message?: string } } })?.response
-              ?.data?.message || "Unknown error";
-      toast.error(`Failed to update comment: ${errorMessage}`);
+          : (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Lỗi không xác định'
+      toast.error(`Không thể cập nhật bình luận: ${errorMessage}`)
     }
-  };
+  }
 
-  // Truncate content but keep HTML for display
-  const truncatedContent =
-    comment.content.length > 200
-      ? comment.content.substring(0, 200) + "..."
-      : comment.content;
+  // Cắt ngắn nội dung nhưng giữ HTML để hiển thị
+  const truncatedContent = comment.content.length > 200 ? comment.content.substring(0, 200) + '...' : comment.content
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className='sm:max-w-[500px]'>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <MdEdit className="h-5 w-5" />
-            Update Comment Status
+          <DialogTitle className='flex items-center gap-2'>
+            <MdEdit className='h-5 w-5' />
+            Cập nhật trạng thái bình luận
           </DialogTitle>
-          <DialogDescription>
-            Update the moderation status of this comment.
-          </DialogDescription>
+          <DialogDescription>Cập nhật trạng thái kiểm duyệt cho bình luận này.</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Comment Information Display */}
-            <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
-              <div className="text-sm">
-                <span className="font-medium">Author:</span>{" "}
-                {comment.user?.username || "Unknown User"}
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+            {/* Hiển thị thông tin bình luận */}
+            <div className='bg-muted/50 space-y-3 rounded-lg p-4'>
+              <div className='text-sm'>
+                <span className='font-medium'>Tác giả:</span> {comment.user?.username || 'Người dùng không xác định'}
               </div>
-              <div className="text-sm">
-                <span className="font-medium">Email:</span>{" "}
-                {comment.user?.email || "Unknown Email"}
+              <div className='text-sm'>
+                <span className='font-medium'>Email:</span> {comment.user?.email || 'Email không xác định'}
               </div>
-              <div className="text-sm">
-                <span className="font-medium">Created:</span>{" "}
+              <div className='text-sm'>
+                <span className='font-medium'>Thời gian tạo:</span>{' '}
                 {formatDistanceToNow(new Date(comment.createdAt), {
-                  addSuffix: true,
+                  addSuffix: true
                 })}
               </div>
-              <div className="text-sm">
-                <span className="font-medium">Level:</span>{" "}
-                {comment.level === 0
-                  ? "Main Comment"
-                  : `Reply Level ${comment.level}`}
+              <div className='text-sm'>
+                <span className='font-medium'>Cấp độ:</span>{' '}
+                {comment.level === 0 ? 'Bình luận chính' : `Cấp độ phản hồi ${comment.level}`}
               </div>
-              <div className="text-sm">
-                <span className="font-medium">Content:</span>
+              <div className='text-sm'>
+                <span className='font-medium'>Nội dung:</span>
                 <div
-                  className="mt-1 p-2 bg-background rounded border text-sm leading-relaxed"
+                  className='bg-background mt-1 rounded border p-2 text-sm leading-relaxed'
                   dangerouslySetInnerHTML={{
-                    __html: truncatedContent,
+                    __html: truncatedContent
                   }}
                 />
               </div>
-              <div className="text-sm">
-                <span className="font-medium">Current Status:</span>{" "}
+              <div className='text-sm'>
+                <span className='font-medium'>Trạng thái hiện tại:</span>{' '}
                 <span
-                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                  className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
                     comment.status === CommentStatus.APPROVED
-                      ? "bg-green-100 text-green-800"
+                      ? 'bg-green-100 text-green-800'
                       : comment.status === CommentStatus.PENDING
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-red-100 text-red-800"
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'
                   }`}
                 >
                   {comment.status}
@@ -177,26 +145,20 @@ const CommentStatusDialog = ({
 
             <FormField
               control={form.control}
-              name="status"
+              name='status'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Update Status *</FormLabel>
+                  <FormLabel>Cập nhật trạng thái *</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className="w-full" disabled={isLoading}>
-                        <SelectValue placeholder="Select status" />
+                      <SelectTrigger className='w-full' disabled={isLoading}>
+                        <SelectValue placeholder='Chọn trạng thái' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value={CommentStatus.PENDING}>
-                        Pending
-                      </SelectItem>
-                      <SelectItem value={CommentStatus.APPROVED}>
-                        Approved
-                      </SelectItem>
-                      <SelectItem value={CommentStatus.REJECTED}>
-                        Rejected
-                      </SelectItem>
+                      <SelectItem value={CommentStatus.PENDING}>Chờ duyệt</SelectItem>
+                      <SelectItem value={CommentStatus.APPROVED}>Đã duyệt</SelectItem>
+                      <SelectItem value={CommentStatus.REJECTED}>Từ chối</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -205,23 +167,18 @@ const CommentStatusDialog = ({
             />
 
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange?.(false)}
-                disabled={isLoading}
-              >
-                Cancel
+              <Button type='button' variant='outline' onClick={() => onOpenChange?.(false)} disabled={isLoading}>
+                Hủy
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Updating..." : "Update Status"}
+              <Button type='submit' disabled={isLoading}>
+                {isLoading ? 'Đang cập nhật...' : 'Cập nhật trạng thái'}
               </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default CommentStatusDialog;
+export default CommentStatusDialog

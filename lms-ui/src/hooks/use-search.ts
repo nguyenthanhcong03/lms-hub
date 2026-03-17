@@ -2,7 +2,7 @@ import {useDebounce} from "@/hooks/use-debounce";
 import SearchService from "@/services/search";
 import {useQuery} from "@tanstack/react-query";
 
-// Query keys for search
+// Khóa truy vấn cho search
 export const searchKeys = {
 	all: ["search"] as const,
 	queries: () => [...searchKeys.all, "query"] as const,
@@ -15,7 +15,7 @@ interface UseSearchOptions {
 	enabled?: boolean;
 }
 
-// Hook for basic search with debouncing
+// Hook cho basic search with debouncing
 export function useSearch(query: string, options: UseSearchOptions = {}) {
 	const {debounceDelay = 300, minQueryLength = 2, enabled = true} = options;
 	const debouncedQuery = useDebounce(query, debounceDelay);

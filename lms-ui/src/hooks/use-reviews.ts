@@ -1,207 +1,196 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import ReviewsService from "@/services/reviews";
-import {
-	CreateReviewRequest,
-	IReview,
-	UpdateReviewRequest,
-} from "@/types/review";
-import {toast} from "sonner";
-import {useState, useEffect, useCallback} from "react";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import ReviewsService from '@/services/reviews'
+import { CreateReviewRequest, IReview, UpdateReviewRequest } from '@/types/review'
+import { toast } from 'sonner'
+import { useState, useEffect, useCallback } from 'react'
 
-// Query keys
+// Khóa truy vấn
 export const reviewsKeys = {
-	all: ["reviews"] as const,
-	courseReviews: (courseId: string) =>
-		[...reviewsKeys.all, "course", courseId] as const,
-	courseReviewsWithFilter: (
-		courseId: string,
-		filters?: Record<string, string | number>
-	) => [...reviewsKeys.courseReviews(courseId), filters] as const,
-};
+  all: ['reviews'] as const,
+  courseReviews: (courseId: string) => [...reviewsKeys.all, 'course', courseId] as const,
+  courseReviewsWithFilter: (courseId: string, filters?: Record<string, string | number>) =>
+    [...reviewsKeys.courseReviews(courseId), filters] as const
+}
 
 /**
- * Hook to get reviews for a specific course
+ * Hook lấy đánh giá cho một khóa học cụ thể
  */
 export function useCourseReviews(
-	courseId: string,
-	params?: {
-		page?: number;
-		limit?: number;
-		minStar?: number;
-	}
+  courseId: string,
+  params?: {
+    page?: number
+    limit?: number
+    minStar?: number
+  }
 ) {
-	return useQuery({
-		queryKey: reviewsKeys.courseReviewsWithFilter(courseId, params),
-		queryFn: () => ReviewsService.getCourseReviews(courseId, params),
-		enabled: !!courseId,
-	});
+  return useQuery({
+    queryKey: reviewsKeys.courseReviewsWithFilter(courseId, params),
+    queryFn: () => ReviewsService.getCourseReviews(courseId, params),
+    enabled: !!courseId
+  })
 }
 
 /**
- * Hook to get reviews with load more functionality
+ * Hook lấy đánh giá có hỗ trợ tải thêm
  */
 export function useCourseReviewsWithLoadMore(
-	courseId: string,
-	initialParams?: {
-		limit?: number;
-		minStar?: number;
-	}
+  courseId: string,
+  initialParams?: {
+    limit?: number
+    minStar?: number
+  }
 ) {
-	const [page, setPage] = useState(1);
-	const [allReviews, setAllReviews] = useState<IReview[]>([]);
-	const [hasNextPage, setHasNextPage] = useState(false);
-	const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [page, setPage] = useState(1)
+  const [allReviews, setAllReviews] = useState<IReview[]>([])
+  const [hasNextPage, setHasNextPage] = useState(false)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
-	const limit = initialParams?.limit || 10;
+  const limit = initialParams?.limit || 10
 
-	const {
-		data: reviewsData,
-		isLoading,
-		error,
-		refetch,
-	} = useQuery({
-		queryKey: reviewsKeys.courseReviewsWithFilter(courseId, {
-			page,
-			limit,
-			...(initialParams?.minStar && {minStar: initialParams.minStar}),
-		}),
-		queryFn: () =>
-			ReviewsService.getCourseReviews(courseId, {
-				page,
-				limit,
-				...(initialParams?.minStar && {minStar: initialParams.minStar}),
-			}),
-		enabled: !!courseId,
-	});
+  const {
+    data: reviewsData,
+    isLoading,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: reviewsKeys.courseReviewsWithFilter(courseId, {
+      page,
+      limit,
+      ...(initialParams?.minStar && { minStar: initialParams.minStar })
+    }),
+    queryFn: () =>
+      ReviewsService.getCourseReviews(courseId, {
+        page,
+        limit,
+        ...(initialParams?.minStar && { minStar: initialParams.minStar })
+      }),
+    enabled: !!courseId
+  })
 
-	// Update reviews when data changes
-	useEffect(() => {
-		if (reviewsData) {
-			if (page === 1) {
-				// First load - replace all reviews
-				setAllReviews(reviewsData.reviews);
-			} else {
-				// Load more - append new reviews
-				setAllReviews((prev) => [...prev, ...reviewsData.reviews]);
-			}
-			setHasNextPage(reviewsData.hasNextPage);
-			setIsLoadingMore(false);
-		}
-	}, [reviewsData, page]);
+  // Cập nhật danh sách đánh giá khi dữ liệu thay đổi
+  useEffect(() => {
+    if (reviewsData) {
+      if (page === 1) {
+        // Lần tải đầu - thay toàn bộ danh sách
+        setAllReviews(reviewsData.reviews)
+      } else {
+        // Tải thêm - nối thêm đánh giá mới
+        setAllReviews((prev) => [...prev, ...reviewsData.reviews])
+      }
+      setHasNextPage(reviewsData.hasNextPage)
+      setIsLoadingMore(false)
+    }
+  }, [reviewsData, page])
 
-	const loadMore = useCallback(() => {
-		if (hasNextPage && !isLoadingMore && !isLoading) {
-			setIsLoadingMore(true);
-			setPage((prev) => prev + 1);
-		}
-	}, [hasNextPage, isLoadingMore, isLoading]);
+  const loadMore = useCallback(() => {
+    if (hasNextPage && !isLoadingMore && !isLoading) {
+      setIsLoadingMore(true)
+      setPage((prev) => prev + 1)
+    }
+  }, [hasNextPage, isLoadingMore, isLoading])
 
-	const reset = useCallback(() => {
-		setPage(1);
-		setAllReviews([]);
-		setHasNextPage(false);
-		setIsLoadingMore(false);
-	}, []);
+  const reset = useCallback(() => {
+    setPage(1)
+    setAllReviews([])
+    setHasNextPage(false)
+    setIsLoadingMore(false)
+  }, [])
 
-	return {
-		reviews: allReviews,
-		averageRating: reviewsData?.averageRating || 0,
-		total: reviewsData?.total || 0,
-		ratingDistribution: reviewsData?.ratingDistribution || {},
-		isLoading: isLoading && page === 1,
-		isLoadingMore,
-		hasNextPage,
-		loadMore,
-		reset,
-		refetch,
-		error,
-	};
+  return {
+    reviews: allReviews,
+    averageRating: reviewsData?.averageRating || 0,
+    total: reviewsData?.total || 0,
+    ratingDistribution: reviewsData?.ratingDistribution || {},
+    isLoading: isLoading && page === 1,
+    isLoadingMore,
+    hasNextPage,
+    loadMore,
+    reset,
+    refetch,
+    error
+  }
 }
 
 /**
- * Hook to create a new review
+ * Hook tạo đánh giá mới
  */
 export function useCreateReview() {
-	const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-	return useMutation({
-		mutationFn: (data: CreateReviewRequest) =>
-			ReviewsService.submitReview(data),
-		onSuccess: (_, variables) => {
-			// Invalidate and refetch course reviews
-			queryClient.invalidateQueries({
-				queryKey: reviewsKeys.courseReviews(variables.courseId),
-			});
+  return useMutation({
+    mutationFn: (data: CreateReviewRequest) => ReviewsService.submitReview(data),
+    onSuccess: (_, variables) => {
+      // Làm mới và tải lại đánh giá của khóa học
+      queryClient.invalidateQueries({
+        queryKey: reviewsKeys.courseReviews(variables.courseId)
+      })
 
-			toast.success("Review submitted successfully!");
-		},
-		onError: () => {
-			toast.error("Failed to submit review");
-		},
-	});
+      toast.success('Đánh giá đã được gửi thành công!')
+    },
+    onError: () => {
+      toast.error('Không gửi được đánh giá')
+    }
+  })
 }
 
 /**
- * Hook to update an existing review
+ * Hook cập nhật đánh giá hiện có
  */
 export function useUpdateReview() {
-	const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-	return useMutation({
-		mutationFn: (data: UpdateReviewRequest) =>
-			ReviewsService.updateReview(data),
-		onSuccess: (_, variables) => {
-			queryClient.invalidateQueries({
-				queryKey: reviewsKeys.courseReviews(variables.courseId),
-			});
+  return useMutation({
+    mutationFn: (data: UpdateReviewRequest) => ReviewsService.updateReview(data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: reviewsKeys.courseReviews(variables.courseId)
+      })
 
-			toast.success("Review updated successfully!");
-		},
-		onError: () => {
-			toast.error("Failed to update review");
-		},
-	});
+      toast.success('Đánh giá đã được cập nhật thành công!')
+    },
+    onError: () => {
+      toast.error('Không cập nhật được đánh giá')
+    }
+  })
 }
 
 /**
- * Hook to delete a review
+ * Hook xóa đánh giá
  */
 export function useDeleteReview() {
-	const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-	return useMutation({
-		mutationFn: ({reviewId}: {reviewId: string; courseId: string}) =>
-			ReviewsService.deleteReview(reviewId),
-		onSuccess: (_, variables) => {
-			queryClient.invalidateQueries({
-				queryKey: reviewsKeys.courseReviews(variables.courseId),
-			});
+  return useMutation({
+    mutationFn: ({ reviewId }: { reviewId: string; courseId: string }) => ReviewsService.deleteReview(reviewId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: reviewsKeys.courseReviews(variables.courseId)
+      })
 
-			toast.success("Review deleted successfully!");
-		},
-		onError: () => {
-			toast.error("Failed to delete review");
-		},
-	});
+      toast.success('Đánh giá đã được xóa thành công!')
+    },
+    onError: () => {
+      toast.error('Không xóa được đánh giá')
+    }
+  })
 }
 
 /**
- * Hook to toggle review like
+ * Hook bật/tắt lượt thích đánh giá
  */
 export function useToggleReviewLike() {
-	const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-	return useMutation({
-		mutationFn: ({reviewId}: {reviewId: string; courseId: string}) =>
-			ReviewsService.toggleReviewLike(reviewId),
-		onSuccess: (_, variables) => {
-			// Optimistically update the UI by invalidating queries
-			queryClient.invalidateQueries({
-				queryKey: reviewsKeys.courseReviews(variables.courseId),
-			});
-		},
-		onError: () => {
-			toast.error("Failed to update like");
-		},
-	});
+  return useMutation({
+    mutationFn: ({ reviewId }: { reviewId: string; courseId: string }) => ReviewsService.toggleReviewLike(reviewId),
+    onSuccess: (_, variables) => {
+      // Cập nhật UI theo hướng optimistic bằng cách làm mới truy vấn
+      queryClient.invalidateQueries({
+        queryKey: reviewsKeys.courseReviews(variables.courseId)
+      })
+    },
+    onError: () => {
+      toast.error('Không cập nhật được lượt thích')
+    }
+  })
 }

@@ -13,7 +13,7 @@ interface BankTransferDetailsProps {
 export function BankTransferDetails({ amount, orderCode }: BankTransferDetailsProps) {
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text)
-    toast.success('Copied!')
+    toast.success('Đã sao chép!')
   }
 
   function formatAmount(amount: string) {
@@ -27,13 +27,13 @@ export function BankTransferDetails({ amount, orderCode }: BankTransferDetailsPr
       </h3>
 
       <div className='overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm sm:rounded-xl'>
-        {/* Bank Header */}
+        {/* Phần đầu ngân hàng */}
         <div className='border-b border-gray-200 px-4 py-3 sm:px-6 sm:py-4'>
           <div className='flex items-center justify-center gap-2 sm:gap-3'>
-            {/* VietinBank Logo */}
+            {/* Logo VietinBank */}
             <Image
               src='/images/vietinbank-icon.png'
-              alt='VietinBank Logo'
+              alt='Logo VietinBank'
               width={40}
               height={40}
               className='h-8 w-8 sm:h-10 sm:w-10'
@@ -42,10 +42,10 @@ export function BankTransferDetails({ amount, orderCode }: BankTransferDetailsPr
           <h4 className='mt-1.5 text-center text-sm font-semibold text-gray-800 sm:mt-2 sm:text-base'>VietinBank</h4>
         </div>
 
-        {/* Bank Details */}
+        {/* Thông tin ngân hàng */}
         <div className='p-3 sm:p-4'>
           <div className='space-y-0'>
-            {/* Account Holder */}
+            {/* Chủ tài khoản */}
             <div className='flex items-center justify-between gap-2 border-b border-gray-100 py-2'>
               <span className='flex-shrink-0 text-xs font-medium text-gray-600 sm:text-sm'>Người thụ hưởng:</span>
               <div className='flex min-w-0 items-center gap-1 sm:gap-2'>
@@ -61,7 +61,7 @@ export function BankTransferDetails({ amount, orderCode }: BankTransferDetailsPr
               </div>
             </div>
 
-            {/* Account Number */}
+            {/* Số tài khoản */}
             <div className='flex items-center justify-between gap-2 border-b border-gray-100 py-2'>
               <span className='flex-shrink-0 text-xs font-medium text-gray-600 sm:text-sm'>Số tài khoản:</span>
               <div className='flex min-w-0 items-center gap-1 sm:gap-2'>
@@ -77,7 +77,7 @@ export function BankTransferDetails({ amount, orderCode }: BankTransferDetailsPr
               </div>
             </div>
 
-            {/* Amount */}
+            {/* Số tiền */}
             <div className='flex items-center justify-between gap-2 border-b border-gray-100 py-2'>
               <span className='flex-shrink-0 text-xs font-medium text-gray-600 sm:text-sm'>Số tiền:</span>
               <div className='flex min-w-0 items-center gap-1 sm:gap-2'>
@@ -95,7 +95,7 @@ export function BankTransferDetails({ amount, orderCode }: BankTransferDetailsPr
               </div>
             </div>
 
-            {/* Transfer Content */}
+            {/* Nội dung chuyển khoản */}
             <div className='flex items-center justify-between gap-2 py-2'>
               <span className='flex-shrink-0 text-xs font-medium text-gray-600 sm:text-sm'>Ghi chú chuyển khoản:</span>
               <div className='flex min-w-0 items-center gap-1 sm:gap-2'>
@@ -112,7 +112,7 @@ export function BankTransferDetails({ amount, orderCode }: BankTransferDetailsPr
             </div>
           </div>
 
-          {/* Note Section */}
+          {/* Phần lưu ý */}
           <div className='mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 sm:mt-6 sm:p-4'>
             <p className='text-xs leading-relaxed text-amber-800 sm:text-sm'>
               <strong>Ghi chú:</strong> Vui lòng giữ nguyên{' '}

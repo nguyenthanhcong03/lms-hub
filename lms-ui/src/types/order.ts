@@ -1,4 +1,4 @@
-// Order interfaces
+// Interface don hang
 export enum OrderStatus {
   PENDING = 'pending',
   COMPLETED = 'completed',
@@ -77,7 +77,7 @@ export interface MyOrder {
   __v?: number
 }
 
-// Order creation interfaces (moved from cart types)
+// Interface tao don hang (chuyen tu cart types)
 export interface CreateOrderRequest {
   courseIds: string[]
   paymentMethod: 'bank_transfer'

@@ -13,17 +13,17 @@ interface CartTotalsProps {
   onRemoveDiscount: () => void
 }
 
-// Cart totals component - Arrow function
+// Component tổng tiền giỏ hàng
 const CartTotals = ({ summary, appliedDiscount, onRemoveDiscount }: CartTotalsProps) => {
   return (
     <div className='space-y-2 sm:space-y-3'>
-      {/* Subtotal */}
+      {/* Tạm tính */}
       <div className='flex items-center justify-between py-0.5 sm:py-1'>
         <span className='text-xs text-gray-600 sm:text-sm'>Tổng tiền ({summary.itemCount} mục)</span>
         <span className='text-xs font-medium text-gray-900 sm:text-sm'>{formatPrice(summary.subtotal)}</span>
       </div>
 
-      {/* Applied Discount */}
+      {/* Giảm giá đã áp dụng */}
       {appliedDiscount && (
         <div className='rounded-xs border border-green-200 bg-green-50 p-2 sm:p-3'>
           <div className='flex items-center justify-between gap-2'>
@@ -32,8 +32,8 @@ const CartTotals = ({ summary, appliedDiscount, onRemoveDiscount }: CartTotalsPr
                 <span className='text-[10px] font-bold text-white sm:text-xs'>%</span>
               </div>
               <div className='min-w-0'>
-                <div className='truncate text-xs font-medium text-green-800 sm:text-sm'>Discount Applied</div>
-                <div className='truncate text-[10px] text-green-600 sm:text-xs'>Code: {appliedDiscount.code}</div>
+                <div className='truncate text-xs font-medium text-green-800 sm:text-sm'>Đã áp dụng giảm giá</div>
+                <div className='truncate text-[10px] text-green-600 sm:text-xs'>Mã: {appliedDiscount.code}</div>
               </div>
             </div>
             <div className='flex-shrink-0 text-right'>
@@ -44,7 +44,7 @@ const CartTotals = ({ summary, appliedDiscount, onRemoveDiscount }: CartTotalsPr
                 onClick={onRemoveDiscount}
                 className='h-auto px-0.5 py-0.5 text-[10px] text-green-600 hover:text-green-800 sm:px-1 sm:text-xs'
               >
-                Remove
+                Gỡ bỏ
               </Button>
             </div>
           </div>
@@ -53,7 +53,7 @@ const CartTotals = ({ summary, appliedDiscount, onRemoveDiscount }: CartTotalsPr
 
       <Separator />
 
-      {/* Total */}
+      {/* Tổng cộng */}
       <div className='rounded-xs border border-blue-200 bg-blue-50 p-2 sm:p-3'>
         <div className='flex items-center justify-between'>
           <span className='text-sm font-bold text-gray-900 sm:text-base'>Tổng cộng</span>

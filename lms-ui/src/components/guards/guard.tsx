@@ -12,24 +12,24 @@ type GuardMode = 'all' | 'any'
 interface GuardProps {
   children: React.ReactNode
 
-  // authentication
+  // Xác thực
   requireAuth?: boolean
   guestOnly?: boolean
 
-  // RBAC
+  // Phân quyền RBAC
   roles?: string[]
   permissions?: Permission[]
 
-  // matching mode
+  // Chế độ đối chiếu
   roleMode?: GuardMode
   permissionMode?: GuardMode
 
-  // redirect paths
+  // Đường dẫn chuyển hướng
   redirectAuthenticated?: string
   redirectUnauthorized?: string
   redirectUnauthenticated?: string
 
-  // UI fallback when auth state is loading
+  // Giao diện dự phòng khi trạng thái xác thực đang tải
   loadingFallback?: React.ReactNode
 }
 

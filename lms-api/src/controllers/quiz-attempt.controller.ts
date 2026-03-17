@@ -14,13 +14,13 @@ export class QuizAttemptController {
   static async checkQuizAttemptStatus(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const { quizId } = req.params
     const result = await QuizAttemptService.checkQuizAttemptStatus(userId, quizId)
 
-    sendSuccess.ok(res, 'Quiz continuity check completed', result)
+    sendSuccess.ok(res, 'Kiểm tra tiếp nối bài quiz hoàn tất', result)
   }
 
   /**
@@ -29,12 +29,12 @@ export class QuizAttemptController {
   static async startQuizAttempt(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const attempt = await QuizAttemptService.startQuizAttempt(req.body, userId)
 
-    sendSuccess.created(res, 'Quiz attempt started successfully', { attempt })
+    sendSuccess.created(res, 'Quiz attempt được bắt đầu thành công', { attempt })
   }
 
   /**
@@ -43,13 +43,13 @@ export class QuizAttemptController {
   static async getQuizQuestions(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const { quizId } = req.params
     const questions = await QuizAttemptService.getQuizQuestions(quizId, userId)
 
-    sendSuccess.ok(res, 'Quiz questions retrieved successfully', questions)
+    sendSuccess.ok(res, 'Quiz questions được lấy thành công', questions)
   }
 
   /**
@@ -58,13 +58,13 @@ export class QuizAttemptController {
   static async submitAnswer(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const { attemptId } = req.params
     const attempt = await QuizAttemptService.submitAnswer(attemptId, req.body, userId)
 
-    sendSuccess.ok(res, 'Answer submitted successfully', attempt)
+    sendSuccess.ok(res, 'Answer được gửi thành công', attempt)
   }
 
   /**
@@ -73,13 +73,13 @@ export class QuizAttemptController {
   static async completeQuizAttempt(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const { attemptId } = req.params
     const attempt = await QuizAttemptService.completeQuizAttempt(attemptId, req.body, userId)
 
-    sendSuccess.ok(res, 'Quiz attempt completed successfully', attempt)
+    sendSuccess.ok(res, 'Quiz attempt hoàn tất thành công', attempt)
   }
 
   /**
@@ -88,12 +88,12 @@ export class QuizAttemptController {
   static async getQuizAttempts(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const result = await QuizAttemptService.getQuizAttempts(userId, req.query)
 
-    sendSuccess.ok(res, 'Quiz attempts retrieved successfully', {
+    sendSuccess.ok(res, 'Quiz attempts được lấy thành công', {
       attempts: result.attempts,
       summary: result.summary
     })
@@ -105,13 +105,13 @@ export class QuizAttemptController {
   static async getQuizAttemptById(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const { attemptId } = req.params
     const result = await QuizAttemptService.getQuizAttemptById(attemptId, userId)
 
-    sendSuccess.ok(res, 'Quiz attempt retrieved successfully', {
+    sendSuccess.ok(res, 'Quiz attempt được lấy thành công', {
       ...result.attempt.toObject(),
       duration: result.duration,
       isPassed: result.isPassed,
@@ -126,12 +126,12 @@ export class QuizAttemptController {
   static async deleteQuizAttempt(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const { attemptId } = req.params
     await QuizAttemptService.deleteQuizAttempt(attemptId, userId)
 
-    sendSuccess.ok(res, 'Quiz attempt deleted successfully')
+    sendSuccess.ok(res, 'Quiz attempt được xóa thành công')
   }
 }

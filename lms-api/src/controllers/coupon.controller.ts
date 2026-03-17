@@ -16,7 +16,7 @@ export class CouponController {
     const couponData: CreateCouponInput = req.body
     const coupon = await CouponService.createCoupon(couponData)
 
-    sendSuccess.created(res, 'Coupon created successfully', { coupon })
+    sendSuccess.created(res, 'Coupon được tạo thành công', { coupon })
   }
 
   /**
@@ -26,7 +26,7 @@ export class CouponController {
     const query: Partial<GetCouponsQuery> = req.query
     const result = await CouponService.getCoupons(query)
 
-    sendSuccess.ok(res, 'Coupons fetched successfully', result)
+    sendSuccess.ok(res, 'Coupons được tải thành công', result)
   }
 
   /**
@@ -35,7 +35,7 @@ export class CouponController {
   static async getActiveCoupons(req: Request, res: Response): Promise<void> {
     const coupons = await CouponService.getActiveCoupons()
 
-    sendSuccess.ok(res, 'Active coupons fetched successfully', { coupons })
+    sendSuccess.ok(res, 'Active coupons được tải thành công', { coupons })
   }
 
   /**
@@ -45,7 +45,7 @@ export class CouponController {
     const { couponId } = req.params
     const coupon = await CouponService.getCouponById(couponId)
 
-    sendSuccess.ok(res, 'Coupon fetched successfully', { coupon })
+    sendSuccess.ok(res, 'Coupon được tải thành công', { coupon })
   }
 
   /**
@@ -56,7 +56,7 @@ export class CouponController {
     const updateData: UpdateCouponInput = req.body
     const coupon = await CouponService.updateCoupon(couponId, updateData)
 
-    sendSuccess.ok(res, 'Coupon updated successfully', { coupon })
+    sendSuccess.ok(res, 'Coupon được cập nhật thành công', { coupon })
   }
 
   /**
@@ -66,7 +66,7 @@ export class CouponController {
     const { couponId } = req.params
     await CouponService.deleteCoupon(couponId)
 
-    sendSuccess.ok(res, 'Coupon deleted successfully')
+    sendSuccess.ok(res, 'Coupon được xóa thành công')
   }
 
   /**
@@ -86,6 +86,6 @@ export class CouponController {
     const { couponId } = req.params
     const coupon = await CouponService.applyCoupon(couponId)
 
-    sendSuccess.ok(res, 'Coupon applied successfully', { coupon })
+    sendSuccess.ok(res, 'Coupon được áp dụng thành công', { coupon })
   }
 }

@@ -1,240 +1,240 @@
 // ✨ Simplified SEO Configuration - Only Essential Fields
 export const SEO_CONFIG = {
   // 🏠 Core Site Information
-  siteName: "LMS Hub",
+  siteName: 'LMS Hub',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
-  defaultTitle: "LMS Hub - Học Kỹ Năng Mới, Phát Triển Sự Nghiệp",
+  defaultTitle: 'LMS Hub - Học Kỹ Năng Mới, Phát Triển Sự Nghiệp',
   defaultDescription:
-    "Nền tảng học tập trực tuyến hàng đầu, giúp bạn phát triển kỹ năng mới và tiến xa trong sự nghiệp.",
+    'Nền tảng học tập trực tuyến hàng đầu, giúp bạn phát triển kỹ năng mới và tiến xa trong sự nghiệp.',
 
   // 👤 Business Basics
   business: {
-    name: "lms hub",
+    name: 'lms hub',
     foundedYear: 2020,
-    email: "support@lmshub.com",
+    email: 'support@lmshub.com'
   },
 
   // 📱 Social Media (for structured data & sharing)
   social: {
-    twitter: "@lmshub",
-    facebook: "lmshub",
-    instagram: "lmshub",
-    linkedin: "company/lmshub",
-    youtube: "@lmshub",
+    twitter: '@lmshub',
+    facebook: 'lmshub',
+    instagram: 'lmshub',
+    linkedin: 'company/lmshub',
+    youtube: '@lmshub'
   },
 
   // 🔍 SEO Basics
   keywords: [
-    "online learning",
-    "education platform",
-    "online courses",
-    "skill development",
-    "professional development",
-    "e-learning",
-    "LMS",
+    'online learning',
+    'education platform',
+    'online courses',
+    'skill development',
+    'professional development',
+    'e-learning',
+    'LMS'
   ],
 
   // 🌐 OpenGraph (for social sharing)
   openGraph: {
-    defaultImage: "/images/og-default.jpg", // 1200x630px
-    imageAlt: "LMS Hub - Học Kỹ Năng Mới, Phát Triển Sự Nghiệp",
+    defaultImage: '/images/og-default.jpg', // 1200x630px
+    imageAlt: 'LMS Hub - Học Kỹ Năng Mới, Phát Triển Sự Nghiệp'
   },
 
   // 🐦 Twitter Card
   twitter: {
-    handle: "@lmshub",
+    handle: '@lmshub'
   },
 
-  // ✅ Verification (add when you have them)
+  // ✅ Xác minh (thêm khi bạn có mã)
   verification: {
-    google: "", // Add your Google Search Console verification code
-    // bing: "", // Uncomment when needed
-  },
-};
+    google: '' // Thêm mã xác minh Google Search Console
+    // bing: "", // Bỏ chú thích khi cần
+  }
+}
 
-// 📄 Page-Specific SEO (simplified)
+// 📄 SEO theo từng trang (rút gọn)
 export const PAGE_SEO = {
   home: {
-    title: "LMS Hub - Học Kỹ Năng Mới, Phát Triển Sự Nghiệp", // Only used for OpenGraph
-    description: "Nền tảng học tập trực tuyến hàng đầu, giúp bạn phát triển kỹ năng mới và tiến xa trong sự nghiệp.",
+    title: 'LMS Hub - Học Kỹ Năng Mới, Phát Triển Sự Nghiệp', // Chỉ dùng cho OpenGraph
+    description: 'Nền tảng học tập trực tuyến hàng đầu, giúp bạn phát triển kỹ năng mới và tiến xa trong sự nghiệp.'
   },
 
   about: {
-    title: "About - Building the Future of Education", // Will become "About - Building the Future of Education | LMSHub"
+    title: 'About - Building the Future of Education', // Sẽ thành "About - Building the Future of Education | LMSHub"
     description:
-      "Discover how LMSHub is making quality education accessible to everyone. Our story, mission, and commitment to empowering learners worldwide since 2020.",
+      'Discover how LMSHub is making quality education accessible to everyone. Our story, mission, and commitment to empowering learners worldwide since 2020.'
   },
 
   courses: {
-    title: "Online Courses - Learn from Expert Instructors", // Will become "Online Courses - Learn from Expert Instructors | LMSHub"
+    title: 'Online Courses - Learn from Expert Instructors', // Sẽ thành "Online Courses - Learn from Expert Instructors | LMSHub"
     description:
-      "Browse hundreds of courses across technology, business, design, and more. Expert instructors, hands-on projects, and certificates to advance your career.",
+      'Browse hundreds of courses across technology, business, design, and more. Expert instructors, hands-on projects, and certificates to advance your career.'
   },
 
   blog: {
-    title: "Education Blog - Learning Tips & Industry Insights", // Will become "Education Blog - Learning Tips & Industry Insights | LMSHub"
+    title: 'Education Blog - Learning Tips & Industry Insights', // Sẽ thành "Education Blog - Learning Tips & Industry Insights | LMSHub"
     description:
-      "Stay ahead with learning strategies, industry trends, and expert insights. Practical tips to accelerate your professional growth and skill development.",
+      'Stay ahead with learning strategies, industry trends, and expert insights. Practical tips to accelerate your professional growth and skill development.'
   },
 
   contact: {
-    title: "Contact - Get Support & Connect with Us", // Will become "Contact - Get Support & Connect with Us | LMSHub"
+    title: 'Contact - Get Support & Connect with Us', // Sẽ thành "Contact - Get Support & Connect with Us | LMSHub"
     description:
-      "Need help with your learning journey? Get in touch with our support team. We're here to help you succeed and make the most of your educational experience.",
-  },
-};
+      "Need help with your learning journey? Get in touch with our support team. We're here to help you succeed and make the most of your educational experience."
+  }
+}
 
-// 🎯 Templates for Dynamic Pages
+// 🎯 Mẫu cho trang động
 export const SEO_TEMPLATES = {
   course: {
-    title: "%s - Online Course | LMSHub",
+    title: '%s - Online Course | LMSHub',
     description:
-      "Learn %s with our comprehensive online course. Expert instruction, practical projects, and certification upon completion.",
+      'Learn %s with our comprehensive online course. Expert instruction, practical projects, and certification upon completion.'
   },
   blog: {
-    title: "%s | LMSHub Education Blog",
+    title: '%s | LMSHub Education Blog',
     description:
-      "Read about %s and discover expert insights on education, learning strategies, and professional development from LMSHub.",
-  },
-};
+      'Read about %s and discover expert insights on education, learning strategies, and professional development from LMSHub.'
+  }
+}
 
-// 🏗️ Structured Data Templates (JSON-LD)
+// 🏗️ Mẫu dữ liệu có cấu trúc (JSON-LD)
 export const STRUCTURED_DATA = {
   organization: {
-    "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
+    '@context': 'https://schema.org',
+    '@type': 'EducationalOrganization',
     name: SEO_CONFIG.business.name,
     url: SEO_CONFIG.siteUrl,
     logo: `${SEO_CONFIG.siteUrl}/images/logo.png`,
     foundingDate: SEO_CONFIG.business.foundedYear.toString(),
     contactPoint: {
-      "@type": "ContactPoint",
-      contactType: "customer service",
-      email: SEO_CONFIG.business.email,
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: SEO_CONFIG.business.email
     },
     sameAs: [
-      `https://twitter.com/${SEO_CONFIG.social.twitter.replace("@", "")}`,
+      `https://twitter.com/${SEO_CONFIG.social.twitter.replace('@', '')}`,
       `https://facebook.com/${SEO_CONFIG.social.facebook}`,
       `https://instagram.com/${SEO_CONFIG.social.instagram}`,
       `https://linkedin.com/${SEO_CONFIG.social.linkedin}`,
-      `https://youtube.com/${SEO_CONFIG.social.youtube}`,
-    ],
+      `https://youtube.com/${SEO_CONFIG.social.youtube}`
+    ]
   },
 
   website: {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
     name: SEO_CONFIG.siteName,
     url: SEO_CONFIG.siteUrl,
     potentialAction: {
-      "@type": "SearchAction",
+      '@type': 'SearchAction',
       target: `${SEO_CONFIG.siteUrl}/search?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
+      'query-input': 'required name=search_term_string'
+    }
   },
 
-  // 📚 Course Schema Template
+  // 📚 Mẫu schema khóa học
   course: (course: {
-    title: string;
-    description: string;
-    slug: string;
-    thumbnail?: string;
-    instructor?: { name: string };
-    price?: number;
-    rating?: number;
+    title: string
+    description: string
+    slug: string
+    thumbnail?: string
+    instructor?: { name: string }
+    price?: number
+    rating?: number
   }) => ({
-    "@context": "https://schema.org",
-    "@type": "Course",
+    '@context': 'https://schema.org',
+    '@type': 'Course',
     name: course.title,
     description: course.description,
     provider: {
-      "@type": "EducationalOrganization",
+      '@type': 'EducationalOrganization',
       name: SEO_CONFIG.business.name,
-      url: SEO_CONFIG.siteUrl,
+      url: SEO_CONFIG.siteUrl
     },
     instructor: course.instructor
       ? {
-          "@type": "Person",
-          name: course.instructor.name,
+          '@type': 'Person',
+          name: course.instructor.name
         }
       : undefined,
     image: course.thumbnail,
     offers: course.price
       ? {
-          "@type": "Offer",
+          '@type': 'Offer',
           price: course.price,
-          priceCurrency: "USD",
+          priceCurrency: 'USD'
         }
       : undefined,
     aggregateRating: course.rating
       ? {
-          "@type": "AggregateRating",
-          ratingValue: course.rating,
+          '@type': 'AggregateRating',
+          ratingValue: course.rating
         }
-      : undefined,
+      : undefined
   }),
 
-  // 📝 Blog Post Schema Template
+  // 📝 Mẫu schema bài blog
   blogPost: (blog: {
-    title: string;
-    description: string;
-    slug: string;
-    thumbnail?: string;
-    author?: { name: string };
-    createdAt: string;
+    title: string
+    description: string
+    slug: string
+    thumbnail?: string
+    author?: { name: string }
+    createdAt: string
   }) => ({
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
     headline: blog.title,
     description: blog.description,
     image: blog.thumbnail,
     author: {
-      "@type": "Person",
-      name: blog.author?.name || SEO_CONFIG.business.name,
+      '@type': 'Person',
+      name: blog.author?.name || SEO_CONFIG.business.name
     },
     publisher: {
-      "@type": "Organization",
+      '@type': 'Organization',
       name: SEO_CONFIG.business.name,
       logo: {
-        "@type": "ImageObject",
-        url: `${SEO_CONFIG.siteUrl}/images/logo.png`,
-      },
+        '@type': 'ImageObject',
+        url: `${SEO_CONFIG.siteUrl}/images/logo.png`
+      }
     },
     datePublished: blog.createdAt,
     mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${SEO_CONFIG.siteUrl}/blogs/${blog.slug}`,
-    },
+      '@type': 'WebPage',
+      '@id': `${SEO_CONFIG.siteUrl}/blogs/${blog.slug}`
+    }
   }),
 
-  // 🍞 Breadcrumb Schema
+  // 🍞 Schema breadcrumb
   breadcrumbs: (items: Array<{ name: string; url: string }>) => ({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
     itemListElement: items.map((item, index) => ({
-      "@type": "ListItem",
+      '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: item.url,
-    })),
+      item: item.url
+    }))
   }),
 
-  // ❓ FAQ Schema Template
+  // ❓ Mẫu schema FAQ
   faq: (faqs: Array<{ question: string; answer: string }>) => ({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
     mainEntity: faqs.map((faq) => ({
-      "@type": "Question",
+      '@type': 'Question',
       name: faq.question,
       acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  }),
-};
+        '@type': 'Answer',
+        text: faq.answer
+      }
+    }))
+  })
+}
 
-// 🚀 Export aliases for backwards compatibility
-export const SCHEMA_ORG = STRUCTURED_DATA; // Keep old name working
-export const COURSE_SEO_TEMPLATE = SEO_TEMPLATES.course;
-export const BLOG_SEO_TEMPLATE = SEO_TEMPLATES.blog;
+// 🚀 Export alias để tương thích ngược
+export const SCHEMA_ORG = STRUCTURED_DATA // Giữ tên cũ vẫn hoạt động
+export const COURSE_SEO_TEMPLATE = SEO_TEMPLATES.course
+export const BLOG_SEO_TEMPLATE = SEO_TEMPLATES.blog

@@ -997,7 +997,7 @@ export class CourseService {
     }
 
     if (course.status !== CourseStatus.PUBLISHED) {
-      throw new ValidationError('Course is not published', ErrorCodes.UNAUTHORIZED_ACTION)
+      throw new ValidationError('Khoa hoc chua duoc xuat ban', ErrorCodes.UNAUTHORIZED_ACTION)
     }
 
     // Check if user is already enrolled
@@ -1029,7 +1029,7 @@ export class CourseService {
     // Check if any courses have enrolled users
     const enrolledUsersCount = await User.countDocuments({ courses: { $in: validIds } })
     if (enrolledUsersCount > 0) {
-      throw new ConflictError('Cannot delete courses that have enrolled users', ErrorCodes.UNAUTHORIZED_ACTION)
+      throw new ConflictError('Không thể xóa khóa học đã có người đăng ký', ErrorCodes.UNAUTHORIZED_ACTION)
     }
 
     // Remove courses from user arrays

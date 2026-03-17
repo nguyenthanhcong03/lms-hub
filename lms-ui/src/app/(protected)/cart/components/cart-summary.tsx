@@ -41,11 +41,11 @@ const calculateDiscountAmount = (
 ): number => {
   let baseAmount = 0
 
-  // If courseIds is empty or undefined, apply to entire cart
+  // Nếu courseIds rỗng hoặc không có, áp dụng cho toàn bộ giỏ hàng
   if (!coupon.courseIds || coupon.courseIds.length === 0) {
     baseAmount = cartItems.reduce((sum, item) => sum + item.price, 0)
   } else {
-    // Apply discount only to specific courses that match the coupon
+    // Chỉ áp dụng giảm giá cho các khóa học phù hợp với coupon
     const applicableCourseIds = applicableCourses.map((course) => course._id)
 
     baseAmount = cartItems
@@ -53,12 +53,12 @@ const calculateDiscountAmount = (
       .reduce((sum, item) => sum + item.price, 0)
   }
 
-  // Calculate discount based on type
+  // Tính số tiền giảm theo loại coupon
   if (coupon.discountType === 'fixed') {
-    // For fixed discount, return the fixed value but don't exceed the base amount
+    // Với giảm giá cố định, trả về giá trị cố định nhưng không vượt quá số tiền gốc
     return Math.min(coupon.discountValue, baseAmount)
   } else if (coupon.discountType === 'percent') {
-    // For percentage discount, calculate percentage of base amount
+    // Với giảm giá phần trăm, tính theo phần trăm của số tiền gốc
     return (baseAmount * coupon.discountValue) / 100
   }
 
@@ -69,7 +69,7 @@ interface CartSummaryProps {
   cart: Cart
 }
 
-// Cart summary component - Arrow function
+// Component tóm tắt giỏ hàng
 const CartSummary = ({ cart }: CartSummaryProps) => {
   const [selectedDiscountCode, setSelectedDiscountCode] = useState<string>('')
   const [manualDiscountCode, setManualDiscountCode] = useState<string>('')
@@ -81,7 +81,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
 
   const checkout = useCreateOrder()
 
-  // Fetch active coupons from API
+  // Lấy danh sách coupon đang hoạt động từ API
   const { data: couponsData, isLoading: isCouponsLoading } = useActiveCoupons()
 
   const validateCoupon = useValidateCoupon()
@@ -105,7 +105,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
 
     setApplyingCouponCode(code.trim())
 
-    // Validate coupon through API
+    // Kiểm tra coupon qua API
     validateCoupon.mutate(
       {
         code: code.trim(),
@@ -115,7 +115,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
         onSuccess: (response: ValidateCouponResponse) => {
           const coupon = response
 
-          // Calculate discount amount based on coupon type and courseIds
+          // Tính số tiền giảm dựa trên loại coupon và courseIds
           const discountAmount = calculateDiscountAmount(
             {
               discountType: coupon.discountType,
@@ -126,7 +126,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
             coupon.courseIds
           )
 
-          // Apply discount
+          // Áp dụng giảm giá
           setAppliedDiscount({
             code: coupon.code,
             discountAmount,
@@ -148,7 +148,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
     setSelectedDiscountCode('')
     setManualDiscountCode('')
     setApplyingCouponCode('')
-    toast.success('Discount code removed')
+    toast.success('Đã gỡ mã giảm giá')
   }
 
   const handleCheckout = () => {
@@ -173,7 +173,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
   const paymentMethods = [
     {
       id: 'bank_transfer' as const,
-      name: 'Bank',
+      name: 'Ngân hàng',
       description: 'Chuyển khoản ngân hàng',
       icon: Banknote,
       bgColor: 'bg-green-50',
@@ -197,16 +197,16 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
   return (
     <div className='rounded-xs border border-gray-200 bg-white shadow-md sm:shadow-lg lg:sticky lg:top-24'>
       <div className='space-y-3 p-3 sm:space-y-4 sm:p-4'>
-        {/* Summary Header */}
+        {/* Phần đầu tóm tắt */}
         <div className='border-b border-gray-100 pb-2 text-center sm:pb-3'>
           <h3 className='mb-0.5 text-base font-bold text-gray-900 sm:mb-1 sm:text-lg'>Tóm tắt đơn hàng</h3>
           <p className='text-[10px] text-gray-600 sm:text-xs'>Xem lại các mặt hàng của bạn và hoàn tất việc mua sắm</p>
         </div>
 
-        {/* Cart Totals */}
+        {/* Tổng tiền giỏ hàng */}
         <CartTotals summary={summary} appliedDiscount={appliedDiscount} onRemoveDiscount={removeDiscount} />
 
-        {/* Discount Section */}
+        {/* Khu vực mã giảm giá */}
         <div className='space-y-2 sm:space-y-3'>
           <h4 className='text-[10px] font-semibold text-gray-900 sm:text-xs'>Có mã giảm giá?</h4>
           <Sheet>
@@ -234,7 +234,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
           </Sheet>
         </div>
 
-        {/* Payment Method Selection */}
+        {/* Chọn phương thức thanh toán */}
         <div className='space-y-3 sm:space-y-4'>
           <h4 className='text-xs font-semibold text-gray-900 sm:text-sm'>Phương thức thanh toán</h4>
           <div className='grid grid-cols-2 gap-2 sm:gap-3'>
@@ -253,7 +253,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
                   }`}
                   onClick={() => setSelectedPaymentMethod(method.id)}
                 >
-                  {/* Selection indicator */}
+                  {/* Dấu hiệu đang chọn */}
                   {isSelected && (
                     <div className='absolute top-1.5 right-1.5 sm:top-2 sm:right-2'>
                       <div
@@ -299,7 +299,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
           </div>
         </div>
 
-        {/* Checkout Actions */}
+        {/* Nút thanh toán */}
         <div className='border-t border-gray-100 pt-2 sm:pt-3'>
           <CheckoutActions isCheckoutPending={checkout.isPending} onCheckout={handleCheckout} />
         </div>

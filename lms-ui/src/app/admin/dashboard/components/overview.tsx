@@ -1,103 +1,86 @@
-"use client";
+'use client'
 
-import dynamic from "next/dynamic";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {useOverviewStats} from "@/hooks/use-dashboard";
-import {Skeleton} from "@/components/ui/skeleton";
-import type {OverviewDataItem} from "@/types/dashboard";
+import dynamic from 'next/dynamic'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useOverviewStats } from '@/hooks/use-dashboard'
+import { Skeleton } from '@/components/ui/skeleton'
+import type { OverviewDataItem } from '@/types/dashboard'
 
-// 1. Dynamically import the component
-const Chart = dynamic(() => import("./dynamic-bar-chart"), {
-	// 2. CRITICAL: Prevents the large Recharts bundle from being included
-	//    in the server's initial HTML or page-level JavaScript bundle.
-	ssr: false,
-	// 3. Optional: Provide a fallback UI while the chart bundle loads
-	loading: () => (
-		<div className="h-[350px] bg-gray-50 animate-pulse rounded-md flex items-center justify-center">
-			<p className="text-sm text-muted-foreground">Loading chart...</p>
-		</div>
-	),
-});
+// 1. Import động component
+const Chart = dynamic(() => import('./dynamic-bar-chart'), {
+  // 2. QUAN TRỌNG: Tránh đưa bundle Recharts lớn vào HTML ban đầu
+  //    hoặc JavaScript cấp trang từ phía server.
+  ssr: false,
+  // 3. Tùy chọn: Cung cấp UI dự phòng trong lúc tải chart
+  loading: () => (
+    <div className='flex h-[350px] animate-pulse items-center justify-center rounded-md bg-gray-50'>
+      <p className='text-muted-foreground text-sm'>Đang tải biểu đồ...</p>
+    </div>
+  )
+})
 
 export default function Overview() {
-	// Data can be fetched efficiently on the server (Server Component)
-	const {data: overviewData, isLoading} = useOverviewStats();
+  // Dữ liệu có thể được lấy hiệu quả từ phía server (Server Component)
+  const { data: overviewData, isLoading } = useOverviewStats()
 
-	const renderChartContent = () => {
-		if (isLoading) {
-			return (
-				<div className="h-[350px] flex flex-col">
-					<div className="flex justify-between items-end mb-4 h-6">
-						<Skeleton className="h-3 w-8" />
-						<Skeleton className="h-3 w-10" />
-						<Skeleton className="h-3 w-8" />
-						<Skeleton className="h-3 w-6" />
-					</div>
-					<div className="flex-1 flex items-end justify-between gap-2 mb-4">
-						{Array.from({length: 12}).map((_, i) => {
-							const heights = [
-								"h-16",
-								"h-20",
-								"h-24",
-								"h-32",
-								"h-40",
-								"h-48",
-								"h-56",
-								"h-16",
-								"h-12",
-								"h-8",
-								"h-20",
-								"h-28",
-							];
-							return (
-								<Skeleton key={i} className={`w-6 ${heights[i]} rounded-t`} />
-							);
-						})}
-					</div>
-					<div className="flex justify-between">
-						{[
-							"Jan",
-							"Feb",
-							"Mar",
-							"Apr",
-							"May",
-							"Jun",
-							"Jul",
-							"Aug",
-							"Sep",
-							"Oct",
-							"Nov",
-							"Dec",
-						].map((month) => (
-							<Skeleton key={month} className="h-3 w-6" />
-						))}
-					</div>
-				</div>
-			);
-		}
+  const renderChartContent = () => {
+    if (isLoading) {
+      return (
+        <div className='flex h-[350px] flex-col'>
+          <div className='mb-4 flex h-6 items-end justify-between'>
+            <Skeleton className='h-3 w-8' />
+            <Skeleton className='h-3 w-10' />
+            <Skeleton className='h-3 w-8' />
+            <Skeleton className='h-3 w-6' />
+          </div>
+          <div className='mb-4 flex flex-1 items-end justify-between gap-2'>
+            {Array.from({ length: 12 }).map((_, i) => {
+              const heights = [
+                'h-16',
+                'h-20',
+                'h-24',
+                'h-32',
+                'h-40',
+                'h-48',
+                'h-56',
+                'h-16',
+                'h-12',
+                'h-8',
+                'h-20',
+                'h-28'
+              ]
+              return <Skeleton key={i} className={`w-6 ${heights[i]} rounded-t`} />
+            })}
+          </div>
+          <div className='flex justify-between'>
+            {['Th1', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'].map((month) => (
+              <Skeleton key={month} className='h-3 w-6' />
+            ))}
+          </div>
+        </div>
+      )
+    }
 
-		const chartData: OverviewDataItem[] = overviewData || [];
+    const chartData: OverviewDataItem[] = overviewData || []
 
-		if (chartData.length === 0) {
-			return (
-				<div className="flex justify-center items-center h-[350px]">
-					<p className="text-center text-muted-foreground">
-						No overview data available.
-					</p>
-				</div>
-			);
-		}
+    if (chartData.length === 0) {
+      return (
+        <div className='flex h-[350px] items-center justify-center'>
+          <p className='text-muted-foreground text-center'>Không có dữ liệu tổng quan.</p>
+        </div>
+      )
+    }
 
-		// The Recharts component is now lazy-loaded
-		return <Chart data={chartData} />;
-	};
+    // Component Recharts được tải lười
+    return <Chart data={chartData} />
+  }
 
-	return (
-		<Card className="col-span-1 lg:col-span-4">
-			<CardHeader>
-				<CardTitle>Overview</CardTitle>
-			</CardHeader>
-			<CardContent className="ps-2">{renderChartContent()}</CardContent>
-		</Card>
-	);
+  return (
+    <Card className='col-span-1 lg:col-span-4'>
+      <CardHeader>
+        <CardTitle>Tổng quan</CardTitle>
+      </CardHeader>
+      <CardContent className='ps-2'>{renderChartContent()}</CardContent>
+    </Card>
+  )
 }

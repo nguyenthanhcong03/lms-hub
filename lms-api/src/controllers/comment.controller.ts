@@ -23,14 +23,14 @@ export class CommentController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const commentData: CreateCommentInput = req.body
 
     const comment = await CommentService.createComment(userId, commentData)
 
-    sendSuccess.created(res, 'Comment created successfully', comment)
+    sendSuccess.created(res, 'Comment được tạo thành công', comment)
   }
 
   /**
@@ -41,7 +41,7 @@ export class CommentController {
 
     const comment = await CommentService.getCommentById(id)
 
-    sendSuccess.ok(res, 'Comment retrieved successfully', { comment })
+    sendSuccess.ok(res, 'Comment được lấy thành công', { comment })
   }
 
   /**
@@ -53,7 +53,7 @@ export class CommentController {
 
     const result = await CommentService.getLessonComments(lessonId, query)
 
-    sendSuccess.ok(res, 'Lesson comments retrieved successfully', result)
+    sendSuccess.ok(res, 'Lesson comments được lấy thành công', result)
   }
 
   /**
@@ -65,7 +65,7 @@ export class CommentController {
 
     const result = await CommentService.getUserComments(userId, query)
 
-    sendSuccess.ok(res, 'User comments retrieved successfully', result)
+    sendSuccess.ok(res, 'User comments được lấy thành công', result)
   }
 
   /**
@@ -74,7 +74,7 @@ export class CommentController {
   static async getMyComments(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' })
+      res.status(401).json({ success: false, message: 'Không có quyền truy cập' })
       return
     }
 
@@ -82,7 +82,7 @@ export class CommentController {
 
     const result = await CommentService.getUserComments(userId, query)
 
-    sendSuccess.ok(res, 'Your comments retrieved successfully', result)
+    sendSuccess.ok(res, 'Your comments được lấy thành công', result)
   }
 
   /**
@@ -93,7 +93,7 @@ export class CommentController {
 
     const result = await CommentService.getComments(query)
 
-    sendSuccess.ok(res, 'Comments retrieved successfully', result)
+    sendSuccess.ok(res, 'Comments được lấy thành công', result)
   }
 
   /**
@@ -103,7 +103,7 @@ export class CommentController {
     const { id } = req.params
     const userId = req.user?.userId
     if (!userId) {
-      res.status(401).json({ success: false, message: 'Unauthorized' })
+      res.status(401).json({ success: false, message: 'Không có quyền truy cập' })
       return
     }
 
@@ -111,7 +111,7 @@ export class CommentController {
 
     const comment = await CommentService.updateComment(id, userId, updateData)
 
-    sendSuccess.ok(res, 'Comment updated successfully', comment)
+    sendSuccess.ok(res, 'Comment được cập nhật thành công', comment)
   }
 
   /**
@@ -122,15 +122,14 @@ export class CommentController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const { deleteReplies } = req.query
 
     await CommentService.deleteComment(id, userId, deleteReplies === 'true')
 
-    const message =
-      deleteReplies === 'true' ? 'Comment and replies deleted successfully' : 'Comment deleted successfully'
+    const message = deleteReplies === 'true' ? 'Comment and replies được xóa thành công' : 'Comment được xóa thành công'
 
     sendSuccess.ok(res, message)
   }
@@ -144,7 +143,7 @@ export class CommentController {
 
     const result = await CommentService.getCommentReplies(commentId, query)
 
-    sendSuccess.ok(res, 'Comment replies retrieved successfully', result)
+    sendSuccess.ok(res, 'Comment replies được lấy thành công', result)
   }
 
   /**
@@ -155,14 +154,14 @@ export class CommentController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const reactionData: AddReactionInput = req.body
 
     const comment = await CommentService.toggleReaction(id, userId, reactionData)
 
-    sendSuccess.ok(res, 'Reaction toggled successfully', comment)
+    sendSuccess.ok(res, 'Phản ứng đã được chuyển đổi thành công', comment)
   }
 
   /**
@@ -173,14 +172,14 @@ export class CommentController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const reactionData: RemoveReactionInput = req.body
 
     const comment = await CommentService.removeReaction(id, userId, reactionData)
 
-    sendSuccess.ok(res, 'Reaction removed successfully', { comment })
+    sendSuccess.ok(res, 'Reaction được xóa thành công', { comment })
   }
 
   /**
@@ -192,7 +191,7 @@ export class CommentController {
 
     const comment = await CommentService.updateCommentStatus(id, status)
 
-    sendSuccess.ok(res, `Comment ${status} successfully`, comment)
+    sendSuccess.ok(res, `Bình luận đã được ${status} thành công`, comment)
   }
 
   /**
@@ -204,6 +203,6 @@ export class CommentController {
 
     const result = await CommentService.getCommentReactions(id, query)
 
-    sendSuccess.ok(res, 'Comment reactions retrieved successfully', result)
+    sendSuccess.ok(res, 'Comment reactions được lấy thành công', result)
   }
 }

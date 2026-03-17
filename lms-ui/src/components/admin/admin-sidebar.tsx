@@ -120,7 +120,7 @@ export function AdminSidebar() {
     router.push('/auth/sign-in')
   }
 
-  // Generate initials from username
+  // Lấy các ký tự đầu từ tên người dùng
   const initials = user?.username?.slice(0, 2).toUpperCase() || 'AD'
 
   return (
@@ -177,7 +177,7 @@ export function AdminSidebar() {
             <p className='truncate text-sm font-medium'>{user?.username}</p>
             <p className='text-muted-foreground truncate text-xs'>{user?.email}</p>
           </div>
-          <button onClick={handleLogout} className='text-muted-foreground hover:text-foreground' title='Logout'>
+          <button onClick={handleLogout} className='text-muted-foreground hover:text-foreground' title='Đăng xuất'>
             <MdLogout className='h-4 w-4' />
           </button>
         </div>

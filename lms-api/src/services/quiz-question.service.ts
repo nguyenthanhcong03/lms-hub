@@ -158,7 +158,7 @@ export class QuizQuestionService {
       const invalidAnswers = newCorrectAnswers.filter((answer) => answer > maxIndex)
       if (invalidAnswers.length > 0) {
         throw new ValidationError(
-          `Invalid correct answer indices: ${invalidAnswers.join(', ')}. Must be between 0 and ${maxIndex}`,
+          `Chỉ số đáp án đúng không hợp lệ: ${invalidAnswers.join(', ')}. Phải nằm trong khoảng 0 đến ${maxIndex}`,
           ErrorCodes.INVALID_CORRECT_ANSWER_INDEX
         )
       }

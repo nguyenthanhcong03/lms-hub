@@ -1,27 +1,27 @@
-import { ROUTE_CONFIG } from "@/configs/routes";
-import Link from "next/link";
-import { GiGraduateCap } from "react-icons/gi";
+import { ROUTE_CONFIG } from '@/configs/routes'
+import Link from 'next/link'
+import { GiGraduateCap } from 'react-icons/gi'
 
 export function HeaderLogo() {
   return (
     <Link
       href={ROUTE_CONFIG.HOME}
-      className="flex items-center space-x-2 sm:space-x-4 group min-w-fit focus:outline-none rounded-lg"
-      aria-label="LMSHub - Go to homepage"
+      className='group flex min-w-fit items-center space-x-2 rounded-lg focus:outline-none sm:space-x-4'
+      aria-label='LMSHub - Về trang chủ'
     >
-      <div className="relative">
-        {/* Enhanced logo with glass effect */}
-        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 relative overflow-hidden">
-          <div className="absolute inset-0 bg-primary"></div>
-          <span className="text-white font-bold text-lg relative z-10" aria-hidden="true">
-            <GiGraduateCap size={16} className="sm:w-6 sm:h-6" />
+      <div className='relative'>
+        {/* Logo tăng cường với hiệu ứng kính */}
+        <div className='bg-primary relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-xl shadow-lg transition-all duration-300 group-hover:shadow-xl sm:h-10 sm:w-10'>
+          <div className='bg-primary absolute inset-0'></div>
+          <span className='relative z-10 text-lg font-bold text-white' aria-hidden='true'>
+            <GiGraduateCap size={16} className='sm:h-6 sm:w-6' />
           </span>
         </div>
       </div>
-      <div className="hidden sm:block">
-        <span className="text-xl sm:text-2xl font-bold bg-primary bg-clip-text text-transparent">LMS Hub</span>
-        <div className="text-xs text-gray-500 -mt-1 font-medium tracking-wide">Learn. Grow. Succeed.</div>
+      <div className='hidden sm:block'>
+        <span className='bg-primary bg-clip-text text-xl font-bold text-transparent sm:text-2xl'>LMS Hub</span>
+        <div className='-mt-1 text-xs font-medium tracking-wide text-gray-500'>Học hỏi. Phát triển. Thành công.</div>
       </div>
     </Link>
-  );
+  )
 }

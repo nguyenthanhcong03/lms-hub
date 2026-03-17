@@ -14,12 +14,12 @@ export class TrackController {
   static async toggleTrack(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const track = await TrackService.toggleTrack(req.body, userId)
 
-    const message = track ? 'Track created successfully' : 'Track removed successfully'
+    const message = track ? 'Track được tạo thành công' : 'Track được xóa thành công'
 
     if (track) {
       sendSuccess.created(res, message, { track })
@@ -42,12 +42,12 @@ export class TrackController {
   static async getTracks(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const result = await TrackService.getTracks(userId, req.query)
 
-    sendSuccess.ok(res, 'Tracks retrieved successfully', result)
+    sendSuccess.ok(res, 'Tracks được lấy thành công', result)
   }
 
   /**
@@ -56,12 +56,12 @@ export class TrackController {
   static async getCourseTrack(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const tracks = await TrackService.getCourseTrack(userId, req.query as { courseId: string })
 
-    sendSuccess.ok(res, 'Course tracks retrieved successfully', { tracks })
+    sendSuccess.ok(res, 'Course tracks được lấy thành công', { tracks })
   }
 
   /**
@@ -70,12 +70,12 @@ export class TrackController {
   static async getUserTracks(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const result = await TrackService.getUserTracks(userId, req.query)
 
-    sendSuccess.ok(res, 'User tracks retrieved successfully', result)
+    sendSuccess.ok(res, 'User tracks được lấy thành công', result)
   }
 
   /**
@@ -84,13 +84,13 @@ export class TrackController {
   static async getTrackById(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const { trackId } = req.params
     const track = await TrackService.getTrackById(trackId, userId)
 
-    sendSuccess.ok(res, 'Track retrieved successfully', { track })
+    sendSuccess.ok(res, 'Track được lấy thành công', { track })
   }
 
   /**
@@ -99,12 +99,12 @@ export class TrackController {
   static async deleteTrack(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User not authenticated', 401)
+      throw new AppError('Người dùng chưa được xác thực', 401)
     }
 
     const { trackId } = req.params
     await TrackService.deleteTrack(trackId, userId)
 
-    sendSuccess.ok(res, 'Track deleted successfully')
+    sendSuccess.ok(res, 'Track được xóa thành công')
   }
 }

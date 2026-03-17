@@ -58,7 +58,7 @@ router.use(loadUserPermissions)
 // Get current user profile
 router.get('/me', asyncHandler(AuthController.getAuthMe))
 
-// Logout current user
+// Đăng xuất người dùng hiện tại
 router.post('/logout', asyncHandler(AuthController.logout))
 
 // Update user profile

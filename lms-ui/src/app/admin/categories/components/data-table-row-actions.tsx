@@ -1,56 +1,56 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { PERMISSIONS } from "@/configs/permission";
-import { useAuthStore } from "@/stores/auth-store";
-import { ICategory } from "@/types/category";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { Row } from "@tanstack/react-table";
-import { useState } from "react";
-import CategoriesActionDialog from "./categories-action-dialog";
-import CategoriesDeleteDialog from "./categories-delete-dialog";
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { PERMISSIONS } from '@/configs/permission'
+import { useAuthStore } from '@/stores/auth-store'
+import { ICategory } from '@/types/category'
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { IconEdit, IconTrash } from '@tabler/icons-react'
+import { Row } from '@tanstack/react-table'
+import { useState } from 'react'
+import CategoriesActionDialog from './categories-action-dialog'
+import CategoriesDeleteDialog from './categories-delete-dialog'
 
 interface DataTableRowActionsProps {
-  row: Row<ICategory>;
+  row: Row<ICategory>
 }
 
 const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const hasPermission = useAuthStore((state) => state.hasPermission);
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const hasPermission = useAuthStore((state) => state.hasPermission)
 
-  const category = row.original;
+  const category = row.original
 
   const handleEditClick = () => {
-    setEditDialogOpen(true);
-  };
+    setEditDialogOpen(true)
+  }
 
   const handleDeleteClick = () => {
-    setDeleteDialogOpen(true);
-  };
+    setDeleteDialogOpen(true)
+  }
 
   return (
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="data-[state=open]:bg-muted flex h-8 w-8 p-0">
-            <DotsHorizontalIcon className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
+          <Button variant='ghost' className='data-[state=open]:bg-muted flex h-8 w-8 p-0'>
+            <DotsHorizontalIcon className='h-4 w-4' />
+            <span className='sr-only'>Mở menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuContent align='end' className='w-[160px]'>
           {hasPermission(PERMISSIONS.CATEGORY_CREATE) && (
             <DropdownMenuItem onClick={handleEditClick}>
-              Edit
+              Chỉnh sửa
               <DropdownMenuShortcut>
                 <IconEdit size={16} />
               </DropdownMenuShortcut>
@@ -60,8 +60,8 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
             <DropdownMenuSeparator />
           )}
           {hasPermission(PERMISSIONS.CATEGORY_DELETE) && (
-            <DropdownMenuItem onClick={handleDeleteClick} className="text-red-500!">
-              Delete
+            <DropdownMenuItem onClick={handleDeleteClick} className='text-red-500!'>
+              Xóa
               <DropdownMenuShortcut>
                 <IconTrash size={16} />
               </DropdownMenuShortcut>
@@ -70,22 +70,22 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Edit Dialog - Only render when UPDATE permission and dialog is open */}
+      {/* Hộp thoại chỉnh sửa - chỉ hiển thị khi có quyền cập nhật và hộp thoại đang mở */}
       {hasPermission(PERMISSIONS.CATEGORY_UPDATE) && editDialogOpen && (
         <CategoriesActionDialog
-          mode="edit"
+          mode='edit'
           category={category}
           open={editDialogOpen}
           onOpenChange={setEditDialogOpen}
         />
       )}
 
-      {/* Delete Dialog - Only render when DELETE permission and dialog is open */}
+      {/* Hộp thoại xóa - chỉ hiển thị khi có quyền xóa và hộp thoại đang mở */}
       {hasPermission(PERMISSIONS.CATEGORY_DELETE) && deleteDialogOpen && (
         <CategoriesDeleteDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} currentRow={category} />
       )}
     </>
-  );
-};
+  )
+}
 
-export default DataTableRowActions;
+export default DataTableRowActions

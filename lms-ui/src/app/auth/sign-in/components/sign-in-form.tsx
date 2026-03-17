@@ -22,7 +22,7 @@ const formSchema = yup.object({
 
 type FormData = yup.InferType<typeof formSchema>
 
-// Sign-in form component - Arrow function
+// Component form đăng nhập
 const SignInForm = ({ className, ...props }: SignInFormProps) => {
   const loginMutation = useLogin()
 
@@ -51,7 +51,7 @@ const SignInForm = ({ className, ...props }: SignInFormProps) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder='name@example.com' {...field} />
+                <Input placeholder='Nhập email của bạn' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -62,9 +62,9 @@ const SignInForm = ({ className, ...props }: SignInFormProps) => {
           name='password'
           render={({ field }) => (
             <FormItem className='relative'>
-              <FormLabel>Mật Khẩu</FormLabel>
+              <FormLabel>Mật khẩu</FormLabel>
               <FormControl>
-                <PasswordInput placeholder='********' {...field} />
+                <PasswordInput placeholder='Nhập mật khẩu của bạn' {...field} />
               </FormControl>
               <FormMessage />
               <Link
@@ -77,7 +77,7 @@ const SignInForm = ({ className, ...props }: SignInFormProps) => {
           )}
         />
         <Button className='mt-2' disabled={loginMutation.isPending}>
-          {loginMutation.isPending ? 'Đang đăng nhập...' : 'Đăng Nhập'}
+          {loginMutation.isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </Button>
       </form>
     </Form>

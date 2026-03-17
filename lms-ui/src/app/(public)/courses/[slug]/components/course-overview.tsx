@@ -64,9 +64,9 @@ const CourseOverview = ({ course, activeTab, onTabChange }: CourseOverviewProps)
         </div>
       </div>
 
-      {/* Content */}
+      {/* Nội dung */}
       <div className="p-4 sm:p-6">
-        {/* OVERVIEW */}
+        {/* TỔNG QUAN */}
         {activeTab === "overview" && (
           <div className="space-y-6">
             <div>
@@ -97,12 +97,12 @@ const CourseOverview = ({ course, activeTab, onTabChange }: CourseOverviewProps)
                   >
                     {isDescriptionExpanded ? (
                       <>
-                        Show Less
+                        Thu gọn
                         <ChevronUp className="h-4 w-4" />
                       </>
                     ) : (
                       <>
-                        Show More
+                        Xem thêm
                         <ChevronDown className="h-4 w-4" />
                       </>
                     )}
@@ -111,13 +111,13 @@ const CourseOverview = ({ course, activeTab, onTabChange }: CourseOverviewProps)
               )}
             </div>
 
-            {/* Features */}
+            {/* Điểm nổi bật */}
             <div>
               <h4 className="text-base font-semibold text-foreground mb-3">Khóa học này bao gồm:</h4>
 
               <div className="grid sm:grid-cols-2 gap-3">
                 {[
-                  `${formatDuration(course.totalDuration || 0)} video`,
+                  `${formatDuration(course.totalDuration || 0)} video bài giảng`,
                   `${course.totalLessons || 0} bài học`,
                   "Truy cập trọn đời",
                   "Xem trên mobile và TV",
@@ -134,7 +134,7 @@ const CourseOverview = ({ course, activeTab, onTabChange }: CourseOverviewProps)
           </div>
         )}
 
-        {/* REQUIREMENTS */}
+        {/* YÊU CẦU */}
         {activeTab === "requirements" && (
           <div className="space-y-4">
             <h3 className="text-lg sm:text-xl font-semibold text-foreground">Yêu cầu</h3>
@@ -153,7 +153,7 @@ const CourseOverview = ({ course, activeTab, onTabChange }: CourseOverviewProps)
           </div>
         )}
 
-        {/* BENEFITS */}
+        {/* LỢI ÍCH */}
         {activeTab === "benefits" && (
           <div className="space-y-4">
             <h3 className="text-lg sm:text-xl font-semibold text-foreground">Lợi ích</h3>
@@ -175,7 +175,7 @@ const CourseOverview = ({ course, activeTab, onTabChange }: CourseOverviewProps)
           </div>
         )}
 
-        {/* TECHNIQUES */}
+        {/* KỸ THUẬT */}
         {activeTab === "techniques" && (
           <div className="space-y-4">
             <h3 className="text-lg sm:text-xl font-semibold text-foreground">Các kỹ thuật</h3>
@@ -183,7 +183,7 @@ const CourseOverview = ({ course, activeTab, onTabChange }: CourseOverviewProps)
             <div className="space-y-3">
               {(course.info?.techniques?.length
                 ? course.info.techniques
-                : ["Best practices trong ngành", "Kỹ thuật phát triển hiện đại"]
+                    "Thực hành tốt trong ngành", "Kỹ thuật phát triển hiện đại"]
               ).map((technique: string, index: number) => (
                 <div
                   key={index}
@@ -200,10 +200,10 @@ const CourseOverview = ({ course, activeTab, onTabChange }: CourseOverviewProps)
           </div>
         )}
 
-        {/* DOCUMENTS */}
+        {/* TÀI LIỆU */}
         {activeTab === "documents" && (
           <div className="space-y-4">
-            <h3 className="text-lg sm:text-xl font-semibold text-foreground">Course Documents & Resources</h3>
+            <h3 className="text-lg sm:text-xl font-semibold text-foreground">Tài liệu và nguồn học tập</h3>
 
             <div className="space-y-3">
               {(course.info?.documents?.length
@@ -223,7 +223,7 @@ const CourseOverview = ({ course, activeTab, onTabChange }: CourseOverviewProps)
           </div>
         )}
 
-        {/* QA */}
+        {/* HỎI ĐÁP */}
         {activeTab === "qa" && (
           <div className="space-y-4">
             <h3 className="text-lg sm:text-xl font-semibold text-foreground">Câu hỏi thường gặp</h3>

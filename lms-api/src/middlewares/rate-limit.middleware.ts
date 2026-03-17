@@ -3,10 +3,10 @@ import { Request, Response, NextFunction } from 'express'
 import { getEnvironmentConfig, RATE_LIMIT_HEADERS } from '../configs/rate-limit.config'
 import { RateLimitError, ErrorCodes } from '../utils/errors'
 
-// Get environment-specific configuration
+// Lấy cấu hình theo từng môi trường
 const config = getEnvironmentConfig()
 
-// Helper function to create rate limit handler following project error structure
+// Hàm hỗ trợ tạo handler giới hạn tỷ lệ theo cấu trúc lỗi của dự án
 const createRateLimitHandler = (errorMessage: string, defaultRetryAfter: number) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const retryAfter = req.rateLimit?.resetTime
@@ -26,7 +26,7 @@ const createRateLimitHandler = (errorMessage: string, defaultRetryAfter: number)
   }
 }
 
-// Default rate limiter - general API usage
+// Rate limiter mặc định cho việc sử dụng API chung
 export const defaultRateLimit = rateLimit({
   windowMs: config.DEFAULT.windowMs,
   limit: config.DEFAULT.limit,
@@ -38,7 +38,7 @@ export const defaultRateLimit = rateLimit({
   handler: createRateLimitHandler(config.DEFAULT.message, Math.ceil(config.DEFAULT.windowMs / 1000))
 })
 
-// Strict rate limiter for authentication endpoints
+// Rate limiter nghiêm ngặt cho các endpoint xác thực
 export const authRateLimit = rateLimit({
   windowMs: config.AUTH.windowMs,
   limit: config.AUTH.limit,
@@ -51,7 +51,7 @@ export const authRateLimit = rateLimit({
   handler: createRateLimitHandler(config.AUTH.message, Math.ceil(config.AUTH.windowMs / 1000))
 })
 
-// Password reset rate limiter
+// Rate limiter cho tạo tài khoản
 export const passwordResetRateLimit = rateLimit({
   windowMs: config.PASSWORD_RESET.windowMs,
   limit: config.PASSWORD_RESET.limit,
@@ -63,7 +63,7 @@ export const passwordResetRateLimit = rateLimit({
   handler: createRateLimitHandler(config.PASSWORD_RESET.message, Math.ceil(config.PASSWORD_RESET.windowMs / 1000))
 })
 
-// Payment rate limiter
+// Rate limiter cho đặt lại mật khẩu
 export const paymentRateLimit = rateLimit({
   windowMs: config.PAYMENT.windowMs,
   limit: config.PAYMENT.limit,
@@ -75,7 +75,7 @@ export const paymentRateLimit = rateLimit({
   handler: createRateLimitHandler(config.PAYMENT.message, Math.ceil(config.PAYMENT.windowMs / 1000))
 })
 
-// Search rate limiter
+// Rate limiter cho thanh toán
 export const searchRateLimit = rateLimit({
   windowMs: config.SEARCH.windowMs,
   limit: config.SEARCH.limit,
@@ -87,7 +87,7 @@ export const searchRateLimit = rateLimit({
   handler: createRateLimitHandler(config.SEARCH.message, Math.ceil(config.SEARCH.windowMs / 1000))
 })
 
-// Upload rate limiter (for file uploads, comments, etc.)
+// Rate limiter cho tìm kiếm
 export const uploadRateLimit = rateLimit({
   windowMs: config.UPLOAD.windowMs,
   limit: config.UPLOAD.limit,
@@ -99,19 +99,7 @@ export const uploadRateLimit = rateLimit({
   handler: createRateLimitHandler(config.UPLOAD.message, Math.ceil(config.UPLOAD.windowMs / 1000))
 })
 
-// Chatbot rate limiter
-export const chatbotRateLimit = rateLimit({
-  windowMs: config.CHATBOT.windowMs,
-  limit: config.CHATBOT.limit,
-  message: {
-    error: config.CHATBOT.message,
-    retryAfter: Math.ceil(config.CHATBOT.windowMs / 1000)
-  },
-  ...RATE_LIMIT_HEADERS,
-  handler: createRateLimitHandler(config.CHATBOT.message, Math.ceil(config.CHATBOT.windowMs / 1000))
-})
-
-// Create account rate limiter
+// Rate limiter cho tải lên
 export const createAccountRateLimit = rateLimit({
   windowMs: config.CREATE_ACCOUNT.windowMs,
   limit: config.CREATE_ACCOUNT.limit,

@@ -1,26 +1,26 @@
-"use client";
+'use client'
 
-import dynamic from "next/dynamic";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import dynamic from 'next/dynamic'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-// Dynamic import for form component (client-side auth, ssr: false)
-const ForgotPasswordForm = dynamic(() => import("./components/forgot-password-form"), {
-  ssr: false,
-});
+// Import động cho component form (xác thực phía client, ssr: false)
+const ForgotPasswordForm = dynamic(() => import('./components/forgot-password-form'), {
+  ssr: false
+})
 
-// Forgot password page - Arrow function
+// Trang quên mật khẩu - Arrow function
 const ForgotPassword = () => {
   return (
-    <Card className="gap-4 py-6">
-      <CardHeader className="text-center">
-        <CardTitle className="text-xl">Quên Mật Khẩu</CardTitle>
+    <Card className='gap-4 py-6'>
+      <CardHeader className='text-center'>
+        <CardTitle className='text-xl'>Quên mật khẩu</CardTitle>
         <CardDescription>Không sao, chúng tôi sẽ giúp bạn đặt lại mật khẩu.</CardDescription>
       </CardHeader>
       <CardContent>
         <ForgotPasswordForm />
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default ForgotPassword;
+export default ForgotPassword

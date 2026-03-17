@@ -21,13 +21,13 @@ export const loadUserPermissions = async (req: Request, res: Response, next: Nex
     // Get user's roles from the user object (assuming it's populated)
     const roleIds = req.user.roles
     if (!roleIds || roleIds.length === 0) {
-      throw new AuthorizationError('User has no assigned roles', ErrorCodes.UNAUTHORIZED_ACTION)
+      throw new AuthorizationError('Người dùng chưa được gán vai trò', ErrorCodes.UNAUTHORIZED_ACTION)
     }
 
     // Fetch roles with permissions
     const roles = await Role.find({ _id: { $in: roleIds } }).lean()
     if (!roles || roles.length === 0) {
-      throw new AuthorizationError('Invalid user roles', ErrorCodes.ROLE_NOT_FOUND)
+      throw new AuthorizationError('Vai trò người dùng không hợp lệ', ErrorCodes.ROLE_NOT_FOUND)
     }
 
     // Collect all permissions from all roles (merge and deduplicate)
@@ -64,7 +64,7 @@ export const requirePermission = (requiredPermissions: Permission | Permission[]
 
       // Check if user permissions are loaded
       if (!req.userPermissions) {
-        throw new AuthorizationError('User permissions not loaded', ErrorCodes.UNAUTHORIZED_ACTION)
+        throw new AuthorizationError('Quyền người dùng chưa được nạp', ErrorCodes.UNAUTHORIZED_ACTION)
       }
 
       // Check permissions
@@ -99,7 +99,7 @@ export const requireOwnershipOrPermission = (permission: Permission, resourceUse
       const resourceUserId = req.params[resourceUserIdField] || req.body[resourceUserIdField]
 
       if (!requestUserId) {
-        throw new AuthenticationError('User not authenticated', ErrorCodes.TOKEN_INVALID)
+        throw new AuthenticationError('Người dùng chưa được xác thực', ErrorCodes.TOKEN_INVALID)
       }
 
       // Check ownership first

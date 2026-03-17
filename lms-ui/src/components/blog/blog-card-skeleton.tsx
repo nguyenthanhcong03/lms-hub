@@ -3,18 +3,18 @@ import { Skeleton } from '@/components/ui/skeleton'
 export function BlogCardSkeleton() {
   return (
     <article className='group overflow-hidden rounded-xs border border-gray-200 bg-white'>
-      {/* Thumbnail Skeleton */}
+      {/* Skeleton ảnh */}
       <div className='relative aspect-[16/10] overflow-hidden'>
         <Skeleton className='h-full w-full' />
-        {/* Category Badge Skeleton */}
+        {/* Skeleton nhãn danh mục */}
         <div className='absolute top-4 left-4'>
           <Skeleton className='h-6 w-20 rounded-full' />
         </div>
       </div>
 
-      {/* Content Skeleton */}
+      {/* Skeleton nội dung */}
       <div className='space-y-4 p-6'>
-        {/* Meta Info Skeleton */}
+        {/* Skeleton thông tin */}
         <div className='flex items-center space-x-4'>
           <div className='flex items-center space-x-1'>
             <Skeleton className='h-4 w-4' />
@@ -26,22 +26,22 @@ export function BlogCardSkeleton() {
           </div>
         </div>
 
-        {/* Title Skeleton */}
+        {/* Skeleton tiêu đề */}
         <div className='space-y-2'>
           <Skeleton className='h-6 w-full' />
           <Skeleton className='h-6 w-3/4' />
         </div>
 
-        {/* Excerpt Skeleton */}
+        {/* Skeleton thân bài */}
         <div className='space-y-2'>
           <Skeleton className='h-4 w-full' />
           <Skeleton className='h-4 w-full' />
           <Skeleton className='h-4 w-2/3' />
         </div>
 
-        {/* Author & Read More Skeleton */}
+        {/* Skeleton tác giả và đọc thêm */}
         <div className='flex items-center justify-between pt-4'>
-          {/* Author Skeleton */}
+          {/* Skeleton tác giả */}
           <div className='flex items-center space-x-3'>
             <Skeleton className='h-10 w-10 rounded-full' />
             <div className='space-y-1'>
@@ -50,7 +50,7 @@ export function BlogCardSkeleton() {
             </div>
           </div>
 
-          {/* Read More Skeleton */}
+          {/* Skeleton đọc thêm */}
           <Skeleton className='h-6 w-20' />
         </div>
       </div>

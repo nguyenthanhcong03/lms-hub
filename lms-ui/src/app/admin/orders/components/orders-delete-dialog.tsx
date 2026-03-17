@@ -1,34 +1,30 @@
-"use client";
+'use client'
 
-import AlertDialogDestructive from "@/components/alert-dialog";
-import {useDeleteAdminOrder} from "@/hooks/use-orders";
-import {IOrder} from "@/types/order";
+import AlertDialogDestructive from '@/components/alert-dialog'
+import { useDeleteAdminOrder } from '@/hooks/use-orders'
+import { IOrder } from '@/types/order'
 
 interface OrdersDeleteDialogProps {
-	currentRow: IOrder; // Following categories pattern
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
+  currentRow: IOrder // Theo mẫu của phần danh mục
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
-const OrdersDeleteDialog = ({
-	currentRow,
-	open,
-	onOpenChange,
-}: OrdersDeleteDialogProps) => {
-	const deleteOrderMutation = useDeleteAdminOrder();
+const OrdersDeleteDialog = ({ currentRow, open, onOpenChange }: OrdersDeleteDialogProps) => {
+  const deleteOrderMutation = useDeleteAdminOrder()
 
-	const handleDelete = () => {
-		deleteOrderMutation.mutate(currentRow._id);
-	};
+  const handleDelete = () => {
+    deleteOrderMutation.mutate(currentRow._id)
+  }
 
-	return (
-		<AlertDialogDestructive
-			open={open}
-			onOpenChange={onOpenChange}
-			handleConfirm={handleDelete}
-			disabled={deleteOrderMutation.isPending}
-		/>
-	);
-};
+  return (
+    <AlertDialogDestructive
+      open={open}
+      onOpenChange={onOpenChange}
+      handleConfirm={handleDelete}
+      disabled={deleteOrderMutation.isPending}
+    />
+  )
+}
 
-export default OrdersDeleteDialog;
+export default OrdersDeleteDialog

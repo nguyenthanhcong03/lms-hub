@@ -1,52 +1,52 @@
-// Role interfaces and types for the role management system
+// Các interface và kiểu dữ liệu cho hệ thống quản lý vai trò
 
-import { Permission } from "@/configs/permission";
+import { Permission } from '@/configs/permission'
 
 // Import Permission type from components
 
-// Base role interface
+// Cơ sở role interface
 export interface IRole {
-  _id: string;
-  name: string;
-  description: string;
-  permissions: Permission[];
-  totalUsers: number;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  _id: string
+  name: string
+  description: string
+  permissions: Permission[]
+  totalUsers: number
+  createdAt: string
+  updatedAt: string
+  __v: number
 }
 
-// Form data interface for creating/updating roles
+// Interface dữ liệu form để tạo/cập nhật roles
 export interface RoleFormData {
-  name: string;
-  description: string;
-  permissions: Permission[];
+  name: string
+  description: string
+  permissions: Permission[]
 }
 
 // Role creation request
 export interface CreateRoleRequest {
-  name: string;
-  description: string;
-  permissions: Permission[];
+  name: string
+  description: string
+  permissions: Permission[]
 }
 
-// Role update request
+// Yêu cầu cập nhật vai trò
 export interface UpdateRoleRequest extends Partial<CreateRoleRequest> {
-  id: string;
+  id: string
 }
 
-// Role permissions update request
+// Yêu cầu cập nhật quyền vai trò
 export interface UpdateRolePermissionsRequest {
-  id: string;
-  permissions: Permission[];
+  id: string
+  permissions: Permission[]
 }
 
-// Filter and search parameters for roles
+// Tham số lọc và tìm kiếm cho vai trò
 export interface RolesFilterParams {
-  search?: string;
-  hasPermissions?: boolean;
-  sortBy?: keyof IRole;
-  sortOrder?: "asc" | "desc";
-  permissions?: Permission[]; // Filter by specific permissions
-  [key: string]: unknown; // Index signature for additional properties
+  search?: string
+  hasPermissions?: boolean
+  sortBy?: keyof IRole
+  sortOrder?: 'asc' | 'desc'
+  permissions?: Permission[] // Filter by specific permissions
+  [key: string]: unknown // Index signature for additional properties
 }

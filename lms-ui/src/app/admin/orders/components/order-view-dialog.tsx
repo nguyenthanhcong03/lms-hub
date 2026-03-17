@@ -12,7 +12,7 @@ import { formatDate, formatPrice } from '@/utils/format'
 import { Calendar, CreditCard, Mail, Package, User } from 'lucide-react'
 import Image from 'next/image'
 
-// Status configuration
+// Cấu hình trạng thái
 const STATUS_CONFIG = {
   pending: {
     label: 'Chờ thanh toán',
@@ -31,7 +31,7 @@ const STATUS_CONFIG = {
   }
 }
 
-// Payment method labels
+// Nhãn phương thức thanh toán
 const PAYMENT_METHOD_LABELS = {
   bank_transfer: 'Chuyển khoản ngân hàng'
 } as const
@@ -49,31 +49,31 @@ const OrderViewDialog = ({ order, open, onOpenChange }: OrderViewDialogProps) =>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='max-h-[90vh] overflow-y-auto sm:max-w-7xl'>
         <DialogHeader>
-          <DialogTitle className='text-xl'>Order #{order.code}</DialogTitle>
-          <DialogDescription>View order details and customer information</DialogDescription>
+          <DialogTitle className='text-xl'>Đơn hàng #{order.code}</DialogTitle>
+          <DialogDescription>Xem chi tiết đơn hàng và thông tin khách hàng</DialogDescription>
         </DialogHeader>
 
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-          {/* Order Information */}
+          {/* Thông tin đơn hàng */}
           <div className='space-y-4 lg:col-span-2'>
-            {/* Order Summary */}
+            {/* Tóm tắt đơn hàng */}
             <Card>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <Package className='h-5 w-5' />
-                  Order Summary
+                  Tóm tắt đơn hàng
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-4'>
                 <div className='flex items-center justify-between'>
                   <div className='flex items-center gap-3'>
                     <div>
-                      <p className='font-medium'>Status</p>
+                      <p className='font-medium'>Trạng thái</p>
                       <Badge className={statusConfig.className}>{statusConfig.label}</Badge>
                     </div>
                   </div>
                   <div className='text-right'>
-                    <p className='text-muted-foreground text-sm'>Total Amount</p>
+                    <p className='text-muted-foreground text-sm'>Tổng tiền</p>
                     <p className='text-xl font-bold text-green-600'>{formatPrice(order.totalAmount)}</p>
                   </div>
                 </div>
@@ -84,14 +84,14 @@ const OrderViewDialog = ({ order, open, onOpenChange }: OrderViewDialogProps) =>
                   <div className='flex items-center gap-2'>
                     <Calendar className='text-muted-foreground h-4 w-4' />
                     <div>
-                      <p className='text-muted-foreground text-sm'>Created</p>
+                      <p className='text-muted-foreground text-sm'>Ngày tạo</p>
                       <p className='font-medium'>{formatDate(order.createdAt)}</p>
                     </div>
                   </div>
                   <div className='flex items-center gap-2'>
                     <CreditCard className='text-muted-foreground h-4 w-4' />
                     <div>
-                      <p className='text-muted-foreground text-sm'>Payment Method</p>
+                      <p className='text-muted-foreground text-sm'>Phương thức thanh toán</p>
                       <p className='font-medium'>{PAYMENT_METHOD_LABELS[order.paymentMethod]}</p>
                     </div>
                   </div>
@@ -99,10 +99,10 @@ const OrderViewDialog = ({ order, open, onOpenChange }: OrderViewDialogProps) =>
               </CardContent>
             </Card>
 
-            {/* Order Items */}
+            {/* Danh sách sản phẩm */}
             <Card>
               <CardHeader>
-                <CardTitle>Order Items ({order.items.length})</CardTitle>
+                <CardTitle>Sản phẩm trong đơn ({order.items.length})</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className='space-y-3'>
@@ -118,7 +118,7 @@ const OrderViewDialog = ({ order, open, onOpenChange }: OrderViewDialogProps) =>
                       </div>
                       <div className='min-w-0 flex-1'>
                         <h4 className='text-sm font-medium text-gray-900'>{item.title}</h4>
-                        <p className='text-muted-foreground text-xs'>Course ID: {item.courseId}</p>
+                        <p className='text-muted-foreground text-xs'>Mã khóa học: {item.courseId}</p>
                       </div>
                       <div className='text-right'>
                         <p className='text-sm font-semibold'>{formatPrice(item.price)}</p>
@@ -129,21 +129,21 @@ const OrderViewDialog = ({ order, open, onOpenChange }: OrderViewDialogProps) =>
 
                 <Separator className='my-4' />
 
-                {/* Order Totals */}
+                {/* Tổng kết đơn hàng */}
                 <div className='space-y-2'>
                   <div className='flex justify-between text-sm'>
-                    <span>Subtotal:</span>
+                    <span>Tạm tính:</span>
                     <span>{formatPrice(order.subTotal)}</span>
                   </div>
                   {order.totalDiscount > 0 && (
                     <div className='flex justify-between text-sm text-emerald-600'>
-                      <span>Discount:</span>
+                      <span>Giảm giá:</span>
                       <span>-{formatPrice(order.totalDiscount)}</span>
                     </div>
                   )}
                   <Separator />
                   <div className='flex justify-between font-medium'>
-                    <span>Total:</span>
+                    <span>Tổng cộng:</span>
                     <span className='text-green-600'>{formatPrice(order.totalAmount)}</span>
                   </div>
                 </div>
@@ -151,13 +151,13 @@ const OrderViewDialog = ({ order, open, onOpenChange }: OrderViewDialogProps) =>
             </Card>
           </div>
 
-          {/* Customer Information */}
+          {/* Thông tin khách hàng */}
           <div className='space-y-4'>
             <Card>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <User className='h-5 w-5' />
-                  Customer Information
+                  Thông tin khách hàng
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-4'>
@@ -169,7 +169,7 @@ const OrderViewDialog = ({ order, open, onOpenChange }: OrderViewDialogProps) =>
                     </AvatarFallback>
                   </Avatar>
                   <p className='font-medium'>{order.user?.username}</p>
-                  <p className='text-muted-foreground text-sm'>Customer</p>
+                  <p className='text-muted-foreground text-sm'>Khách hàng</p>
                 </div>
 
                 <Separator />
@@ -177,7 +177,7 @@ const OrderViewDialog = ({ order, open, onOpenChange }: OrderViewDialogProps) =>
                 <div className='space-y-3 text-sm'>
                   <div className='flex items-center gap-2'>
                     <Mail className='text-muted-foreground h-4 w-4' />
-                    <span>{order.user?.email || 'Email not available'}</span>
+                    <span>{order.user?.email || 'Chưa có email'}</span>
                   </div>
                 </div>
               </CardContent>

@@ -45,10 +45,10 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
   const createBlogMutation = useCreateBlog()
   const updateBlogMutation = useUpdateBlog()
 
-  // Fetch all categories from API (for dropdown)
+  // Lấy tất cả danh mục từ API (cho dropdown)
   const { data: categories, isLoading: categoriesLoading } = useAllCategories()
 
-  // Track if slug was manually edited
+  // Theo dõi xem slug có được chỉnh thủ công hay không
   const [isSlugManuallyEdited, setIsSlugManuallyEdited] = React.useState(false)
 
   const defaultValues = React.useMemo(
@@ -79,11 +79,11 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
     setValue
   } = form
 
-  // Watch title field for auto-slug generation
+  // Theo dõi trường tiêu đề để tự sinh slug
   const titleValue = watch('title')
   const statusValue = watch('status')
 
-  // Auto-generate slug from title
+  // Tự động tạo slug từ tiêu đề
   React.useEffect(() => {
     if (titleValue && !isSlugManuallyEdited) {
       const generatedSlug = slugify(titleValue, {
@@ -95,7 +95,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
     }
   }, [titleValue, isSlugManuallyEdited, setValue])
 
-  // Reset slug manual edit state when dialog opens
+  // Reset trạng thái chỉnh slug thủ công khi mở hộp thoại
   React.useEffect(() => {
     if (open) {
       setIsSlugManuallyEdited(mode === 'edit' && !!blog?.slug)
@@ -111,8 +111,8 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
         excerpt: blog?.excerpt || '',
         thumbnail: blog?.thumbnail || '',
         status: blog?.status || BlogStatus.DRAFT,
-        publishedAt: blog?.publishedAt ? new Date(blog.publishedAt) : new Date(), // Default to current date if not set
-        categoryId: blog?.category?._id || blog?.categoryIds?.[0] || '' // Use new structure or fallback to old
+        publishedAt: blog?.publishedAt ? new Date(blog.publishedAt) : new Date(), // Mặc định ngày hiện tại nếu chưa có
+        categoryId: blog?.category?._id || blog?.categoryIds?.[0] || '' // Ưu tiên cấu trúc mới, fallback về cấu trúc cũ
       }
 
       reset(formDefaults)
@@ -122,8 +122,8 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
   const onSubmit = async (data: BlogSchema) => {
     const blogData = {
       ...data,
-      publishedAt: data.publishedAt.toISOString(), // Always include publishedAt since it's now required
-      // Convert empty string to undefined for thumbnail
+      publishedAt: data.publishedAt.toISOString(), // Luôn gửi publishedAt vì trường này bắt buộc
+      // Chuyển chuỗi rỗng thành undefined cho thumbnail
       thumbnail: data.thumbnail && data.thumbnail !== '' ? data.thumbnail : undefined
     }
 
@@ -162,10 +162,10 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className='flex min-h-0 flex-1 flex-col'>
-            {/* Scrollable Content Area */}
+            {/* Khu vực nội dung có thể cuộn */}
             <div className='flex-1 overflow-y-auto px-6 py-4'>
               <div className='space-y-6'>
-                {/* Basic Information Section */}
+                {/* Phần thông tin cơ bản */}
                 <div className='space-y-4'>
                   <h3 className='border-b pb-2 text-lg font-semibold text-gray-900'>Thông tin cơ bản</h3>
 
@@ -176,10 +176,10 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Title <span className='text-red-500'>*</span>
+                            Tiêu đề <span className='text-red-500'>*</span>
                           </FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder='Blog title' />
+                            <Input {...field} placeholder='Tiêu đề bài viết' />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -192,7 +192,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Slug <span className='text-red-500'>*</span>
+                            Đường dẫn tĩnh <span className='text-red-500'>*</span>
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -220,7 +220,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
                           <Select value={field.value} onValueChange={field.onChange}>
                             <FormControl>
                               <SelectTrigger className='w-full'>
-                                <SelectValue placeholder='Select status' />
+                                <SelectValue placeholder='Chọn trạng thái' />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -233,7 +233,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
                       )}
                     />
 
-                    {/* Category Section */}
+                    {/* Phần danh mục */}
                     <FormField
                       control={form.control}
                       name='categoryId'
@@ -251,7 +251,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
                           >
                             <FormControl>
                               <SelectTrigger className='w-full'>
-                                <SelectValue placeholder='Select a category' />
+                                <SelectValue placeholder='Chọn danh mục' />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -278,7 +278,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
                     />
                   </div>
 
-                  {/* Publishing Date - Required for both DRAFT and PUBLISHED */}
+                  {/* Ngày xuất bản - bắt buộc cho cả NHÁP và ĐÃ XUẤT BẢN */}
                   <FormField
                     control={form.control}
                     name='publishedAt'
@@ -309,7 +309,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
                               selected={field.value || undefined}
                               onSelect={(date) => {
                                 if (date) {
-                                  // If selecting a new date, keep current time or set to now
+                                  // Nếu chọn ngày mới, giữ giờ hiện tại hoặc đặt theo thời điểm hiện tại
                                   const newDate = field.value
                                     ? new Date(
                                         date.getFullYear(),
@@ -365,7 +365,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
                   />
                 </div>
 
-                {/* Thumbnail Field */}
+                {/* Trường ảnh bìa */}
                 <div className='space-y-4'>
                   <FormField
                     control={form.control}
@@ -386,7 +386,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
                   />
                 </div>
 
-                {/* Content Field */}
+                {/* Trường nội dung */}
                 <div className='space-y-4'>
                   <FormField
                     control={form.control}
@@ -414,7 +414,7 @@ const BlogsActionDialog = ({ mode = 'create', blog, open, onOpenChange }: BlogsA
               </div>
             </div>
 
-            {/* Fixed Footer */}
+            {/* Chân trang cố định */}
             <DialogFooter className='flex-shrink-0 border-t px-6 py-4'>
               <Button type='button' variant='outline' onClick={() => onOpenChange(false)} disabled={isSubmitting}>
                 Hủy

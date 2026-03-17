@@ -1,4 +1,4 @@
-// Course types based on the MongoDB schema
+// Kieu du lieu khoa hoc theo schema MongoDB
 
 import type {IChapter} from "@/types/chapter";
 
@@ -20,13 +20,13 @@ export enum LessonType {
 	ASSIGNMENT = "assignment",
 }
 
-// Q&A interface for course info
+// Interface Hoi dap cho thong tin khoa hoc
 export interface CourseQA {
 	question: string;
 	answer: string;
 }
 
-// Course info object interface
+// Interface doi tuong thong tin khoa hoc
 export interface CourseInfo {
 	requirements: string[];
 	benefits: string[];
@@ -35,7 +35,7 @@ export interface CourseInfo {
 	qa: CourseQA[];
 }
 
-// Lesson interface
+// Interface bai hoc
 export interface ILesson {
 	_id: string;
 	title: string;
@@ -53,7 +53,7 @@ export interface ILesson {
 	updatedAt: Date;
 }
 
-// Populated lesson interface (for API responses)
+// Interface bai hoc da populate (cho API response)
 export interface PopulatedLesson {
 	_id: string;
 	title: string;
@@ -84,7 +84,7 @@ export interface PopulatedCategory {
 	name: string;
 }
 
-// Main course interface following MongoDB schema with populated fields
+// Interface khoa hoc chinh theo schema MongoDB voi cac truong da populate
 export interface ICourse {
 	_id: string; // mongoose.Types.ObjectId as string
 	title: string;
@@ -118,7 +118,7 @@ export interface ICourse {
 	updatedAt: Date;
 }
 
-// Public course interface (for public API responses - simplified structure)
+// Interface khoa hoc public (API response rut gon)
 // Inherits from ICourse but overrides some fields for public view
 export interface IPublicCourse
 	extends Omit<
@@ -212,7 +212,7 @@ export function getCourseDisplayType(course: ICourse): CourseDisplayType {
 	return isCourseActuallyFree(course) ? "free" : "paid";
 }
 
-// Course service types
+// Kieu service khoa hoc
 export interface UpdateCourseRequest extends Partial<CreateCourseRequest> {
 	id: string;
 }
@@ -257,7 +257,7 @@ export interface PublicCoursesListResponse {
 	};
 }
 
-// Enrolled course with progress tracking
+// Khoa hoc da ghi danh co theo doi tien do
 export interface IEnrolledCourse {
 	_id: string;
 	title: string;

@@ -45,11 +45,11 @@ export class CartService {
     // Validate course exists and is published
     const course = await Course.findById(courseId)
     if (!course) {
-      throw new NotFoundError('Course not found', ErrorCodes.LESSON_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy khóa học', ErrorCodes.LESSON_NOT_FOUND)
     }
 
     if (course.status !== CourseStatus.PUBLISHED) {
-      throw new ValidationError('Course is not available for purchase', ErrorCodes.INVALID_INPUT_FORMAT)
+      throw new ValidationError('Khóa học hiện không thể mua', ErrorCodes.INVALID_INPUT_FORMAT)
     }
 
     // Get or create cart
@@ -66,7 +66,7 @@ export class CartService {
     const existingItemIndex = cart.items.findIndex((item) => item.courseId.toString() === courseId)
 
     if (existingItemIndex !== -1) {
-      throw new ValidationError('Course is already in cart', ErrorCodes.INVALID_INPUT_FORMAT)
+      throw new ValidationError('Khóa học đã có trong giỏ hàng', ErrorCodes.INVALID_INPUT_FORMAT)
     }
 
     // Prepare cart item
@@ -99,13 +99,13 @@ export class CartService {
   static async removeFromCart(userId: string, courseId: string): Promise<ICart> {
     const cart = await Cart.findOne({ userId })
     if (!cart) {
-      throw new NotFoundError('Cart not found', ErrorCodes.LESSON_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy giỏ hàng', ErrorCodes.LESSON_NOT_FOUND)
     }
 
     const itemIndex = cart.items.findIndex((item) => item.courseId.toString() === courseId)
 
     if (itemIndex === -1) {
-      throw new NotFoundError('Item not found in cart', ErrorCodes.LESSON_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy mục trong giỏ hàng', ErrorCodes.LESSON_NOT_FOUND)
     }
 
     cart.items.splice(itemIndex, 1)
@@ -122,13 +122,13 @@ export class CartService {
 
     const cart = await Cart.findOne({ userId })
     if (!cart) {
-      throw new NotFoundError('Cart not found', ErrorCodes.LESSON_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy giỏ hàng', ErrorCodes.LESSON_NOT_FOUND)
     }
 
     const itemIndex = cart.items.findIndex((item) => item.courseId.toString() === courseId)
 
     if (itemIndex === -1) {
-      throw new NotFoundError('Item not found in cart', ErrorCodes.LESSON_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy mục trong giỏ hàng', ErrorCodes.LESSON_NOT_FOUND)
     }
 
     // Note: This method is kept for future extensibility
@@ -151,7 +151,7 @@ export class CartService {
   static async clearCart(userId: string): Promise<ICart> {
     const cart = await Cart.findOne({ userId })
     if (!cart) {
-      throw new NotFoundError('Cart not found', ErrorCodes.LESSON_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy giỏ hàng', ErrorCodes.LESSON_NOT_FOUND)
     }
 
     cart.items = []
@@ -201,7 +201,7 @@ export class CartService {
     if (!cart || cart.items.length === 0) {
       return {
         isValid: false,
-        errors: ['Cart is empty'],
+        errors: ['Giỏ hàng đang trống'],
         cart: cart || new Cart({ userId, items: [], totalPrice: 0 })
       }
     }
@@ -213,20 +213,20 @@ export class CartService {
       const course = item.courseId as unknown as ICourse
 
       if (!course) {
-        errors.push(`Course ${item.title} no longer exists`)
+        errors.push(`Khóa học ${item.title} không còn tồn tại`)
         continue
       }
 
       if (course.status !== CourseStatus.PUBLISHED) {
-        errors.push(`Course ${item.title} is no longer available`)
+        errors.push(`Khóa học ${item.title} hiện không còn khả dụng`)
       }
 
       if (course.price !== item.price) {
-        errors.push(`Price for course ${item.title} has changed`)
+        errors.push(`Giá của khóa học ${item.title} đã thay đổi`)
       }
 
       if (course.oldPrice !== item.oldPrice) {
-        errors.push(`Old price for course ${item.title} has changed`)
+        errors.push(`Giá cũ của khóa học ${item.title} đã thay đổi`)
       }
     }
 

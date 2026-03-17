@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import DashboardService from "@/services/dashboard";
 
-// Query keys for dashboard
+// Khóa truy vấn cho dashboard
 export const dashboardKeys = {
   all: ["dashboard"] as const,
   stats: () => [...dashboardKeys.all, "stats"] as const,
@@ -9,7 +9,7 @@ export const dashboardKeys = {
   recentSales: () => [...dashboardKeys.all, "recent-sales"] as const,
 } as const;
 
-// Hook to get dashboard statistics
+// Hook để get dashboard statistics
 export function useDashboardStats() {
   return useQuery({
     queryKey: dashboardKeys.stats(),
@@ -19,7 +19,7 @@ export function useDashboardStats() {
   });
 }
 
-// Hook to get overview statistics (monthly revenue data)
+// Hook để get overview statistics (monthly revenue data)
 export function useOverviewStats() {
   return useQuery({
     queryKey: dashboardKeys.overview(),
@@ -29,7 +29,7 @@ export function useOverviewStats() {
   });
 }
 
-// Hook to get recent sales data
+// Hook để get recent sales data
 export function useRecentSales() {
   return useQuery({
     queryKey: dashboardKeys.recentSales(),

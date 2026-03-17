@@ -1,158 +1,158 @@
-"use client";
+'use client'
 
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Button } from "@/components/ui/button";
+import * as React from 'react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { MdEdit, MdAdd } from "react-icons/md";
-import { toast } from "sonner";
-import { PERMISSION_GROUPS, Permission } from "@/configs/permission";
-import { roleSchema, RoleSchema } from "@/validators/role.validator";
+  DialogTitle
+} from '@/components/ui/dialog'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
+import { MdEdit, MdAdd } from 'react-icons/md'
+import { toast } from 'sonner'
+import { PERMISSION_GROUPS, Permission } from '@/configs/permission'
+import { roleSchema, RoleSchema } from '@/validators/role.validator'
 
-import { useCreateRole, useUpdateRole } from "@/hooks/use-roles";
-import { IRole } from "@/types/role";
+import { useCreateRole, useUpdateRole } from '@/hooks/use-roles'
+import { IRole } from '@/types/role'
 
 interface RoleActionDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  mode: "create" | "edit";
-  role: IRole | null;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  mode: 'create' | 'edit'
+  role: IRole | null
 }
 
-const RoleActionDialog = ({ open, onOpenChange, mode = "create", role }: RoleActionDialogProps) => {
-  // API hooks
-  const createRoleMutation = useCreateRole();
-  const updateRoleMutation = useUpdateRole();
+const RoleActionDialog = ({ open, onOpenChange, mode = 'create', role }: RoleActionDialogProps) => {
+  // Hook gọi API
+  const createRoleMutation = useCreateRole()
+  const updateRoleMutation = useUpdateRole()
 
-  // Helper function to get form values from role
+  // Hàm hỗ trợ lấy giá trị form từ vai trò
   const getFormValues = React.useCallback(
     (role: IRole | null) => ({
-      name: role?.name || "",
-      description: role?.description || "",
-      permissions: role?.permissions || [],
+      name: role?.name || '',
+      description: role?.description || '',
+      permissions: role?.permissions || []
     }),
-    [],
-  );
+    []
+  )
 
-  const isLoading = createRoleMutation.isPending || updateRoleMutation.isPending;
+  const isLoading = createRoleMutation.isPending || updateRoleMutation.isPending
 
-  // Initialize form with default values
+  // Khởi tạo form với giá trị mặc định
   const form = useForm<RoleSchema>({
     resolver: yupResolver(roleSchema),
-    defaultValues: getFormValues(role),
-  });
+    defaultValues: getFormValues(role)
+  })
 
-  // Reset form when dialog opens/closes or role changes
+  // Đặt lại form khi mở/đóng hộp thoại hoặc khi vai trò thay đổi
   React.useEffect(() => {
     if (open && role) {
-      form.reset(getFormValues(role));
+      form.reset(getFormValues(role))
     }
-  }, [open, role, form, getFormValues]);
+  }, [open, role, form, getFormValues])
 
   const onSubmit = async (data: RoleSchema) => {
     const formData = {
       name: data.name,
       description: data.description,
-      permissions: data.permissions as Permission[],
-    };
+      permissions: data.permissions as Permission[]
+    }
 
-    if (mode === "create") {
+    if (mode === 'create') {
       createRoleMutation.mutate(
         {
           name: formData.name,
           description: formData.description,
-          permissions: formData.permissions,
+          permissions: formData.permissions
         },
         {
           onSuccess: () => {
-            toast.success("Role created successfully!");
-            onOpenChange(false);
-            form.reset();
-          },
-        },
-      );
+            toast.success('Vai trò được tạo thành công!')
+            onOpenChange(false)
+            form.reset()
+          }
+        }
+      )
     } else if (role) {
       updateRoleMutation.mutate(
         {
           id: role._id,
           name: formData.name,
           description: formData.description,
-          permissions: formData.permissions,
+          permissions: formData.permissions
         },
         {
           onSuccess: () => {
-            toast.success("Role updated successfully!");
-            onOpenChange(false);
-            form.reset();
-          },
-        },
-      );
+            toast.success('Vai trò được cập nhật thành công!')
+            onOpenChange(false)
+            form.reset()
+          }
+        }
+      )
     }
-  };
+  }
 
-  const title = mode === "create" ? "Thêm vai trò" : "Cập nhật vai trò";
+  const title = mode === 'create' ? 'Thêm vai trò' : 'Cập nhật vai trò'
   const description =
-    mode === "create" ? "Create a new role with specific permissions." : "Update the role information and permissions.";
+    mode === 'create' ? 'Tạo vai trò mới với các quyền cụ thể.' : 'Cập nhật thông tin và quyền của vai trò.'
 
-  const watchedPermissions = form.watch("permissions");
+  const watchedPermissions = form.watch('permissions')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-175 max-h-[90vh]">
+      <DialogContent className='max-h-[90vh] sm:max-w-175'>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            {mode === "create" ? <MdAdd className="h-5 w-5" /> : <MdEdit className="h-5 w-5" />}
+          <DialogTitle className='flex items-center gap-2'>
+            {mode === 'create' ? <MdAdd className='h-5 w-5' /> : <MdEdit className='h-5 w-5' />}
             {title}
           </DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="max-h-[60vh] overflow-auto pr-4">
-              <div className="space-y-6">
-                {/* Basic Information */}
-                <div className="space-y-4">
-                  <h3 className="text-sm font-medium">Basic Information</h3>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+            <div className='max-h-[60vh] overflow-auto pr-4'>
+              <div className='space-y-6'>
+                {/* Thông tin cơ bản */}
+                <div className='space-y-4'>
+                  <h3 className='text-sm font-medium'>Thông tin cơ bản</h3>
 
-                  {/* Role Name */}
+                  {/* Tên vai trò */}
                   <FormField
                     control={form.control}
-                    name="name"
+                    name='name'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Role Name *</FormLabel>
+                        <FormLabel>Tên vai trò *</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter role name" {...field} disabled={isLoading} />
+                          <Input placeholder='Nhập tên vai trò' {...field} disabled={isLoading} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  {/* Description */}
+                  {/* Mô tả */}
                   <FormField
                     control={form.control}
-                    name="description"
+                    name='description'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description *</FormLabel>
+                        <FormLabel>Mô tả *</FormLabel>
                         <FormControl>
-                          <Textarea placeholder="Enter role description" rows={3} {...field} disabled={isLoading} />
+                          <Textarea placeholder='Nhập mô tả vai trò' rows={3} {...field} disabled={isLoading} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -162,90 +162,90 @@ const RoleActionDialog = ({ open, onOpenChange, mode = "create", role }: RoleAct
 
                 <Separator />
 
-                {/* Permissions */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium">Quyền hạn (tùy chọn)</h3>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">{(watchedPermissions || []).length} selected</Badge>
+                {/* Quyền hạn */}
+                <div className='space-y-4'>
+                  <div className='flex items-center justify-between'>
+                    <h3 className='text-sm font-medium'>Quyền hạn (tùy chọn)</h3>
+                    <div className='flex items-center gap-2'>
+                      <Badge variant='outline'>{(watchedPermissions || []).length} đã chọn</Badge>
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">Select the direct permissions assigned to this role.</p>
+                  <p className='text-muted-foreground text-xs'>Chọn các quyền trực tiếp được gán cho vai trò này.</p>
 
                   <FormField
                     control={form.control}
-                    name="permissions"
+                    name='permissions'
                     render={({ field }) => (
                       <FormItem>
-                        <div className="space-y-4">
+                        <div className='space-y-4'>
                           {(
                             Object.entries(PERMISSION_GROUPS) as Array<
                               [string, (typeof PERMISSION_GROUPS)[keyof typeof PERMISSION_GROUPS]]
                             >
                           ).map(([resource, group]) => (
-                            <div key={resource} className="space-y-2">
-                              <div className="flex items-center justify-between">
-                                <h4 className="text-sm font-medium text-muted-foreground">{group.label}</h4>
-                                <div className="flex items-center gap-2">
+                            <div key={resource} className='space-y-2'>
+                              <div className='flex items-center justify-between'>
+                                <h4 className='text-muted-foreground text-sm font-medium'>{group.label}</h4>
+                                <div className='flex items-center gap-2'>
                                   <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
+                                    type='button'
+                                    variant='outline'
+                                    size='sm'
                                     onClick={() => {
-                                      const currentPermissions = field.value || [];
-                                      const allResourcePermissions = [...group.permissions] as Permission[];
+                                      const currentPermissions = field.value || []
+                                      const allResourcePermissions = [...group.permissions] as Permission[]
 
                                       const hasAllPermissions = allResourcePermissions.every((p: string) =>
-                                        currentPermissions.includes(p),
-                                      );
+                                        currentPermissions.includes(p)
+                                      )
 
                                       if (hasAllPermissions) {
                                         field.onChange(
                                           currentPermissions.filter(
-                                            (p) => !allResourcePermissions.includes(p as Permission),
-                                          ),
-                                        );
+                                            (p) => !allResourcePermissions.includes(p as Permission)
+                                          )
+                                        )
                                       } else {
                                         const newPermissions = Array.from(
-                                          new Set([...currentPermissions, ...allResourcePermissions]),
-                                        );
-                                        field.onChange(newPermissions);
+                                          new Set([...currentPermissions, ...allResourcePermissions])
+                                        )
+                                        field.onChange(newPermissions)
                                       }
                                     }}
                                     disabled={isLoading}
                                   >
                                     {group.permissions.every((p: string) => field.value?.includes(p))
-                                      ? "Deselect All"
-                                      : "Select All"}
+                                      ? 'Bỏ chọn tất cả'
+                                      : 'Chọn tất cả'}
                                   </Button>
                                 </div>
                               </div>
-                              <div className="grid grid-cols-2 gap-2">
+                              <div className='grid grid-cols-2 gap-2'>
                                 {group.permissions.map((permission: string) => {
-                                  const isChecked = field.value?.includes(permission) || false;
+                                  const isChecked = field.value?.includes(permission) || false
 
                                   return (
-                                    <div key={permission} className="flex items-center space-x-2">
+                                    <div key={permission} className='flex items-center space-x-2'>
                                       <Checkbox
                                         id={permission}
                                         checked={isChecked}
                                         onCheckedChange={(checked) => {
                                           if (checked) {
-                                            field.onChange([...(field.value || []), permission]);
+                                            field.onChange([...(field.value || []), permission])
                                           } else {
-                                            field.onChange(field.value?.filter((p) => p !== permission) || []);
+                                            field.onChange(field.value?.filter((p) => p !== permission) || [])
                                           }
                                         }}
                                         disabled={isLoading}
                                       />
                                       <label
                                         htmlFor={permission}
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                        className='cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
                                       >
-                                        {permission.split(":")[1]}
+                                        {permission.split(':')[1]}
                                       </label>
                                     </div>
-                                  );
+                                  )
                                 })}
                               </div>
                             </div>
@@ -260,18 +260,18 @@ const RoleActionDialog = ({ open, onOpenChange, mode = "create", role }: RoleAct
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
-                Cancel
+              <Button type='button' variant='outline' onClick={() => onOpenChange(false)} disabled={isLoading}>
+                Hủy
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Đang lưu..." : mode === "create" ? "Thêm vai trò" : "Cập nhật vai trò"}
+              <Button type='submit' disabled={isLoading}>
+                {isLoading ? 'Đang lưu...' : mode === 'create' ? 'Thêm vai trò' : 'Cập nhật vai trò'}
               </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default RoleActionDialog;
+export default RoleActionDialog

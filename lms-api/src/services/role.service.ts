@@ -1,4 +1,4 @@
-import { Role, IRole } from '../models/role'
+﻿import { Role, IRole } from '../models/role'
 import { User } from '../models/user'
 import { NotFoundError, ConflictError } from '../utils/errors'
 import { Permission, SYSTEM_ROLE_NAMES } from '~/configs/permission'
@@ -20,13 +20,13 @@ interface UpdateRoleInput {
 }
 
 export class RoleService {
-  // Create a new role
+  // Tạo vai trò mới
   async createRole(roleData: RoleInput): Promise<IRole> {
     const { name, permissions, description } = roleData
 
     const existingRole = await Role.findOne({ name })
     if (existingRole) {
-      throw new ConflictError('Role name already exists')
+      throw new ConflictError('Tên vai trò đã tồn tại')
     }
 
     const newRole = new Role({
@@ -40,7 +40,7 @@ export class RoleService {
     return newRole
   }
 
-  // Get all roles with user count information
+  // Lấy tất cả vai trò kèm số lượng người dùng
   async getAllRoles(): Promise<RoleWithUserCount[]> {
     const roles = await Role.find()
 
@@ -61,12 +61,12 @@ export class RoleService {
     return roles
   }
 
-  // Get role by ID
+  // Lấy vai trò theo ID
   async getRoleById(roleId: string): Promise<IRole | RoleWithUserCount | null> {
     const role = await Role.findById(roleId)
 
     if (!role) {
-      throw new NotFoundError('Role not found')
+      throw new NotFoundError('Không tìm thấy vai trò')
     }
 
     const totalUsers = await User.countDocuments({ roles: { $in: [role._id] } })
@@ -77,11 +77,11 @@ export class RoleService {
     }
   }
 
-  // Update role
+  // Cập nhật vai trò
   async updateRole(roleId: string, updateData: UpdateRoleInput): Promise<IRole> {
     const role = await Role.findById(roleId)
     if (!role) {
-      throw new NotFoundError('Role not found')
+      throw new NotFoundError('Không tìm thấy vai trò')
     }
 
     const { name, permissions, description } = updateData
@@ -89,7 +89,7 @@ export class RoleService {
     if (name && name !== role.name) {
       const existingRole = await Role.findOne({ name })
       if (existingRole) {
-        throw new ConflictError('Role name already exists')
+        throw new ConflictError('Tên vai trò đã tồn tại')
       }
     }
 
@@ -102,39 +102,39 @@ export class RoleService {
     return role
   }
 
-  // Delete role with dependency checking
+  // Xóa vai trò có kiểm tra ràng buộc
   async deleteRole(roleId: string): Promise<void> {
     const role = await Role.findById(roleId)
     if (!role) {
-      throw new NotFoundError('Role not found')
+      throw new NotFoundError('Không tìm thấy vai trò')
     }
 
     const usersWithRole = await User.countDocuments({ roles: { $in: [role._id] } })
     if (usersWithRole > 0) {
-      throw new ConflictError('Cannot delete role. It is assigned to users')
+      throw new ConflictError('Không thể xóa vai trò. Vai trò này đang được gán cho người dùng')
     }
 
     await Role.findByIdAndDelete(roleId)
   }
 
-  // Get all permissions for a role
+  // Lấy toàn bộ quyền của một vai trò
   async getAllPermissions(roleId: string): Promise<Permission[]> {
     const role = await Role.findById(roleId)
     if (!role) {
-      throw new NotFoundError('Role not found')
+      throw new NotFoundError('Không tìm thấy vai trò')
     }
 
     return this.mergePermissions(role.permissions)
   }
 
-  // Get user permissions across all assigned roles
+  // Lấy quyền của người dùng từ tất cả vai trò đã gán
   async getUserPermissions(userId: string): Promise<Permission[]> {
     const user = await User.findById(userId).populate('roles')
     if (!user || !user.roles || user.roles.length === 0) {
       return []
     }
 
-    // Collect permissions from all user roles
+    // Gom quyền từ tất cả vai trò của người dùng
     const allPermissions = new Set<Permission>()
 
     for (const role of user.roles as unknown as Array<{ _id: string }>) {
@@ -145,7 +145,7 @@ export class RoleService {
     return Array.from(allPermissions)
   }
 
-  // Merge permission arrays and remove duplicates
+  // Gộp các mảng quyền và loại bỏ trùng lặp
   private mergePermissions(...permissionArrays: Permission[][]): Permission[] {
     const allPermissions = permissionArrays.flat()
     return [...new Set(allPermissions)]

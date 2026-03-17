@@ -1,169 +1,169 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 
-import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
-import { MdAdd } from "react-icons/md";
+import dynamic from 'next/dynamic'
+import { useMemo, useState } from 'react'
+import { MdAdd } from 'react-icons/md'
 
-import { useRoles } from "@/hooks/use-roles";
-import { IRole } from "@/types/role";
+import { useRoles } from '@/hooks/use-roles'
+import { IRole } from '@/types/role'
 
-// Dynamic imports for heavy components
-const RoleActionDialog = dynamic(() => import("./components/role-action-dialog"), {
-  ssr: false,
-});
+// Import động cho các thành phần nặng
+const RoleActionDialog = dynamic(() => import('./components/role-action-dialog'), {
+  ssr: false
+})
 
-const RolesGrid = dynamic(() => import("./components/roles-grid"), {
-  loading: () => <RolesSkeleton view="grid" />,
-  ssr: false,
-});
+const RolesGrid = dynamic(() => import('./components/roles-grid'), {
+  loading: () => <RolesSkeleton view='grid' />,
+  ssr: false
+})
 
-const RolesList = dynamic(() => import("./components/roles-list"), {
-  loading: () => <RolesSkeleton view="list" />,
-  ssr: false,
-});
+const RolesList = dynamic(() => import('./components/roles-list'), {
+  loading: () => <RolesSkeleton view='list' />,
+  ssr: false
+})
 
-const RolesHeader = dynamic(() => import("./components/roles-header"), {
+const RolesHeader = dynamic(() => import('./components/roles-header'), {
   loading: () => (
-    <div className="flex items-center justify-between gap-4 p-4 border rounded-lg">
-      <div className="flex items-center gap-4">
-        <div className="w-64 h-10 bg-muted animate-pulse rounded" />
-        <div className="w-32 h-10 bg-muted animate-pulse rounded" />
+    <div className='flex items-center justify-between gap-4 rounded-lg border p-4'>
+      <div className='flex items-center gap-4'>
+        <div className='bg-muted h-10 w-64 animate-pulse rounded' />
+        <div className='bg-muted h-10 w-32 animate-pulse rounded' />
       </div>
-      <div className="flex items-center gap-2">
-        <div className="w-20 h-10 bg-muted animate-pulse rounded" />
-        <div className="w-20 h-10 bg-muted animate-pulse rounded" />
+      <div className='flex items-center gap-2'>
+        <div className='bg-muted h-10 w-20 animate-pulse rounded' />
+        <div className='bg-muted h-10 w-20 animate-pulse rounded' />
       </div>
     </div>
   ),
-  ssr: false,
-});
+  ssr: false
+})
 
-// Import skeleton statically as it's lightweight and needed for loading states
-import RolesSkeleton from "./components/role-skeletons";
-import { PERMISSIONS } from "@/configs/permission";
-import { useAuthStore } from "@/stores/auth-store";
+// Import skeleton tĩnh vì nhẹ và cần cho trạng thái tải
+import RolesSkeleton from './components/role-skeletons'
+import { PERMISSIONS } from '@/configs/permission'
+import { useAuthStore } from '@/stores/auth-store'
 
 const RolesPage = () => {
-  const [currentView, setCurrentView] = useState<"grid" | "list">("grid");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"name" | "permissionsCount" | "createdAt">("name");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
-  const [editingRole, setEditingRole] = useState<IRole | null>(null);
+  const [currentView, setCurrentView] = useState<'grid' | 'list'>('grid')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sortBy, setSortBy] = useState<'name' | 'permissionsCount' | 'createdAt'>('name')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create')
+  const [editingRole, setEditingRole] = useState<IRole | null>(null)
 
-  const hasPermission = useAuthStore((state) => state.hasPermission);
-  const CREATE = hasPermission(PERMISSIONS.ROLE_CREATE);
+  const hasPermission = useAuthStore((state) => state.hasPermission)
+  const CREATE = hasPermission(PERMISSIONS.ROLE_CREATE)
 
-  // API hooks
-  const { data: rolesData, isLoading } = useRoles();
+  // Hook gọi API
+  const { data: rolesData, isLoading } = useRoles()
 
-  // Client-side sorting and filtering as fallback
+  // Sắp xếp và lọc phía client làm phương án dự phòng
   const roles = useMemo(() => {
-    if (!rolesData) return [];
+    if (!rolesData) return []
 
-    let filteredRoles = [...rolesData];
+    let filteredRoles = [...rolesData]
 
-    // Apply search filter
+    // Áp dụng bộ lọc tìm kiếm
     if (searchQuery) {
       filteredRoles = filteredRoles.filter(
         (role) =>
           role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          role.description.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
+          role.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     }
 
-    // Apply sorting
+    // Áp dụng sắp xếp
     filteredRoles.sort((a, b) => {
-      let aValue: string | number | Date;
-      let bValue: string | number | Date;
+      let aValue: string | number | Date
+      let bValue: string | number | Date
 
       switch (sortBy) {
-        case "name":
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
-          break;
-        case "permissionsCount":
-          // Since userCount doesn't exist in IRole, use permissions count as fallback
-          aValue = a.permissions?.length || 0;
-          bValue = b.permissions?.length || 0;
-          break;
-        case "createdAt":
-          aValue = new Date(a.createdAt);
-          bValue = new Date(b.createdAt);
-          break;
+        case 'name':
+          aValue = a.name.toLowerCase()
+          bValue = b.name.toLowerCase()
+          break
+        case 'permissionsCount':
+          // Vì IRole không có userCount, dùng số lượng quyền làm dự phòng
+          aValue = a.permissions?.length || 0
+          bValue = b.permissions?.length || 0
+          break
+        case 'createdAt':
+          aValue = new Date(a.createdAt)
+          bValue = new Date(b.createdAt)
+          break
         default:
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
+          aValue = a.name.toLowerCase()
+          bValue = b.name.toLowerCase()
       }
 
-      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
-      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
-      return 0;
-    });
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1
+      return 0
+    })
 
-    return filteredRoles;
-  }, [rolesData, searchQuery, sortBy, sortOrder]);
+    return filteredRoles
+  }, [rolesData, searchQuery, sortBy, sortOrder])
 
   const handleSearchChange = (search: string) => {
-    setSearchQuery(search);
-  };
+    setSearchQuery(search)
+  }
 
   const handleSortChange = (sort: string) => {
-    // Parse sort string to extract field and order
-    const [field, order] = sort.includes("-desc")
-      ? [sort.replace("-desc", ""), "desc" as const]
-      : [sort, "asc" as const];
+    // Phân tích chuỗi sắp xếp để lấy trường và thứ tự
+    const [field, order] = sort.includes('-desc')
+      ? [sort.replace('-desc', ''), 'desc' as const]
+      : [sort, 'asc' as const]
 
-    if (field === "name" || field === "permissionsCount" || field === "createdAt") {
-      setSortBy(field);
-      setSortOrder(order);
+    if (field === 'name' || field === 'permissionsCount' || field === 'createdAt') {
+      setSortBy(field)
+      setSortOrder(order)
     }
-  };
+  }
 
-  const handleViewChange = (view: "grid" | "list") => {
-    setCurrentView(view);
-  };
+  const handleViewChange = (view: 'grid' | 'list') => {
+    setCurrentView(view)
+  }
 
   const handleEditRole = (role: IRole) => {
-    setEditingRole(role);
-    setDialogMode("edit");
-    setDialogOpen(true);
-  };
+    setEditingRole(role)
+    setDialogMode('edit')
+    setDialogOpen(true)
+  }
 
   const handleCreateRole = () => {
-    setEditingRole(null);
-    setDialogMode("create");
-    setDialogOpen(true);
-  };
+    setEditingRole(null)
+    setDialogMode('create')
+    setDialogOpen(true)
+  }
 
   const handleDialogClose = () => {
-    setDialogOpen(false);
-    setEditingRole(null);
-  };
+    setDialogOpen(false)
+    setEditingRole(null)
+  }
 
-  // Default roles page view
+  // Giao diện mặc định của trang vai trò
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
+    <div className='space-y-6'>
+      {/* Tiêu đề trang */}
+      <div className='flex items-center justify-between'>
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Roles</h2>
-          <p className="text-muted-foreground">Manage user roles and permissions across the platform</p>
+          <h2 className='text-2xl font-bold tracking-tight'>Vai trò</h2>
+          <p className='text-muted-foreground'>Quản lý vai trò và quyền người dùng trên toàn hệ thống</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           {CREATE && (
-            <Button className="gap-2" onClick={handleCreateRole}>
-              <MdAdd className="h-4 w-4" />
-              Add Role
+            <Button className='gap-2' onClick={handleCreateRole}>
+              <MdAdd className='h-4 w-4' />
+              Thêm vai trò
             </Button>
           )}
         </div>
       </div>
 
-      {/* Controls */}
+      {/* Bộ điều khiển */}
       <RolesHeader
         onSearchChange={handleSearchChange}
         onSortChange={handleSortChange}
@@ -171,28 +171,28 @@ const RolesPage = () => {
         currentView={currentView}
       />
 
-      {/* Content */}
+      {/* Nội dung */}
       {isLoading ? (
         <RolesSkeleton view={currentView} />
-      ) : currentView === "grid" ? (
+      ) : currentView === 'grid' ? (
         <RolesGrid roles={roles} onEditRole={handleEditRole} />
       ) : (
         <RolesList roles={roles} onEditRole={handleEditRole} />
       )}
 
-      {/* Role Action Dialog - Handles both Create and Edit */}
+      {/* Hộp thoại thao tác vai trò - xử lý cả tạo mới và chỉnh sửa */}
       {dialogOpen && (
         <RoleActionDialog
           open={dialogOpen}
           onOpenChange={(open) => {
-            if (!open) handleDialogClose();
+            if (!open) handleDialogClose()
           }}
           mode={dialogMode}
           role={editingRole}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default RolesPage;
+export default RolesPage

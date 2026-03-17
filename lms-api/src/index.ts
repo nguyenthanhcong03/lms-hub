@@ -50,7 +50,7 @@ const startServer = async () => {
       console.log(`Server is listening on port ${port}`)
     })
   } catch (error) {
-    console.error('Failed to start server:', error)
+    console.error('Khởi động server thất bại:', error)
     process.exit(1)
   }
 }

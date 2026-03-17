@@ -1,138 +1,138 @@
-"use client";
+'use client'
 
-import { Permission } from "@/configs/permission";
-import { AuthService, type CurrentUser } from "@/services/auth";
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { Permission } from '@/configs/permission'
+import { AuthService, type CurrentUser } from '@/services/auth'
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
 
-// Use the CurrentUser type from auth service
-export type AuthUser = CurrentUser;
+// Dùng kiểu CurrentUser từ auth service
+export type AuthUser = CurrentUser
 
-// Auth store state
+// Trạng thái của auth store
 interface AuthState {
-  // User state
-  user: AuthUser | null;
-  isLoading: boolean;
+  // Trạng thái người dùng
+  user: AuthUser | null
+  isLoading: boolean
 
-  // Auth actions
-  logout: () => Promise<void>;
-  getCurrentUser: () => Promise<void>;
-  setUser: (user: AuthUser | null) => void;
-  setLoading: (loading: boolean) => void;
+  // Các hành động xác thực
+  logout: () => Promise<void>
+  getCurrentUser: () => Promise<void>
+  setUser: (user: AuthUser | null) => void
+  setLoading: (loading: boolean) => void
 
-  // Permission helper - only keep the one we actually use
-  hasPermission: (permission: Permission) => boolean;
-  hasAnyPermission: (permissions: Permission[]) => boolean;
+  // Hàm hỗ trợ quyền - chỉ giữ các hàm đang dùng
+  hasPermission: (permission: Permission) => boolean
+  hasAnyPermission: (permissions: Permission[]) => boolean
 }
 
 export const useAuthStore = create<AuthState>()(
   devtools(
     (set, get) => ({
-      // Initial state
+      // Trạng thái khởi tạo
       user: null,
       isLoading: true,
 
-      // Actions
+      // Các hành động
       setUser: (user) => {
-        set({ user });
+        set({ user })
       },
 
       setLoading: (isLoading) => {
-        set({ isLoading });
+        set({ isLoading })
       },
 
-      // Fetch current user from /auth/me
+      // Lấy thông tin người dùng hiện tại từ /auth/me
       getCurrentUser: async () => {
         try {
-          const token = getTokenFromStorage();
+          const token = getTokenFromStorage()
           if (!token) {
-            set({ isLoading: false, user: null });
-            return;
+            set({ isLoading: false, user: null })
+            return
           }
 
-          const userData = await AuthService.getAuthMe();
+          const userData = await AuthService.getAuthMe()
 
-          set({ user: userData, isLoading: false });
-          setUserDataToStorage(userData);
+          set({ user: userData, isLoading: false })
+          setUserDataToStorage(userData)
         } catch {
-          // Clear invalid token
-          clearTokenFromStorage();
-          clearUserDataFromStorage();
-          set({ user: null, isLoading: false });
+          // Xóa token không hợp lệ
+          clearTokenFromStorage()
+          clearUserDataFromStorage()
+          set({ user: null, isLoading: false })
         }
       },
 
-      // Logout and clear local auth state
+      // Đăng xuất và xóa trạng thái xác thực cục bộ
       logout: async () => {
         try {
-          await AuthService.logout();
+          await AuthService.logout()
         } catch {
-          // Ignore network/auth errors here and always clear client auth state.
+          // Bỏ qua lỗi mạng/xác thực và luôn xóa trạng thái auth phía client.
         }
 
-        clearTokenFromStorage();
-        clearUserDataFromStorage();
-        set({ user: null, isLoading: false });
+        clearTokenFromStorage()
+        clearUserDataFromStorage()
+        set({ user: null, isLoading: false })
       },
 
       hasPermission: (permission) => {
-        const state = get();
-        const userPermissions = state?.user?.userPermissions || [];
-        return userPermissions.includes(permission);
+        const state = get()
+        const userPermissions = state?.user?.userPermissions || []
+        return userPermissions.includes(permission)
       },
 
       hasAnyPermission: (permissions) => {
-        const state = get();
-        const userPermissions = state?.user?.userPermissions || [];
-        return permissions.some((perm) => userPermissions.includes(perm));
-      },
+        const state = get()
+        const userPermissions = state?.user?.userPermissions || []
+        return permissions.some((perm) => userPermissions.includes(perm))
+      }
     }),
     {
-      name: "auth-store",
-    },
-  ),
-);
+      name: 'auth-store'
+    }
+  )
+)
 
-// Token management helpers (only store tokens, not user data)
+// Hàm trợ giúp quản lý token (chỉ lưu token, không lưu dữ liệu người dùng)
 function getTokenFromStorage(): string | null {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("access_token");
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('access_token')
   }
-  return null;
+  return null
 }
 
 function clearTokenFromStorage(): void {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("access_token");
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('access_token')
   }
 }
 
 function setUserDataToStorage(user: CurrentUser): void {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("user_data", JSON.stringify(user));
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('user_data', JSON.stringify(user))
   }
 }
 
 function getUserDataFromStorage(): CurrentUser | null {
-  if (typeof window !== "undefined") {
-    const data = localStorage.getItem("user_data");
+  if (typeof window !== 'undefined') {
+    const data = localStorage.getItem('user_data')
     if (!data) {
-      return null;
+      return null
     }
 
     try {
-      return JSON.parse(data) as CurrentUser;
+      return JSON.parse(data) as CurrentUser
     } catch {
-      localStorage.removeItem("user_data");
-      return null;
+      localStorage.removeItem('user_data')
+      return null
     }
   }
 
-  return null;
+  return null
 }
 
 function clearUserDataFromStorage(): void {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("user_data");
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('user_data')
   }
 }

@@ -12,7 +12,7 @@ export class ChapterController {
 
     const chapter = await ChapterService.createChapter(chapterData)
 
-    sendSuccess.created(res, 'Chapter created successfully', chapter)
+    sendSuccess.created(res, 'Chapter được tạo thành công', chapter)
   }
 
   /**
@@ -23,7 +23,7 @@ export class ChapterController {
 
     const chapters = await ChapterService.getChapters(query)
 
-    sendSuccess.ok(res, 'Chapters retrieved successfully', chapters)
+    sendSuccess.ok(res, 'Chapters được lấy thành công', chapters)
   }
 
   /**
@@ -34,7 +34,7 @@ export class ChapterController {
 
     const chapter = await ChapterService.getChapterById(id)
 
-    sendSuccess.ok(res, 'Chapter retrieved successfully', { chapter })
+    sendSuccess.ok(res, 'Chapter được lấy thành công', { chapter })
   }
 
   /**
@@ -46,7 +46,7 @@ export class ChapterController {
 
     const chapter = await ChapterService.updateChapter(id, updateData)
 
-    sendSuccess.ok(res, 'Chapter updated successfully', { chapter })
+    sendSuccess.ok(res, 'Chapter được cập nhật thành công', { chapter })
   }
 
   /**
@@ -57,7 +57,7 @@ export class ChapterController {
 
     await ChapterService.deleteChapter(id)
 
-    sendSuccess.ok(res, 'Chapter deleted successfully')
+    sendSuccess.ok(res, 'Chapter được xóa thành công')
   }
 
   /**
@@ -68,7 +68,7 @@ export class ChapterController {
 
     const chapters = await ChapterService.getPublicChaptersForCourse(courseId)
 
-    sendSuccess.ok(res, 'Course chapters retrieved successfully', { chapters })
+    sendSuccess.ok(res, 'Course chapters được lấy thành công', { chapters })
   }
 
   /**
@@ -79,7 +79,7 @@ export class ChapterController {
 
     const chapters = await ChapterService.reorderChapters(reorderData)
 
-    sendSuccess.ok(res, 'Chapters reordered successfully', { chapters })
+    sendSuccess.ok(res, 'Chapters được sắp xếp lại thành công', { chapters })
   }
 
   /**
@@ -90,7 +90,7 @@ export class ChapterController {
 
     const chapter = await ChapterService.addLessonToChapter(chapterId, lessonId)
 
-    sendSuccess.ok(res, 'Lesson added to chapter successfully', { chapter })
+    sendSuccess.ok(res, 'Lesson được thêm vào chương thành công', { chapter })
   }
 
   /**
@@ -101,6 +101,6 @@ export class ChapterController {
 
     const chapter = await ChapterService.removeLessonFromChapter(chapterId, lessonId)
 
-    sendSuccess.ok(res, 'Lesson removed from chapter successfully', { chapter })
+    sendSuccess.ok(res, 'Lesson được gỡ khỏi chương thành công', { chapter })
   }
 }

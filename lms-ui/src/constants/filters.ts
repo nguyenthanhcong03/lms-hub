@@ -5,9 +5,9 @@ import { DiscountType } from '@/types/coupon'
 import { BlogStatus } from '@/types/blog'
 import { CommentStatus } from '@/types/comment'
 
-// Filter options for data tables
+// Tùy chọn bộ lọc cho bảng dữ liệu
 export const FILTER_OPTIONS = {
-  // Category filters
+  // Bộ lọc danh mục
   CATEGORY_STATUS: [
     {
       label: 'Hoạt động',
@@ -19,7 +19,7 @@ export const FILTER_OPTIONS = {
     }
   ],
 
-  // Blog filters
+  // Bộ lọc blog
   BLOG_STATUS: [
     {
       label: 'Nháp',
@@ -31,7 +31,7 @@ export const FILTER_OPTIONS = {
     }
   ],
 
-  // Course filters - updated to match new boolean-based structure
+  // Bộ lọc khóa học - đã cập nhật theo cấu trúc boolean mới
   COURSE_STATUS: [
     {
       label: 'Nháp',
@@ -69,7 +69,7 @@ export const FILTER_OPTIONS = {
     }
   ],
 
-  // Coupon filters
+  // Bộ lọc mã giảm giá
   COUPON_STATUS: [
     {
       label: 'Hoạt động',
@@ -96,7 +96,7 @@ export const FILTER_OPTIONS = {
     }
   ],
 
-  // User filters
+  // Bộ lọc người dùng
   USER_STATUS: [
     {
       label: 'Hoạt động',
@@ -127,7 +127,7 @@ export const FILTER_OPTIONS = {
     }
   ],
 
-  // Comment filters
+  // Bộ lọc bình luận
   COMMENT_STATUS: [
     {
       label: 'Đang chờ duyệt',
@@ -144,12 +144,12 @@ export const FILTER_OPTIONS = {
   ]
 } as const
 
-// Filter configuration interface
+// Interface cấu hình bộ lọc
 export interface FilterOption {
   label: string
   value: string
   icon?: React.ComponentType<{ className?: string }>
 }
 
-// Type for category status filter values
+// Kiểu cho giá trị lọc trạng thái danh mục
 export type CategoryStatusFilter = 'active' | 'inactive'

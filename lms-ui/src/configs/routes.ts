@@ -38,7 +38,7 @@ export const ROUTE_CONFIG = {
   }
 }
 
-// Helper functions for dynamic routes
+// Hàm hỗ trợ cho route động
 export const getRoutes = {
   courseDetail: (slug: string) => `${ROUTE_CONFIG.COURSES}/${slug}`,
   blogDetail: (slug: string) => `${ROUTE_CONFIG.BLOGS}/${slug}`,

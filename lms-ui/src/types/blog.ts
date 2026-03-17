@@ -1,4 +1,4 @@
-// Blog status enum
+// Enum trang thai blog
 export enum BlogStatus {
 	DRAFT = "draft",
 	PUBLISHED = "published",
@@ -20,7 +20,7 @@ export interface IBlogCategory {
 	slug: string;
 }
 
-// Base blog interface representing the blog entity
+// Cơ sở blog interface representing the blog entity
 export interface IBlog {
 	_id: string;
 	title: string;
@@ -39,7 +39,7 @@ export interface IBlog {
 	updatedAt: string;
 }
 
-// Form data interface for creating/updating blogs
+// Interface dữ liệu form để tạo/cập nhật blogs
 export interface BlogFormData {
 	title: string;
 	slug: string;
@@ -52,7 +52,7 @@ export interface BlogFormData {
 	categoryIds: string[];
 }
 
-// Statistics interface for blog metrics
+// Interface thống kê cho blog metrics
 export interface BlogStats {
 	totalBlogs: number;
 	publishedBlogs: number;
@@ -69,7 +69,7 @@ export interface IBlogWithStats extends Omit<IBlog, "author" | "category"> {
 	categories?: IBlogCategory[]; // For backward compatibility
 }
 
-// Pagination interface for blog lists
+// Interface phân trang cho blog lists
 export interface BlogPagination {
 	page: number;
 	limit: number;
@@ -85,7 +85,7 @@ export interface BlogsListResponse {
 	pagination: BlogPagination;
 }
 
-// Filter and search parameters for blogs
+// Tham số lọc và tìm kiếm cho blogs
 export interface BlogsFilterParams {
 	page?: number;
 	limit?: number;

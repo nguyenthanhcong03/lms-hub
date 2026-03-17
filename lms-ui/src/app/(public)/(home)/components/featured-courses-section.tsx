@@ -1,60 +1,60 @@
-import { CourseCard } from "@/components/course/course-card";
-import { ROUTE_CONFIG } from "@/configs/routes";
-import type { IPublicCourse, PublicCoursesListResponse } from "@/types/course";
-import { ArrowRight, TrendingUp } from "lucide-react";
-import Link from "next/link";
+import { CourseCard } from '@/components/course/course-card'
+import { ROUTE_CONFIG } from '@/configs/routes'
+import type { IPublicCourse, PublicCoursesListResponse } from '@/types/course'
+import { ArrowRight, TrendingUp } from 'lucide-react'
+import Link from 'next/link'
 
 interface FeaturedCoursesSectionProps {
-  coursesData: PublicCoursesListResponse;
+  coursesData: PublicCoursesListResponse
 }
 
 const FeaturedCoursesSection = ({ coursesData }: FeaturedCoursesSectionProps) => {
-  const featuredCourses = coursesData?.courses || [];
+  const featuredCourses = coursesData?.courses || []
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-20 bg-gray-50">
-      <div className="container mx-auto px-4 sm:px-6 ">
-        {/* Section Header */}
-        <div className="text-center mb-8 sm:mb-10 lg:mb-12">
-          {/* Badge */}
-          <div className="inline-flex items-center space-x-2 bg-blue-100 text-blue-700 px-3 sm:px-4 py-2 rounded-full mb-3 sm:mb-4">
-            <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" />
-            <span className="text-xs sm:text-sm font-medium">Phổ Biến Nhất</span>
+    <section className='bg-gray-50 py-12 sm:py-16 md:py-20 lg:py-20'>
+      <div className='container mx-auto px-4 sm:px-6'>
+        {/* Tiêu đề phần */}
+        <div className='mb-8 text-center sm:mb-10 lg:mb-12'>
+          {/* Huy hiệu */}
+          <div className='mb-3 inline-flex items-center space-x-2 rounded-full bg-blue-100 px-3 py-2 text-blue-700 sm:mb-4 sm:px-4'>
+            <TrendingUp className='h-3 w-3 sm:h-4 sm:w-4' />
+            <span className='text-xs font-medium sm:text-sm'>Phổ biến nhất</span>
           </div>
 
-          {/* Main Title */}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 px-4">
+          {/* Tiêu đề chính */}
+          <h2 className='mb-3 px-4 text-2xl font-bold text-gray-900 sm:mb-4 sm:text-3xl md:text-4xl lg:text-5xl'>
             Khóa học nổi bật
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
+          <p className='mx-auto max-w-3xl px-4 text-base leading-relaxed text-gray-600 sm:text-lg md:text-xl'>
             Khám phá những khóa học được yêu thích và đánh giá cao nhất, được chọn lọc để giúp bạn làm chủ các kỹ năng
             đang được săn đón và phát triển sự nghiệp.
           </p>
         </div>
 
-        {/* View All Link */}
-        <div className="flex justify-center sm:justify-end mb-4 sm:mb-6 px-4 sm:px-0">
+        {/* Liên kết xem tất cả */}
+        <div className='mb-4 flex justify-center px-4 sm:mb-6 sm:justify-end sm:px-0'>
           <Link
             href={ROUTE_CONFIG.COURSES}
-            className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors text-sm sm:text-base group"
+            className='group inline-flex items-center text-sm font-medium text-blue-600 transition-colors hover:text-blue-700 sm:text-base'
           >
             Xem tất cả khóa học
-            <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform duration-300" />
+            <ArrowRight className='ml-2 h-3 w-3 transition-transform duration-300 group-hover:translate-x-1 sm:h-4 sm:w-4' />
           </Link>
         </div>
 
-        {/* Courses Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+        {/* Lưới khóa học */}
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:gap-8 lg:grid-cols-3 2xl:grid-cols-4'>
           {featuredCourses.length > 0 ? (
             featuredCourses.map((course: IPublicCourse) => <CourseCard key={course._id} course={course} />)
           ) : (
-            <div className="col-span-full text-center py-8 sm:py-12 px-4">
-              <div className="max-w-md mx-auto">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
+            <div className='col-span-full px-4 py-8 text-center sm:py-12'>
+              <div className='mx-auto max-w-md'>
+                <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 sm:h-20 sm:w-20'>
+                  <TrendingUp className='h-6 w-6 text-gray-400 sm:h-8 sm:w-8' />
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">Hiện chưa có khóa học</h3>
-                <p className="text-sm sm:text-base text-gray-600">
+                <h3 className='mb-2 text-lg font-semibold text-gray-700 sm:text-xl'>Hiện chưa có khóa học</h3>
+                <p className='text-sm text-gray-600 sm:text-base'>
                   Hiện chưa có khóa học nổi bật. Hãy quay lại sớm để xem nội dung mới!
                 </p>
               </div>
@@ -63,7 +63,7 @@ const FeaturedCoursesSection = ({ coursesData }: FeaturedCoursesSectionProps) =>
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default FeaturedCoursesSection;
+export default FeaturedCoursesSection

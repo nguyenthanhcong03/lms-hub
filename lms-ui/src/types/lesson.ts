@@ -1,10 +1,10 @@
-// Lesson types
+// Kieu du lieu bai hoc
 
 import type {QuestionType} from "@/types/quiz";
 
 export type ContentType = "video" | "quiz" | "article";
 
-// Lesson resource interface
+// Interface tai nguyen bai hoc
 export interface ILessonResource {
 	_id?: string;
 	title?: string;
@@ -26,7 +26,7 @@ export interface QuizQuestionForm {
 	point: number;
 }
 
-// Main lesson interface (API response)
+// Interface bai hoc chinh (API response)
 export interface ILesson {
 	_id: string;
 	title: string;
@@ -56,7 +56,7 @@ export interface ILesson {
 	updatedAt: string;
 }
 
-// Display lesson interface (for UI components)
+// Interface hien thi bai hoc (cho UI components)
 export interface DisplayLesson {
 	_id: string;
 	title: string;
@@ -74,7 +74,7 @@ export interface DisplayLesson {
 	};
 }
 
-// Lesson form data interface
+// Interface du lieu form bai hoc
 export interface LessonFormData {
 	_id?: string;
 	title: string;
@@ -89,7 +89,7 @@ export interface LessonFormData {
 	resource?: ILessonResource;
 }
 
-// Lesson request types
+// Kieu request bai hoc
 export type CreateLessonRequest = LessonFormData;
 
 export interface UpdateLessonRequest extends Partial<LessonFormData> {
@@ -113,7 +113,7 @@ export interface LessonsFilterParams {
 	[key: string]: unknown;
 }
 
-// Lesson list response (for consistency with other services)
+// Response danh sach bai hoc (dong bo voi cac service khac)
 export interface LessonsListResponse {
 	lessons: ILesson[];
 	pagination?: {

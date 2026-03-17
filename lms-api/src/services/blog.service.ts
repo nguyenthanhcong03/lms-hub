@@ -1,4 +1,4 @@
-import { Blog, IBlog } from '../models/blog'
+﻿import { Blog, IBlog } from '../models/blog'
 import { Category } from '../models/category'
 import { User } from '../models/user'
 import { AppError } from '../utils/errors'
@@ -6,8 +6,8 @@ import { CreateBlogInput, UpdateBlogInput, GetBlogsQuery, BulkDeleteBlogsInput }
 import { Types } from 'mongoose'
 
 /**
- * Blog Management Service
- * CRUD operations for blog posts
+ * Dịch vụ quản lý bài viết
+ * Các thao tác tạo, đọc, cập nhật, xóa cho bài viết
  */
 
 interface GetBlogsResult {
@@ -24,26 +24,26 @@ interface GetBlogsResult {
 
 export class BlogService {
   /**
-   * Create a new blog post
+   * Tạo bài viết mới
    */
   static async createBlog(blogData: CreateBlogInput, authorId: string): Promise<IBlog> {
-    // Check if slug already exists
+    // Kiểm tra slug đã tồn tại chưa
     const existingBlog = await Blog.findOne({ slug: blogData.slug })
     if (existingBlog) {
-      throw new AppError('Blog with this slug already exists', 400)
+      throw new AppError('Đã tồn tại bài viết với slug này', 400)
     }
 
-    // Validate author exists
+    // Kiểm tra tác giả có tồn tại
     const author = await User.findById(authorId)
     if (!author) {
-      throw new AppError('Author not found', 404)
+      throw new AppError('Không tìm thấy tác giả', 404)
     }
 
-    // Validate categories exist (if provided)
+    // Kiểm tra danh mục có tồn tại (nếu có truyền)
     if (blogData.categoryId) {
       const category = await Category.findById(blogData.categoryId)
       if (!category) {
-        throw new AppError('Category not found', 400)
+        throw new AppError('Không tìm thấy danh mục', 400)
       }
     }
 
@@ -57,7 +57,7 @@ export class BlogService {
   }
 
   /**
-   * Get all blogs with pagination and filtering
+   * Lấy danh sách bài viết có phân trang và lọc
    */
   static async getBlogs(options: Partial<GetBlogsQuery> = {}): Promise<GetBlogsResult> {
     const {
@@ -70,12 +70,12 @@ export class BlogService {
       sortBy = 'publishedAt',
       sortOrder = 'desc'
     } = options
-    // Convert string to number using + operator
+    // Chuyển chuỗi sang số bằng toán tử +
     const pageNum = +page
     const limitNum = +limit
     const skip = (pageNum - 1) * limitNum
 
-    // Build filter query
+    // Tạo điều kiện lọc
     const filter: Record<string, unknown> = {}
 
     if (search) {
@@ -105,11 +105,11 @@ export class BlogService {
       filter.categoryId = categoryId
     }
 
-    // Build sort object
+    // Tạo điều kiện sắp xếp
     const sort: Record<string, 1 | -1> = {}
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1
 
-    // Execute queries in parallel
+    // Thực thi truy vấn song song
     const [blogsResult, total] = await Promise.all([
       Blog.aggregate([
         { $match: filter },
@@ -165,7 +165,7 @@ export class BlogService {
   }
 
   /**
-   * Get blog by ID
+   * Lấy bài viết theo ID
    */
   static async getBlogById(blogId: string): Promise<IBlog> {
     const blogResult = await Blog.aggregate([
@@ -202,14 +202,14 @@ export class BlogService {
     const blog = blogResult[0] as IBlog
 
     if (!blog) {
-      throw new AppError('Blog not found', 404)
+      throw new AppError('Không tìm thấy bài viết', 404)
     }
 
     return blog
   }
 
   /**
-   * Get blog by slug
+   * Lấy bài viết theo slug
    */
   static async getBlogBySlug(slug: string): Promise<IBlog> {
     const blogResult = await Blog.aggregate([
@@ -246,43 +246,43 @@ export class BlogService {
     const blog = blogResult[0] as IBlog
 
     if (!blog) {
-      throw new AppError('Blog not found', 404)
+      throw new AppError('Không tìm thấy bài viết', 404)
     }
 
     return blog
   }
 
   /**
-   * Update blog
+   * Cập nhật bài viết
    */
   static async updateBlog(blogId: string, updateData: UpdateBlogInput, authorId?: string): Promise<IBlog> {
     const blog = await Blog.findById(blogId)
     if (!blog) {
-      throw new AppError('Blog not found', 404)
+      throw new AppError('Không tìm thấy bài viết', 404)
     }
 
-    // Check ownership (if authorId provided - for non-admin users)
+    // Kiểm tra quyền sở hữu (nếu có authorId - cho người dùng không phải admin)
     if (authorId && blog.authorId.toString() !== authorId) {
-      throw new AppError('Not authorized to update this blog', 403)
+      throw new AppError('Bạn không có quyền cập nhật bài viết này', 403)
     }
 
-    // Check if slug is being updated and already exists
+    // Kiểm tra slug mới có bị trùng không
     if (updateData.slug && updateData.slug !== blog.slug) {
       const existingBlog = await Blog.findOne({ slug: updateData.slug })
       if (existingBlog) {
-        throw new AppError('Blog with this slug already exists', 400)
+        throw new AppError('Đã tồn tại bài viết với slug này', 400)
       }
     }
 
-    // Validate categories exist (if provided)
+    // Kiểm tra danh mục có tồn tại (nếu có truyền)
     if (updateData.categoryId) {
       const category = await Category.findById(updateData.categoryId)
       if (!category) {
-        throw new AppError('Category not found', 400)
+        throw new AppError('Không tìm thấy danh mục', 400)
       }
     }
 
-    // Update the blog
+    // Cập nhật bài viết
     Object.assign(blog, updateData)
     await blog.save()
 
@@ -321,24 +321,24 @@ export class BlogService {
   }
 
   /**
-   * Delete blog
+   * Xóa bài viết
    */
   static async deleteBlog(blogId: string, authorId?: string): Promise<void> {
     const blog = await Blog.findById(blogId)
     if (!blog) {
-      throw new AppError('Blog not found', 404)
+      throw new AppError('Không tìm thấy bài viết', 404)
     }
 
-    // Check ownership (if authorId provided - for non-admin users)
+    // Kiểm tra quyền sở hữu (nếu có authorId - cho người dùng không phải admin)
     if (authorId && blog.authorId.toString() !== authorId) {
-      throw new AppError('Not authorized to delete this blog', 403)
+      throw new AppError('Bạn không có quyền xóa bài viết này', 403)
     }
 
     await Blog.findByIdAndDelete(blogId)
   }
 
   /**
-   * Bulk delete blogs
+   * Xóa hàng loạt bài viết
    */
   static async bulkDeleteBlogs(
     data: BulkDeleteBlogsInput,
@@ -349,40 +349,40 @@ export class BlogService {
   }> {
     const { blogIds } = data
 
-    // Remove duplicates
+    // Loại bỏ phần tử trùng lặp
     const uniqueBlogIds = [...new Set(blogIds)]
 
-    // Validate all blogs exist
+    // Kiểm tra tất cả bài viết có tồn tại
     const blogs = await Blog.find({ _id: { $in: uniqueBlogIds } })
     const foundBlogIds = blogs.map((blog) => blog._id.toString())
     const notFoundIds = uniqueBlogIds.filter((id) => !foundBlogIds.includes(id))
 
     if (notFoundIds.length > 0) {
-      throw new AppError(`Blogs not found: ${notFoundIds.join(', ')}`, 404)
+      throw new AppError(`Không tìm thấy bài viết: ${notFoundIds.join(', ')}`, 404)
     }
 
     let deletedCount = 0
     const skippedBlogs: { id: string; title: string; reason: string }[] = []
 
-    // Check ownership for each blog (if authorId provided)
+    // Kiểm tra quyền sở hữu cho từng bài viết (nếu có authorId)
     if (authorId) {
       for (const blog of blogs) {
         if (blog.authorId.toString() !== authorId) {
           skippedBlogs.push({
             id: blog._id.toString(),
             title: blog.title,
-            reason: 'Not authorized to delete this blog'
+            reason: 'Bạn không có quyền xóa bài viết này'
           })
         }
       }
 
-      // Only delete blogs owned by the user
+      // Chỉ xóa các bài viết thuộc quyền sở hữu của người dùng
       const ownedBlogIds = blogs.filter((blog) => blog.authorId.toString() === authorId).map((blog) => blog._id)
 
       const result = await Blog.deleteMany({ _id: { $in: ownedBlogIds } })
       deletedCount = result.deletedCount || 0
     } else {
-      // Admin can delete all blogs
+      // Admin có thể xóa tất cả bài viết
       const result = await Blog.deleteMany({ _id: { $in: uniqueBlogIds } })
       deletedCount = result.deletedCount || 0
     }
@@ -394,19 +394,19 @@ export class BlogService {
   }
 
   /**
-   * Get published blogs only (public endpoint)
+   * Chỉ lấy bài viết đã xuất bản (điểm cuối công khai)
    */
   static async getPublishedBlogs(options: Partial<GetBlogsQuery> = {}): Promise<GetBlogsResult> {
     const { page = 1, limit = 10, search } = options
-    // Convert string to number using + operator
+    // Chuyển chuỗi sang số bằng toán tử +
     const pageNum = +page
     const limitNum = +limit
     const skip = (pageNum - 1) * limitNum
 
-    // Build filter query for published blogs
+    // Tạo điều kiện lọc cho bài viết đã xuất bản
     const filter: Record<string, unknown> = {
       status: 'published',
-      publishedAt: { $lte: new Date() } // Only show blogs published on or before current date
+      publishedAt: { $lte: new Date() } // Chỉ hiển thị bài viết đã xuất bản trước hoặc bằng ngày hiện tại
     }
 
     if (search) {
@@ -417,7 +417,7 @@ export class BlogService {
       ]
     }
 
-    // Execute queries in parallel
+    // Thực thi truy vấn song song
     const [blogsResult, total] = await Promise.all([
       Blog.aggregate([
         { $match: filter },
@@ -472,7 +472,7 @@ export class BlogService {
   }
 
   /**
-   * Get user's own blogs
+   * Lấy các bài viết của chính người dùng
    */
   static async getUserBlogs(authorId: string, options: Partial<GetBlogsQuery> = {}): Promise<GetBlogsResult> {
     return this.getBlogs({

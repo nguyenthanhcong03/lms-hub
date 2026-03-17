@@ -26,38 +26,38 @@ function PaymentSuccessPageInner() {
 
   const orderId = searchParams.get('orderid')
 
-  // Fetch order details dynamically
+  // Lấy chi tiết đơn hàng động
   const { data: orderDetails, error, refetch } = useOrderDetails(orderId)
 
-  // QR code configuration
+  // Cấu hình mã QR
   const accountNumber = '90909000'
   const bankName = 'VietinBank'
 
-  // Dynamic values from order details
+  // Giá trị động từ chi tiết đơn hàng
 
   const amount = orderDetails?.totalAmount?.toString()
   // &template=compact
-  // QR Code URL with dynamic data
+  // URL mã QR với dữ liệu động
   const qrCodeUrl = `https://qr.sepay.vn/img?acc=${accountNumber}&bank=${bankName}&amount=${
     amount || ''
   }&des=${orderDetails?.code || ''}`
 
-  // Handle order completion using useCallback to avoid dependency issues
+  // Xử lý hoàn tất đơn hàng bằng useCallback để tránh vấn đề dependency
   const handleOrderCompleted = useCallback(() => {
     setIsOrderCompleted(true)
     setPaymentStatus('Thanh toán thành công!')
     toast.success('Thanh toán thành công! Đang chuyển hướng...')
 
-    // Stop polling
+    // Dừng polling
     if (pollingIntervalRef.current) {
       clearInterval(pollingIntervalRef.current)
     }
 
-    // Start countdown
+    // Bắt đầu đếm ngược
     countdownIntervalRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          // Redirect to my-order page
+          // Chuyển hướng tới trang đơn hàng của tôi
           router.push(ROUTE_CONFIG.PROFILE.MY_ORDERS)
           return 0
         }
@@ -66,19 +66,19 @@ function PaymentSuccessPageInner() {
     }, 1000)
   }, [router])
 
-  // Polling effect to check order status
+  // Effect polling để kiểm tra trạng thái đơn hàng
   useEffect(() => {
     if (!orderDetails || isOrderCompleted) return
 
-    // Check initial status
+    // Kiểm tra trạng thái ban đầu
     if (orderDetails.status === OrderStatus.COMPLETED) {
       handleOrderCompleted()
       return
     }
 
-    // Set up polling every 30 seconds
+    // Thiết lập polling mỗi 30 giây
     pollingIntervalRef.current = setInterval(() => {
-      // Refetch order details to check for status updates
+      // Tải lại chi tiết đơn hàng để kiểm tra cập nhật trạng thái
       refetch()
     }, 30000)
 
@@ -89,7 +89,7 @@ function PaymentSuccessPageInner() {
     }
   }, [orderDetails, isOrderCompleted, handleOrderCompleted, refetch])
 
-  // Effect to handle order status changes
+  // Effect xử lý thay đổi trạng thái đơn hàng
   useEffect(() => {
     if (!orderDetails) return
 
@@ -102,7 +102,7 @@ function PaymentSuccessPageInner() {
     }
   }, [orderDetails, orderDetails?.status, isOrderCompleted, handleOrderCompleted])
 
-  // Cleanup effect
+  // Effect dọn dẹp
   useEffect(() => {
     return () => {
       if (pollingIntervalRef.current) {
@@ -114,15 +114,15 @@ function PaymentSuccessPageInner() {
     }
   }, [])
 
-  // Show error state if failed to fetch order
+  // Hiển thị trạng thái lỗi nếu không tải được đơn hàng
   if (error) {
     return (
       <div className='flex min-h-screen items-center justify-center bg-gray-50 px-4 py-6 sm:py-8'>
         <div className='text-center'>
-          <p className='mb-3 text-sm text-red-600 sm:mb-4 sm:text-base'>Unable to load order information</p>
+          <p className='mb-3 text-sm text-red-600 sm:mb-4 sm:text-base'>Không thể tải thông tin đơn hàng</p>
           <Button onClick={() => router.push('/')} variant='outline' className='h-9 text-xs sm:h-10 sm:text-sm'>
             <ArrowLeft className='mr-1.5 h-3.5 w-3.5 sm:mr-2 sm:h-4 sm:w-4' />
-            Return to homepage
+            Về trang chủ
           </Button>
         </div>
       </div>
@@ -131,11 +131,11 @@ function PaymentSuccessPageInner() {
 
   return (
     <div className='min-h-screen bg-gray-50 py-4 sm:py-6 md:py-8'>
-      {/* Success Overlay */}
+      {/* Lớp phủ thành công */}
       {isOrderCompleted && <SuccessOverlay countdown={countdown} />}
 
       <div className='mx-auto max-w-5xl px-4 sm:px-6'>
-        {/* Back Button */}
+        {/* Nút quay lại */}
         <div className='mb-4 sm:mb-6'>
           <Button
             onClick={() => router.push('/')}
@@ -148,10 +148,10 @@ function PaymentSuccessPageInner() {
           </Button>
         </div>
 
-        {/* Header */}
+        {/* Phần đầu */}
         <PaymentHeader orderCode={orderDetails?.code} />
 
-        {/* Payment Instructions */}
+        {/* Hướng dẫn thanh toán */}
         <PaymentInstructions
           qrCodeUrl={qrCodeUrl}
           amount={amount || '0'}

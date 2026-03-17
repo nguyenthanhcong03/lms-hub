@@ -1,16 +1,16 @@
-// Table configuration constants
+// Hằng số cấu hình bảng
 export const TABLE_CONSTANTS = {
-	// Default sorting
-	DEFAULT_SORT_BY: "createdAt",
-	DEFAULT_SORT_ORDER: "desc" as const,
+  // Sắp xếp mặc định
+  DEFAULT_SORT_BY: 'createdAt',
+  DEFAULT_SORT_ORDER: 'desc' as const,
 
-	// Search and filtering
-	SEARCH_DEBOUNCE_MS: 500,
+  // Tìm kiếm và lọc
+  SEARCH_DEBOUNCE_MS: 500,
 
-	// Selection
-	ENABLE_ROW_SELECTION: true,
-	ENABLE_COLUMN_VISIBILITY: true,
-};
+  // Chọn dữ liệu
+  ENABLE_ROW_SELECTION: true,
+  ENABLE_COLUMN_VISIBILITY: true
+}
 
-// Sort order type for better type safety
-export type SortOrder = typeof TABLE_CONSTANTS.DEFAULT_SORT_ORDER | "asc";
+// Kiểu thứ tự sắp xếp để đảm bảo an toàn kiểu tốt hơn
+export type SortOrder = typeof TABLE_CONSTANTS.DEFAULT_SORT_ORDER | 'asc'

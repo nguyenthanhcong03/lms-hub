@@ -16,7 +16,6 @@ import quizAttemptRoutes from './quiz-attempt.routes'
 import cartRoutes from './cart.routes'
 import orderRoutes from './order.routes'
 import paymentRoutes from './payment.routes'
-import chatbotRoutes from './chatbot.routes'
 import searchRoutes from './search.routes'
 import statsRoutes from './stats.routes'
 
@@ -40,7 +39,6 @@ router.use('/quiz-attempts', quizAttemptRoutes)
 router.use('/cart', cartRoutes)
 router.use('/orders', orderRoutes)
 router.use('/payment', paymentRoutes)
-router.use('/chatbot', chatbotRoutes)
 router.use('/search', searchRoutes)
 router.use('/stats', statsRoutes)
 
@@ -48,7 +46,7 @@ router.use('/stats', statsRoutes)
 router.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'API is healthy',
+    message: 'API hoạt động bình thường',
     timestamp: new Date().toISOString()
   })
 })

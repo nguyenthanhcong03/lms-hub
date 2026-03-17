@@ -19,7 +19,7 @@ export class ReviewController {
 
     const review = await ReviewService.createReview(userId, reviewData)
 
-    sendSuccess.created(res, 'Review created successfully', { review })
+    sendSuccess.created(res, 'Review được tạo thành công', { review })
   }
 
   /**
@@ -30,7 +30,7 @@ export class ReviewController {
 
     const result = await ReviewService.getReviews(query)
 
-    sendSuccess.ok(res, 'Reviews retrieved successfully', result)
+    sendSuccess.ok(res, 'Reviews được lấy thành công', result)
   }
 
   /**
@@ -41,7 +41,7 @@ export class ReviewController {
 
     const review = await ReviewService.getReviewById(id)
 
-    sendSuccess.ok(res, 'Review retrieved successfully', { review })
+    sendSuccess.ok(res, 'Review được lấy thành công', { review })
   }
 
   /**
@@ -54,7 +54,7 @@ export class ReviewController {
 
     const review = await ReviewService.updateReview(id, userId, updateData)
 
-    sendSuccess.ok(res, 'Review updated successfully', { review })
+    sendSuccess.ok(res, 'Review được cập nhật thành công', { review })
   }
 
   /**
@@ -66,7 +66,7 @@ export class ReviewController {
 
     await ReviewService.deleteReview(id, userId)
 
-    sendSuccess.ok(res, 'Review deleted successfully')
+    sendSuccess.ok(res, 'Review được xóa thành công')
   }
 
   /**
@@ -78,7 +78,7 @@ export class ReviewController {
 
     const result = await ReviewService.getCourseReviews(courseId, query)
 
-    sendSuccess.ok(res, 'Course reviews retrieved successfully', result)
+    sendSuccess.ok(res, 'Course reviews được lấy thành công', result)
   }
 
   /**
@@ -90,7 +90,7 @@ export class ReviewController {
 
     const result = await ReviewService.getUserReviews(userId, query)
 
-    sendSuccess.ok(res, 'User reviews retrieved successfully', result)
+    sendSuccess.ok(res, 'User reviews được lấy thành công', result)
   }
 
   /**
@@ -101,7 +101,7 @@ export class ReviewController {
 
     const stats = await ReviewService.getCourseRatingStats(courseId)
 
-    sendSuccess.ok(res, 'Course rating statistics retrieved successfully', stats)
+    sendSuccess.ok(res, 'Course rating statistics được lấy thành công', stats)
   }
 
   /**
@@ -113,6 +113,6 @@ export class ReviewController {
 
     const review = await ReviewService.updateReviewStatus(id, status)
 
-    sendSuccess.ok(res, 'Review status updated successfully', { review })
+    sendSuccess.ok(res, 'Review status được cập nhật thành công', { review })
   }
 }

@@ -111,7 +111,7 @@ export class EmailService {
 
       await transporter.sendMail(mailOptions)
     } catch (error) {
-      throw new Error(`Email sending failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      throw new Error(`Gửi email thất bại: ${error instanceof Error ? error.message : 'Lỗi không xác định'}`)
     }
   }
 

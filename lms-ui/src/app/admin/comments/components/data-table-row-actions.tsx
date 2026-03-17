@@ -70,12 +70,12 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Status Dialog - Only render when UPDATE permission and dialog is open */}
+      {/* Hộp thoại trạng thái - chỉ hiển thị khi có quyền cập nhật và hộp thoại đang mở */}
       {hasPermission(PERMISSIONS.COMMENT_UPDATE) && statusDialogOpen && (
         <CommentStatusDialog comment={comment} open={statusDialogOpen} onOpenChange={setStatusDialogOpen} />
       )}
 
-      {/* Delete Dialog - Only render when DELETE permission and dialog is open */}
+      {/* Hộp thoại xóa - chỉ hiển thị khi có quyền xóa và hộp thoại đang mở */}
       {hasPermission(PERMISSIONS.COMMENT_DELETE) && deleteDialogOpen && (
         <CommentsDeleteDialog currentRow={comment} open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} />
       )}

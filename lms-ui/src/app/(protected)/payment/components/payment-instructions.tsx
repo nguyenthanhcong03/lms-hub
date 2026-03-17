@@ -20,10 +20,10 @@ export function PaymentInstructions({ qrCodeUrl, amount, orderCode, paymentStatu
         </h2>
 
         <div className='grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2'>
-          {/* Method 1: QR Code */}
+          {/* Cách 1: Quét mã QR */}
           <QRCodeSection qrCodeUrl={qrCodeUrl} orderCode={orderCode} paymentStatus={paymentStatus} />
 
-          {/* Method 2: Manual Transfer */}
+          {/* Cách 2: Chuyển khoản thủ công */}
           <BankTransferDetails amount={amount} orderCode={orderCode} />
         </div>
       </CardContent>

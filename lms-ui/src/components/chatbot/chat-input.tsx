@@ -1,119 +1,113 @@
-"use client";
+'use client'
 
-import {useState} from "react";
-import {Send, Paperclip, Smile} from "lucide-react";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {cn} from "@/lib/utils";
+import { useState } from 'react'
+import { Send, Paperclip, Smile } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 
 interface ChatInputProps {
-	onSendMessage: (message: string) => void;
-	disabled?: boolean;
-	placeholder?: string;
+  onSendMessage: (message: string) => void
+  disabled?: boolean
+  placeholder?: string
 }
 
-const ChatInput = ({
-	onSendMessage,
-	disabled = false,
-	placeholder = "Type your message...",
-}: ChatInputProps) => {
-	const [message, setMessage] = useState("");
-	const [isFocused, setIsFocused] = useState(false);
+const ChatInput = ({ onSendMessage, disabled = false, placeholder = 'Nhập tin nhắn của bạn...' }: ChatInputProps) => {
+  const [message, setMessage] = useState('')
+  const [isFocused, setIsFocused] = useState(false)
 
-	function handleSubmit(e: React.FormEvent) {
-		e.preventDefault();
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
 
-		const trimmedMessage = message.trim();
-		if (!trimmedMessage || disabled) return;
+    const trimmedMessage = message.trim()
+    if (!trimmedMessage || disabled) return
 
-		onSendMessage(trimmedMessage);
-		setMessage("");
-	}
+    onSendMessage(trimmedMessage)
+    setMessage('')
+  }
 
-	function handleKeyDown(e: React.KeyboardEvent) {
-		if (e.key === "Enter" && !e.shiftKey) {
-			e.preventDefault();
-			handleSubmit(e);
-		}
-	}
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit(e)
+    }
+  }
 
-	const canSend = message.trim() && !disabled;
+  const canSend = message.trim() && !disabled
 
-	return (
-		<div className="border-t border-gray-200/50 bg-white/90 backdrop-blur-sm">
-			<form onSubmit={handleSubmit} className="p-3 sm:p-4">
-				<div
-					className={cn(
-						"flex items-end gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl",
-						"bg-white border shadow-sm",
-						isFocused
-							? "border-blue-400 ring-2 ring-blue-100"
-							: "border-gray-200"
-					)}
-				>
-					{/* Attachment Button */}
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon"
-						className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg shrink-0 text-gray-400 hover:text-blue-600 hover:bg-blue-50"
-						disabled={disabled}
-						aria-label="Attach file"
-					>
-						<Paperclip className="h-3 w-3 sm:h-4 sm:w-4" />
-					</Button>
+  return (
+    <div className='border-t border-gray-200/50 bg-white/90 backdrop-blur-sm'>
+      <form onSubmit={handleSubmit} className='p-3 sm:p-4'>
+        <div
+          className={cn(
+            'flex items-end gap-2 rounded-xl p-2 sm:gap-3 sm:p-3',
+            'border bg-white shadow-sm',
+            isFocused ? 'border-blue-400 ring-2 ring-blue-100' : 'border-gray-200'
+          )}
+        >
+          {/* Nút đính kèm */}
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon'
+            className='h-7 w-7 shrink-0 rounded-lg text-gray-400 hover:bg-blue-50 hover:text-blue-600 sm:h-8 sm:w-8'
+            disabled={disabled}
+            aria-label='Đính kèm tệp'
+          >
+            <Paperclip className='h-3 w-3 sm:h-4 sm:w-4' />
+          </Button>
 
-					{/* Input Field */}
-					<div className="flex-1">
-						<Input
-							value={message}
-							onChange={(e) => setMessage(e.target.value)}
-							onKeyDown={handleKeyDown}
-							onFocus={() => setIsFocused(true)}
-							onBlur={() => setIsFocused(false)}
-							placeholder={placeholder}
-							disabled={disabled}
-							className="border-0 shadow-none bg-transparent px-0 py-1 sm:py-2 text-sm sm:text-base focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
-							autoComplete="off"
-							aria-label="Type your message to the AI assistant"
-							aria-describedby="chat-input-help"
-						/>
-						<div id="chat-input-help" className="sr-only">
-							Press Enter to send your message, or Shift+Enter for a new line
-						</div>
-					</div>
+          {/* Ô nhập nội dung */}
+          <div className='flex-1'>
+            <Input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder={placeholder}
+              disabled={disabled}
+              className='border-0 bg-transparent px-0 py-1 text-sm shadow-none placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 sm:py-2 sm:text-base'
+              autoComplete='off'
+              aria-label='Nhập tin nhắn của bạn cho trợ lý AI'
+              aria-describedby='chat-input-help'
+            />
+            <div id='chat-input-help' className='sr-only'>
+              Nhấn Enter để gửi tin nhắn, hoặc Shift+Enter để xuống dòng
+            </div>
+          </div>
 
-					{/* Emoji Button */}
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon"
-						className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg shrink-0 text-gray-400 hover:text-purple-600 hover:bg-purple-50"
-						disabled={disabled}
-						aria-label="Add emoji"
-					>
-						<Smile className="h-3 w-3 sm:h-4 sm:w-4" />
-					</Button>
+          {/* Nút biểu tượng cảm xúc */}
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon'
+            className='h-7 w-7 shrink-0 rounded-lg text-gray-400 hover:bg-purple-50 hover:text-purple-600 sm:h-8 sm:w-8'
+            disabled={disabled}
+            aria-label='Thêm biểu tượng cảm xúc'
+          >
+            <Smile className='h-3 w-3 sm:h-4 sm:w-4' />
+          </Button>
 
-					{/* Send Button */}
-					<Button
-						type="submit"
-						size="icon"
-						disabled={!canSend}
-						className={cn(
-							"h-8 w-8 sm:h-10 sm:w-10 rounded-lg shrink-0",
-							canSend
-								? "bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-sm"
-								: "bg-gray-100 text-gray-400"
-						)}
-						aria-label="Send message"
-					>
-						<Send className="h-3 w-3 sm:h-4 sm:w-4" />
-					</Button>
-				</div>
-			</form>
-		</div>
-	);
-};
+          {/* Nút gửi */}
+          <Button
+            type='submit'
+            size='icon'
+            disabled={!canSend}
+            className={cn(
+              'h-8 w-8 shrink-0 rounded-lg sm:h-10 sm:w-10',
+              canSend
+                ? 'bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-sm'
+                : 'bg-gray-100 text-gray-400'
+            )}
+            aria-label='Gửi tin nhắn'
+          >
+            <Send className='h-3 w-3 sm:h-4 sm:w-4' />
+          </Button>
+        </div>
+      </form>
+    </div>
+  )
+}
 
-export default ChatInput;
+export default ChatInput

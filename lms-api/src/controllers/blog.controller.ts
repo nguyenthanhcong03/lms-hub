@@ -16,7 +16,7 @@ export class BlogController {
     const authorId = req.user!.userId
     const blog = await BlogService.createBlog(blogData, authorId)
 
-    sendSuccess.created(res, 'Blog created successfully', blog)
+    sendSuccess.created(res, 'Blog được tạo thành công', blog)
   }
 
   /**
@@ -26,7 +26,7 @@ export class BlogController {
     const query: Partial<GetBlogsQuery> = req.query
     const result = await BlogService.getBlogs(query)
 
-    sendSuccess.ok(res, 'Blogs fetched successfully', result)
+    sendSuccess.ok(res, 'Blogs được tải thành công', result)
   }
 
   /**
@@ -36,7 +36,7 @@ export class BlogController {
     const query: Partial<GetBlogsQuery> = req.query
     const result = await BlogService.getPublishedBlogs(query)
 
-    sendSuccess.ok(res, 'Published blogs fetched successfully', result)
+    sendSuccess.ok(res, 'Published blogs được tải thành công', result)
   }
 
   /**
@@ -47,7 +47,7 @@ export class BlogController {
     const authorId = req.user!.userId
     const result = await BlogService.getUserBlogs(authorId, query)
 
-    sendSuccess.ok(res, 'User blogs fetched successfully', result)
+    sendSuccess.ok(res, 'User blogs được tải thành công', result)
   }
 
   /**
@@ -57,7 +57,7 @@ export class BlogController {
     const { blogId } = req.params
     const blog = await BlogService.getBlogById(blogId)
 
-    sendSuccess.ok(res, 'Blog fetched successfully', { blog })
+    sendSuccess.ok(res, 'Blog được tải thành công', { blog })
   }
 
   /**
@@ -67,7 +67,7 @@ export class BlogController {
     const { slug } = req.params
     const blog = await BlogService.getBlogBySlug(slug)
 
-    sendSuccess.ok(res, 'Blog fetched successfully', { blog })
+    sendSuccess.ok(res, 'Blog được tải thành công', { blog })
   }
 
   /**
@@ -80,7 +80,7 @@ export class BlogController {
     const authorId = isAdmin ? undefined : req.user!.userId
     const blog = await BlogService.updateBlog(blogId, updateData, authorId)
 
-    sendSuccess.ok(res, 'Blog updated successfully', { blog })
+    sendSuccess.ok(res, 'Blog được cập nhật thành công', { blog })
   }
 
   /**
@@ -92,7 +92,7 @@ export class BlogController {
     const authorId = isAdmin ? undefined : req.user!.userId
     await BlogService.deleteBlog(blogId, authorId)
 
-    sendSuccess.ok(res, 'Blog deleted successfully')
+    sendSuccess.ok(res, 'Blog được xóa thành công')
   }
 
   /**
@@ -104,6 +104,6 @@ export class BlogController {
     const authorId = isAdmin ? undefined : req.user!.userId
     const result = await BlogService.bulkDeleteBlogs(bulkDeleteData, authorId)
 
-    sendSuccess.ok(res, 'Blogs deleted successfully', result)
+    sendSuccess.ok(res, 'Blogs được xóa thành công', result)
   }
 }

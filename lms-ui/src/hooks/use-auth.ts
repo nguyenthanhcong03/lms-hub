@@ -13,14 +13,14 @@ import {
 } from '@/services/auth'
 import { ROUTE_CONFIG } from '@/configs/routes'
 
-// Query keys for auth
+// Khóa truy vấn cho auth
 export const authKeys = {
   all: ['auth'] as const,
   profile: () => [...authKeys.all, 'profile'] as const,
   currentUser: () => [...authKeys.all, 'currentUser'] as const
 }
 
-// Hook to get current user profile
+// Hook để get current user profile
 export function useCurrentUser() {
   return useQuery({
     queryKey: authKeys.currentUser(),
@@ -28,12 +28,12 @@ export function useCurrentUser() {
   })
 }
 
-// Mutation hooks
+// Các hook mutation
 export function useVerifyEmail() {
   return useMutation({
     mutationFn: (data: { token: string }) => AuthService.verifyEmail(data),
     onSuccess: (response) => {
-      toast.success(response.message || 'Email verified successfully!')
+      toast.success(response.message || 'Xác minh email thành công!')
     }
   })
 }
@@ -50,10 +50,10 @@ export function useUpdateProfile() {
       queryClient.invalidateQueries({ queryKey: authKeys.profile() })
       // Also update auth store
       await getCurrentUser()
-      toast.success('Profile updated successfully!')
+      toast.success('Cập nhật hồ sơ thành công!')
     },
     onError: (error) => {
-      toast.error(error?.message || 'Failed to update profile')
+      toast.error(error?.message || 'Không cập nhật được hồ sơ')
     }
   })
 }
@@ -62,10 +62,10 @@ export function useChangePassword() {
   return useMutation({
     mutationFn: (passwordData: ChangePasswordRequest) => AuthService.changePassword(passwordData),
     onSuccess: (response) => {
-      toast.success(response.message || 'Password changed successfully!')
+      toast.success(response.message || 'Đổi mật khẩu thành công!')
     },
     onError: (error) => {
-      toast.error(error?.message || 'Failed to change password')
+      toast.error(error?.message || 'Không đổi được mật khẩu')
     }
   })
 }
@@ -74,10 +74,10 @@ export function useForgotPassword() {
   return useMutation({
     mutationFn: (emailData: ForgotPasswordRequest) => AuthService.forgotPassword(emailData),
     onSuccess: () => {
-      toast.success('Password reset email sent successfully!')
+      toast.success('Đã gửi email đặt lại mật khẩu thành công!')
     },
     onError: (error) => {
-      toast.error(error?.message || 'Failed to send reset email. Please try again.')
+      toast.error(error?.message || 'Không gửi được email đặt lại mật khẩu. Vui lòng thử lại.')
     }
   })
 }
@@ -86,10 +86,10 @@ export function useResetPassword() {
   return useMutation({
     mutationFn: (resetData: ResetPasswordRequest) => AuthService.resetPassword(resetData),
     onSuccess: () => {
-      toast.success('Password reset successfully!')
+      toast.success('Đặt lại mật khẩu thành công!')
     },
     onError: (error) => {
-      toast.error(error?.message || 'Failed to reset password. Please try again.')
+      toast.error(error?.message || 'Không đặt lại được mật khẩu. Vui lòng thử lại.')
     }
   })
 }
@@ -101,7 +101,7 @@ export function useRegister() {
   return useMutation({
     mutationFn: (userData: RegisterRequest) => AuthService.register(userData),
     onSuccess: () => {
-      toast.success('Registration successful! Please check your email to verify your account.')
+      toast.success('Đăng ký thành công! Vui lòng kiểm tra email để xác minh tài khoản.')
       router.push(ROUTE_CONFIG.AUTH.SIGN_IN)
     },
     onError: (error) => {
@@ -125,9 +125,9 @@ export function useLogin() {
         }
 
         await getCurrentUser()
-        toast.success('Login successful!')
+        toast.success('Đăng nhập thành công!')
       } else {
-        toast.error('Invalid login response')
+        toast.error('Phản hồi đăng nhập không hợp lệ')
       }
     },
     onError: (error) => {

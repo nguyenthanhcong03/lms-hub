@@ -19,7 +19,7 @@ export class PaymentController {
 
     // Validate API key
     if (!PaymentService.validateSepayWebhook(apiKey)) {
-      throw new AppError('Invalid API key', 401)
+      throw new AppError('API key không hợp lệ', 401)
     }
 
     // Get webhook data from request body

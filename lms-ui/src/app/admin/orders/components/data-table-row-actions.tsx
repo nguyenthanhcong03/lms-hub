@@ -26,14 +26,14 @@ interface DataTableRowActionsProps {
 const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
   const order = row.original
 
-  // State for dialogs
+  // Trạng thái cho các hộp thoại
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
-  // Permissions
+  // Quyền hạn
   const hasPermission = useAuthStore((state) => state.hasPermission)
 
-  // Handle actions
+  // Xử lý thao tác
   const handleView = () => {
     setViewDialogOpen(true)
   }
@@ -52,7 +52,7 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' className='w-[160px]'>
-          {/* View order */}
+          {/* Xem đơn hàng */}
           <DropdownMenuItem onClick={handleView}>
             <Eye className='mr-2 h-4 w-4' />
             Xem chi tiết
@@ -60,7 +60,7 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
 
           <DropdownMenuSeparator />
 
-          {/* Delete order */}
+          {/* Xóa đơn hàng */}
           {hasPermission(PERMISSIONS.ORDER_DELETE) && (
             <DropdownMenuItem onClick={handleDelete} className='text-red-600'>
               <Trash2 className='mr-2 h-4 w-4' />
@@ -71,10 +71,10 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* View Dialog */}
+      {/* Hộp thoại xem */}
       {viewDialogOpen && <OrderViewDialog order={order} open={viewDialogOpen} onOpenChange={setViewDialogOpen} />}
 
-      {/* Delete Dialog */}
+      {/* Hộp thoại xóa */}
       {deleteDialogOpen && (
         <OrdersDeleteDialog currentRow={order} open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} />
       )}

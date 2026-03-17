@@ -1,48 +1,48 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
-import CoursesService from "@/services/courses";
+import CoursesService from '@/services/courses'
 
-import CoursesContent from "./components/courses-content";
-import CoursesHeader from "./components/courses-header";
+import CoursesContent from './components/courses-content'
+import CoursesHeader from './components/courses-header'
 
-// Server-side data fetching function
+// Hàm lấy dữ liệu phía server
 async function fetchInitialCoursesData() {
-	try {
-		const coursesData = await CoursesService.getPublicCourses({
-			page: 1,
-			limit: 10,
-			sortBy: "newest",
-			sortOrder: "desc",
-		});
-		return coursesData;
-	} catch {
-		return {
-			courses: [],
-			pagination: {
-				page: 1,
-				limit: 10,
-				total: 0,
-				totalPages: 0,
-				hasNextPage: false,
-				hasPrevPage: false,
-			},
-		};
-	}
+  try {
+    const coursesData = await CoursesService.getPublicCourses({
+      page: 1,
+      limit: 10,
+      sortBy: 'newest',
+      sortOrder: 'desc'
+    })
+    return coursesData
+  } catch {
+    return {
+      courses: [],
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: false
+      }
+    }
+  }
 }
 
 const CoursesPage = async () => {
-	// Fetch initial courses data on server side
-	const initialCoursesData = await fetchInitialCoursesData();
+  // Lấy dữ liệu khóa học ban đầu ở phía server
+  const initialCoursesData = await fetchInitialCoursesData()
 
-	return (
-		<>
-			{/* Header */}
-			<CoursesHeader />
+  return (
+    <>
+      {/* Phần đầu */}
+      <CoursesHeader />
 
-			{/* Pass initial data to client component for filtering and pagination */}
-			<CoursesContent initialCoursesData={initialCoursesData} />
-		</>
-	);
-};
+      {/* Truyền dữ liệu ban đầu cho thành phần client để lọc và phân trang */}
+      <CoursesContent initialCoursesData={initialCoursesData} />
+    </>
+  )
+}
 
-export default CoursesPage;
+export default CoursesPage

@@ -41,7 +41,7 @@ export class AuthController {
 
     res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, getRefreshCookieOptions())
 
-    sendSuccess.ok(res, 'Login successful', { token: result.token })
+    sendSuccess.ok(res, 'Đăng nhập thành công', { token: result.token })
   }
 
   // Refresh access token using refresh token rotation
@@ -49,14 +49,14 @@ export class AuthController {
     const refreshToken = req.cookies?.[REFRESH_COOKIE_NAME] || req.body?.refreshToken
 
     if (!refreshToken) {
-      throw new ValidationError('Refresh token is required')
+      throw new ValidationError('Refresh token là bắt buộc')
     }
 
     const result = await AuthService.refreshToken({ refreshToken })
 
     res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, getRefreshCookieOptions())
 
-    sendSuccess.ok(res, 'Token refreshed successfully', { token: result.token })
+    sendSuccess.ok(res, 'Làm mới token thành công', { token: result.token })
   }
 
   // Get user profile
@@ -64,12 +64,12 @@ export class AuthController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const user = await AuthService.getAuthMe(userId)
 
-    sendSuccess.ok(res, 'Profile retrieved successfully', user)
+    sendSuccess.ok(res, 'Lấy hồ sơ thành công', user)
   }
 
   // Update user profile
@@ -78,7 +78,7 @@ export class AuthController {
     const { username, avatar } = req.body
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const updatedUser = await AuthService.updateProfile(userId, {
@@ -86,7 +86,7 @@ export class AuthController {
       avatar
     })
 
-    sendSuccess.ok(res, 'Profile updated successfully', { user: updatedUser })
+    sendSuccess.ok(res, 'Cập nhật hồ sơ thành công', { user: updatedUser })
   }
 
   // Change password
@@ -96,7 +96,7 @@ export class AuthController {
     const { currentPassword, newPassword } = req.body
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     await AuthService.changePassword(userId, {
@@ -104,15 +104,15 @@ export class AuthController {
       newPassword
     })
 
-    sendSuccess.ok(res, 'Password changed successfully')
+    sendSuccess.ok(res, 'Đổi mật khẩu thành công')
   }
 
-  // Logout and revoke current refresh token
+  // Đăng xuất và thu hồi refresh token hiện tại
   static async logout(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     await AuthService.logout(userId)
@@ -122,7 +122,7 @@ export class AuthController {
       maxAge: 0
     })
 
-    sendSuccess.ok(res, 'Logout successful')
+    sendSuccess.ok(res, 'Đăng xuất thành công')
   }
 
   // Verify email
@@ -131,7 +131,7 @@ export class AuthController {
 
     const result = await AuthService.verifyEmail(token)
 
-    sendSuccess.ok(res, 'Email verified successfully', result.message)
+    sendSuccess.ok(res, 'Xác minh email thành công', result.message)
   }
 
   // Forgot password
@@ -140,7 +140,7 @@ export class AuthController {
 
     const result = await AuthService.forgotPassword({ email })
 
-    sendSuccess.ok(res, 'Password reset email sent successfully', result.message)
+    sendSuccess.ok(res, 'Đã gửi email đặt lại mật khẩu thành công', result.message)
   }
 
   // Reset password

@@ -142,13 +142,13 @@ export class QuizAttemptService {
     // Validate user exists
     const user = await User.findById(userId)
     if (!user) {
-      throw new AppError('User not found', 404)
+      throw new AppError('Không tìm thấy người dùng', 404)
     }
 
     // Validate quiz exists
     const quiz = await Quiz.findById(attemptData.quizId)
     if (!quiz) {
-      throw new AppError('Quiz not found', 404)
+      throw new AppError('Không tìm thấy bài kiểm tra', 404)
     }
 
     // Check if user has an active attempt for this quiz
@@ -159,7 +159,7 @@ export class QuizAttemptService {
     })
 
     if (existingAttempt) {
-      throw new AppError('You already have an active attempt for this quiz', 400)
+      throw new AppError('Bạn đã có một lượt làm đang diễn ra cho bài kiểm tra này', 400)
     }
 
     // Create new attempt
@@ -184,7 +184,7 @@ export class QuizAttemptService {
     // Validate quiz exists
     const quiz = await Quiz.findById(quizId)
     if (!quiz) {
-      throw new AppError('Quiz not found', 404)
+      throw new AppError('Không tìm thấy bài kiểm tra', 404)
     }
 
     // Check if user has an active attempt for this quiz
@@ -195,7 +195,7 @@ export class QuizAttemptService {
     })
 
     if (!activeAttempt) {
-      throw new AppError('No active quiz attempt found. Please start the quiz first.', 403)
+      throw new AppError('Không tìm thấy lượt làm đang diễn ra. Vui lòng bắt đầu bài kiểm tra trước.', 403)
     }
 
     // Get all questions for this quiz but exclude correctAnswers for security
@@ -215,7 +215,7 @@ export class QuizAttemptService {
     }).populate('quizId', 'duration')
 
     if (!attempt) {
-      throw new AppError('Quiz attempt not found or already completed', 404)
+      throw new AppError('Không tìm thấy lượt làm bài hoặc lượt làm đã hoàn thành', 404)
     }
 
     // Check if time limit has been exceeded
@@ -225,7 +225,7 @@ export class QuizAttemptService {
       attempt.status = QuizAttemptStatus.COMPLETED
       this.setFinishedAt(attempt)
       await attempt.save()
-      throw new AppError('Quiz time limit has been exceeded. The attempt has been automatically completed.', 400)
+      throw new AppError('Đã vượt quá thời gian làm bài. Lượt làm đã được tự động hoàn thành.', 400)
     }
 
     // Check if answer for this question already exists
@@ -267,7 +267,7 @@ export class QuizAttemptService {
     }).populate('quizId', 'duration')
 
     if (!attempt) {
-      throw new AppError('Quiz attempt not found or already completed', 404)
+      throw new AppError('Không tìm thấy lượt làm bài hoặc lượt làm đã hoàn thành', 404)
     }
 
     // Check if time limit has been exceeded
@@ -525,7 +525,7 @@ export class QuizAttemptService {
       .populate('userId', 'username email')
 
     if (!attempt) {
-      throw new AppError('Quiz attempt not found', 404)
+      throw new AppError('Không tìm thấy lượt làm bài', 404)
     }
 
     // Get all questions for this quiz but exclude correctAnswers for security
@@ -603,7 +603,7 @@ export class QuizAttemptService {
     })
 
     if (!attempt) {
-      throw new AppError('Quiz attempt not found or already completed', 404)
+      throw new AppError('Không tìm thấy lượt làm bài hoặc lượt làm đã hoàn thành', 404)
     }
 
     await QuizAttempt.findByIdAndDelete(attemptId)

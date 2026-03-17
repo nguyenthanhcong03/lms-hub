@@ -11,25 +11,25 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { User, Package, CreditCard } from 'lucide-react'
 import { getStatusConfig } from '@/utils/common'
 
-// Table meta interface
+// Kiểu dữ liệu meta cho bảng
 interface OrderTableMeta {
   onStatusClick: (order: IOrder) => void
 }
 
-// Payment method labels
+// Nhãn phương thức thanh toán
 const PAYMENT_METHOD_LABELS = {
   bank_transfer: 'Chuyển khoản'
 } as const
 
 export const columns: ColumnDef<IOrder>[] = [
-  // Selection column
+  // Cột chọn
   {
     id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
+        aria-label='Chọn tất cả'
         className='translate-y-[2px]'
       />
     ),
@@ -37,7 +37,7 @@ export const columns: ColumnDef<IOrder>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
+        aria-label='Chọn hàng'
         className='translate-y-[2px]'
       />
     ),
@@ -45,7 +45,7 @@ export const columns: ColumnDef<IOrder>[] = [
     enableHiding: false
   },
 
-  // Order Code
+  // Mã đơn hàng
   {
     accessorKey: 'code',
     meta: { title: 'Mã đơn hàng' },
@@ -62,7 +62,7 @@ export const columns: ColumnDef<IOrder>[] = [
     enableHiding: false
   },
 
-  // Customer Info
+  // Thông tin khách hàng
   {
     accessorKey: 'user',
     meta: { title: 'Khách hàng' },
@@ -87,7 +87,7 @@ export const columns: ColumnDef<IOrder>[] = [
     enableSorting: false
   },
 
-  // Order Status
+  // Trạng thái đơn hàng
   {
     accessorKey: 'status',
     meta: { title: 'Trạng thái' },
@@ -96,7 +96,7 @@ export const columns: ColumnDef<IOrder>[] = [
       const status = row.original.status
       const config = getStatusConfig(status)
 
-      // Access the onStatusClick function from table meta
+      // Lấy hàm onStatusClick từ meta của bảng
       const onStatusClick = (table.options.meta as OrderTableMeta)?.onStatusClick
 
       return (
@@ -115,7 +115,7 @@ export const columns: ColumnDef<IOrder>[] = [
     enableSorting: true
   },
 
-  // Payment Method
+  // Phương thức thanh toán
   {
     accessorKey: 'paymentMethod',
     meta: { title: 'Phương thức thanh toán' },
@@ -137,7 +137,7 @@ export const columns: ColumnDef<IOrder>[] = [
     enableSorting: true
   },
 
-  // Total Amount
+  // Tổng tiền
   {
     accessorKey: 'totalAmount',
     meta: { title: 'Tổng số tiền' },
@@ -149,7 +149,7 @@ export const columns: ColumnDef<IOrder>[] = [
     enableSorting: true
   },
 
-  // Number of Items
+  // Số lượng mặt hàng
   {
     accessorKey: 'items',
     meta: { title: 'Số lượng' },
@@ -161,7 +161,7 @@ export const columns: ColumnDef<IOrder>[] = [
     enableSorting: false
   },
 
-  // Created Date
+  // Ngày tạo
   {
     accessorKey: 'createdAt',
     meta: { title: 'Ngày tạo' },
@@ -173,7 +173,7 @@ export const columns: ColumnDef<IOrder>[] = [
     enableSorting: true
   },
 
-  // Actions
+  // Thao tác
   {
     id: 'actions',
     meta: { title: 'Hành động' },

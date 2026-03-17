@@ -41,25 +41,25 @@ const commentSchema = new Schema<IComment>(
   {
     content: {
       type: String,
-      required: [true, 'Content is required'],
+      required: [true, 'Nội dung là bắt buộc'],
       trim: true,
       maxlength: [2000, 'Comment content cannot exceed 2000 characters']
     },
     lessonId: {
       type: Schema.Types.ObjectId,
       ref: 'Lesson',
-      required: [true, 'Lesson ID is required']
+      required: [true, 'ID bài học là bắt buộc']
     },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'User ID is required']
+      required: [true, 'ID người dùng là bắt buộc']
     },
     status: {
       type: String,
       enum: {
         values: Object.values(CommentStatus),
-        message: 'Status must be approved, pending, or rejected'
+        message: 'Trạng thái phải là approved, pending hoặc rejected'
       },
       default: CommentStatus.APPROVED
     },
@@ -91,7 +91,7 @@ const commentSchema = new Schema<IComment>(
           type: String,
           enum: {
             values: Object.values(ReactionType),
-            message: 'Invalid reaction type'
+            message: 'Loại phản ứng không hợp lệ'
           },
           required: true
         }

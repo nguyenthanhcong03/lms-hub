@@ -11,12 +11,12 @@ export class CartController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const cart = await CartService.getCart(userId)
 
-    sendSuccess.ok(res, 'Cart retrieved successfully', cart)
+    sendSuccess.ok(res, 'Cart được lấy thành công', cart)
   }
 
   /**
@@ -26,14 +26,14 @@ export class CartController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const input: AddToCartInput = req.body
 
     const cart = await CartService.addToCart(userId, input)
 
-    sendSuccess.created(res, 'Item added to cart successfully', { cart })
+    sendSuccess.created(res, 'Mục được thêm vào giỏ hàng thành công', { cart })
   }
 
   /**
@@ -44,12 +44,12 @@ export class CartController {
     const { courseId } = req.params
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const cart = await CartService.removeFromCart(userId, courseId)
 
-    sendSuccess.ok(res, 'Item removed from cart successfully', { cart })
+    sendSuccess.ok(res, 'Đã xóa mục khỏi giỏ hàng thành công', { cart })
   }
 
   /**
@@ -60,7 +60,7 @@ export class CartController {
     const { courseId } = req.params
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const input: UpdateCartItemInput = {
@@ -70,7 +70,7 @@ export class CartController {
 
     const cart = await CartService.updateCartItem(userId, input)
 
-    sendSuccess.ok(res, 'Cart item updated successfully', { cart })
+    sendSuccess.ok(res, 'Cart item được cập nhật thành công', { cart })
   }
 
   /**
@@ -80,12 +80,12 @@ export class CartController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const cart = await CartService.clearCart(userId)
 
-    sendSuccess.ok(res, 'Cart cleared successfully', { cart })
+    sendSuccess.ok(res, 'Giỏ hàng được xóa thành công', { cart })
   }
 
   /**
@@ -95,12 +95,12 @@ export class CartController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const summary = await CartService.getCartSummary(userId)
 
-    sendSuccess.ok(res, 'Cart summary retrieved successfully', summary)
+    sendSuccess.ok(res, 'Cart summary được lấy thành công', summary)
   }
 
   /**
@@ -110,7 +110,7 @@ export class CartController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new ValidationError('User ID is required')
+      throw new ValidationError('ID người dùng là bắt buộc')
     }
 
     const validation = await CartService.validateCart(userId)

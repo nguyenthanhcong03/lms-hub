@@ -57,7 +57,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, _next: N
   if (error.name === 'ValidationError') {
     const errorResponse: ErrorResponse = {
       success: false,
-      message: 'Validation failed',
+      message: 'Xác thực dữ liệu thất bại',
       errorCode: ErrorCodes.INVALID_INPUT_FORMAT,
       timestamp: new Date().toISOString(),
       path: req.path,
@@ -77,7 +77,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, _next: N
   if (error.name === 'CastError') {
     const errorResponse: ErrorResponse = {
       success: false,
-      message: 'Invalid resource ID',
+      message: 'ID tài nguyên không hợp lệ',
       errorCode: ErrorCodes.INVALID_INPUT_FORMAT,
       timestamp: new Date().toISOString(),
       path: req.path,
@@ -92,7 +92,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, _next: N
   if (error.name === 'MongoServerError' && (error as unknown as { code: number }).code === 11000) {
     const errorResponse: ErrorResponse = {
       success: false,
-      message: 'Duplicate field value',
+      message: 'Giá trị trường bị trùng',
       errorCode: ErrorCodes.USER_ALREADY_EXISTS,
       timestamp: new Date().toISOString(),
       path: req.path,
@@ -107,7 +107,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, _next: N
   if (error.name === 'JsonWebTokenError') {
     const errorResponse: ErrorResponse = {
       success: false,
-      message: 'Invalid token',
+      message: 'Token không hợp lệ',
       errorCode: ErrorCodes.TOKEN_INVALID,
       timestamp: new Date().toISOString(),
       path: req.path,
@@ -121,7 +121,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, _next: N
   if (error.name === 'TokenExpiredError') {
     const errorResponse: ErrorResponse = {
       success: false,
-      message: 'Token expired',
+      message: 'Token đã hết hạn',
       errorCode: ErrorCodes.TOKEN_EXPIRED,
       timestamp: new Date().toISOString(),
       path: req.path,
@@ -135,7 +135,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, _next: N
   // Handle unhandled errors
   const errorResponse: ErrorResponse = {
     success: false,
-    message: process.env.NODE_ENV === 'production' ? 'Something went wrong' : error.message,
+    message: process.env.NODE_ENV === 'production' ? 'Đã xảy ra lỗi' : error.message,
     errorCode: ErrorCodes.INTERNAL_SERVER_ERROR,
     timestamp: new Date().toISOString(),
     path: req.path,
@@ -151,7 +151,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, _next: N
 
 // 404 handler for routes that don't exist
 export const notFoundHandler = (req: Request, res: Response, next: NextFunction): void => {
-  const error = new AppError(`Route ${req.method} ${req.path} not found`, 404, 'ROUTE_NOT_FOUND')
+  const error = new AppError(`Không tìm thấy tuyến ${req.method} ${req.path}`, 404, 'ROUTE_NOT_FOUND')
   next(error)
 }
 

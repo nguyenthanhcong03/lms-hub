@@ -3,11 +3,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import dayjs from 'dayjs'
+import 'dayjs/locale/vi'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Badge } from '@/components/ui/badge'
 
-// Extend dayjs with relativeTime plugin
+// Mở rộng dayjs với plugin thời gian tương đối
 dayjs.extend(relativeTime)
+dayjs.locale('vi')
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { CalendarDays, Clock, ArrowRight } from 'lucide-react'
 
@@ -23,26 +25,26 @@ export function BlogCard({ post }: BlogCardProps) {
     const now = dayjs()
     const diffDays = now.diff(date, 'day')
 
-    // Show relative time for recent posts (within 3 days)
+    // Hiển thị thời gian tương đối cho bài viết mới (trong 3 ngày)
     if (diffDays < 3) {
       return date.fromNow()
     }
 
-    // Show formatted date for older posts
-    return date.format('MMM D, YYYY')
+    // Hiển thị ngày định dạng sẵn cho bài viết cũ hơn
+    return date.format('DD/MM/YYYY')
   }
 
-  // Calculate approximate read time based on content length
+  // Tính thời gian đọc ước lượng dựa trên độ dài nội dung
   const calculateReadTime = (content: string) => {
     const wordsPerMinute = 200
     const wordCount = content.split(' ').length
     const readTime = Math.ceil(wordCount / wordsPerMinute)
-    return `${readTime} min`
+    return `${readTime} phút`
   }
 
   return (
     <article className='group overflow-hidden rounded-xs border border-gray-200 bg-white transition-all duration-300 hover:border-gray-300 hover:shadow-lg'>
-      {/* Thumbnail */}
+      {/* Ảnh đại diện */}
       <div className='relative aspect-[16/10] overflow-hidden'>
         <Image
           src={
@@ -56,15 +58,15 @@ export function BlogCard({ post }: BlogCardProps) {
           sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw'
           className='object-cover transition-transform duration-300 group-hover:scale-105'
         />
-        {/* Category Badge */}
+        {/* Nhãn danh mục */}
         <div className='absolute top-4 left-4'>
           <Badge className='bg-white/90 text-gray-900 hover:bg-white'>{post.category?.name || 'Chưa phân loại'}</Badge>
         </div>
       </div>
 
-      {/* Content */}
+      {/* Nội dung */}
       <div className='space-y-4 p-6'>
-        {/* Meta Info */}
+        {/* Thông tin phụ */}
         <div className='flex items-center justify-between text-sm text-gray-500'>
           <div className='flex items-center space-x-1'>
             <CalendarDays className='h-4 w-4' />
@@ -76,22 +78,22 @@ export function BlogCard({ post }: BlogCardProps) {
           </div>
         </div>
 
-        {/* Title */}
-        <Link href={`/blogs/${post.slug}`} aria-label={`Read article: ${post.title}`}>
+        {/* Tiêu đề */}
+        <Link href={`/blogs/${post.slug}`} aria-label={`Đọc bài viết: ${post.title}`}>
           <h3 className='line-clamp-2 text-xl leading-tight font-bold text-gray-900 transition-colors group-hover:text-blue-600 hover:text-blue-600'>
             {post.title}
           </h3>
         </Link>
 
-        {/* Excerpt */}
+        {/* Mô tả ngắn */}
         <p className='mt-2 line-clamp-3 leading-relaxed text-gray-600'>{post.excerpt}</p>
 
-        {/* Author & Read More */}
+        {/* Tác giả và đọc thêm */}
         <div className='flex items-center justify-between pt-4'>
-          {/* Author */}
+          {/* Tác giả */}
           <div className='flex items-center space-x-3'>
             <Avatar className='h-10 w-10 shadow-lg ring-2 ring-white/50 transition-all duration-200'>
-              <AvatarImage src={post.author?.avatar} alt={post.author?.username || post.author?.name || 'Author'} />
+              <AvatarImage src={post.author?.avatar} alt={post.author?.username || post.author?.name || 'Tác giả'} />
               <AvatarFallback className='from-primary to-primary/80 bg-gradient-to-br text-sm font-bold text-white'>
                 {post.author?.username
                   ? post.author.username.slice(0, 2).toUpperCase()
@@ -108,13 +110,13 @@ export function BlogCard({ post }: BlogCardProps) {
             </div>
           </div>
 
-          {/* Read More Link */}
+          {/* Liên kết đọc thêm */}
           <Link
             href={`/blogs/${post.slug}`}
             className='inline-flex items-center text-sm font-medium text-blue-600 transition-colors hover:text-blue-700'
-            aria-label={`Read full article: ${post.title}`}
+            aria-label={`Đọc toàn bộ bài viết: ${post.title}`}
           >
-            Đọc Bài Viết
+            Đọc bài viết
             <ArrowRight className='ml-1 h-4 w-4' />
           </Link>
         </div>

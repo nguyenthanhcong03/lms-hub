@@ -21,7 +21,7 @@ export class QuizQuestionController {
     const { questions }: CreateQuizQuestionInput = req.body
     const createdQuestions = await QuizQuestionService.createQuizQuestion(questions)
 
-    sendSuccess.created(res, 'Quiz questions created successfully', { questions: createdQuestions })
+    sendSuccess.created(res, 'Quiz questions được tạo thành công', { questions: createdQuestions })
   }
 
   /**
@@ -31,7 +31,7 @@ export class QuizQuestionController {
     const query: Partial<GetQuizQuestionsQuery> = req.query
     const result = await QuizQuestionService.getQuizQuestions(query)
 
-    sendSuccess.ok(res, 'Quiz questions fetched successfully', result)
+    sendSuccess.ok(res, 'Quiz questions được tải thành công', result)
   }
 
   /**
@@ -42,7 +42,7 @@ export class QuizQuestionController {
     const query: Partial<GetQuestionsByQuizQuery> = req.query
     const result = await QuizQuestionService.getQuestionsByQuiz(quizId, query)
 
-    sendSuccess.ok(res, 'Quiz questions fetched successfully', result)
+    sendSuccess.ok(res, 'Quiz questions được tải thành công', result)
   }
 
   /**
@@ -52,7 +52,7 @@ export class QuizQuestionController {
     const { quizId } = req.params
     const questions = await QuizQuestionService.getAllQuestionsByQuiz(quizId)
 
-    sendSuccess.ok(res, 'Quiz questions fetched successfully', { questions })
+    sendSuccess.ok(res, 'Quiz questions được tải thành công', { questions })
   }
 
   /**
@@ -62,7 +62,7 @@ export class QuizQuestionController {
     const { id } = req.params
     const question = await QuizQuestionService.getQuizQuestionById(id)
 
-    sendSuccess.ok(res, 'Quiz question fetched successfully', { question })
+    sendSuccess.ok(res, 'Quiz question được tải thành công', { question })
   }
 
   /**
@@ -73,7 +73,7 @@ export class QuizQuestionController {
     const updateData: UpdateQuizQuestionInput = req.body
     const question = await QuizQuestionService.updateQuizQuestion(id, updateData)
 
-    sendSuccess.ok(res, 'Quiz question updated successfully', { question })
+    sendSuccess.ok(res, 'Quiz question được cập nhật thành công', { question })
   }
 
   /**
@@ -83,7 +83,7 @@ export class QuizQuestionController {
     const { id } = req.params
     await QuizQuestionService.deleteQuizQuestion(id)
 
-    sendSuccess.ok(res, 'Quiz question deleted successfully')
+    sendSuccess.ok(res, 'Quiz question được xóa thành công')
   }
 
   /**
@@ -93,6 +93,6 @@ export class QuizQuestionController {
     const bulkDeleteData: { questionIds: string[] } = req.body
     const result = await QuizQuestionService.bulkDeleteQuizQuestions(bulkDeleteData)
 
-    sendSuccess.ok(res, 'Quiz questions deleted successfully', result)
+    sendSuccess.ok(res, 'Quiz questions được xóa thành công', result)
   }
 }

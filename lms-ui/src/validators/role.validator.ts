@@ -1,19 +1,22 @@
-import * as yup from "yup";
+import * as yup from 'yup'
 export const roleSchema = yup
   .object({
     name: yup
       .string()
-      .required("Role name is required")
-      .min(2, "Role name must be at least 2 characters")
-      .max(50, "Role name must not exceed 50 characters")
-      .matches(/^[a-zA-Z0-9\s\-_]+$/, "Role name can only contain letters, numbers, spaces, hyphens, and underscores"),
+      .required('Tên vai trò là bắt buộc')
+      .min(2, 'Tên vai trò phải có ít nhất 2 ký tự')
+      .max(50, 'Tên vai trò không được vượt quá 50 ký tự')
+      .matches(
+        /^[a-zA-Z0-9\s\-_]+$/,
+        'Tên vai trò chỉ được chứa chữ cái, số, khoảng trắng, dấu gạch ngang và dấu gạch dưới'
+      ),
     description: yup
       .string()
-      .required("Description is required")
-      .min(10, "Description must be at least 10 characters")
-      .max(200, "Description must not exceed 200 characters"),
-    permissions: yup.array().of(yup.string().required()).default([]).optional(),
+      .required('Mô tả là bắt buộc')
+      .min(10, 'Mô tả phải có ít nhất 10 ký tự')
+      .max(200, 'Mô tả không được vượt quá 200 ký tự'),
+    permissions: yup.array().of(yup.string().required()).default([]).optional()
   })
-  .required();
+  .required()
 
-export type RoleSchema = yup.InferType<typeof roleSchema>;
+export type RoleSchema = yup.InferType<typeof roleSchema>

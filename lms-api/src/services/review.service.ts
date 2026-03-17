@@ -130,7 +130,7 @@ export class ReviewService {
 
     // Check if user owns this review or is admin
     if (review.userId.toString() !== userId) {
-      throw new ValidationError('You can only update your own reviews', ErrorCodes.UNAUTHORIZED_ACTION)
+      throw new ValidationError('Bạn chỉ có thể cập nhật đánh giá của chính mình', ErrorCodes.UNAUTHORIZED_ACTION)
     }
 
     // Update fields
@@ -162,7 +162,7 @@ export class ReviewService {
 
     // Check if user owns this review
     if (review.userId.toString() !== userId) {
-      throw new ValidationError('You can only delete your own reviews', ErrorCodes.UNAUTHORIZED_ACTION)
+      throw new ValidationError('Bạn chỉ có thể xóa đánh giá của chính mình', ErrorCodes.UNAUTHORIZED_ACTION)
     }
 
     await Review.findByIdAndDelete(reviewId)

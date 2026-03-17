@@ -1,4 +1,4 @@
-export class AppError extends Error {
+﻿export class AppError extends Error {
   public readonly statusCode: number
   public readonly isOperational: boolean
   public readonly errorCode?: string
@@ -10,7 +10,7 @@ export class AppError extends Error {
     this.isOperational = isOperational
     this.errorCode = errorCode
 
-    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    // Giữ stack trace chính xác tại vị trí lỗi được ném (chỉ có trên V8)
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, this.constructor)
     }
@@ -26,37 +26,37 @@ export class ValidationError extends AppError {
 }
 
 export class AuthenticationError extends AppError {
-  constructor(message: string = 'Authentication failed', errorCode?: string) {
+  constructor(message: string = 'Xác thực thất bại', errorCode?: string) {
     super(message, 401, errorCode)
   }
 }
 
 export class AuthorizationError extends AppError {
-  constructor(message: string = 'Insufficient permissions', errorCode?: string) {
+  constructor(message: string = 'Không đủ quyền truy cập', errorCode?: string) {
     super(message, 403, errorCode)
   }
 }
 
 export class NotFoundError extends AppError {
-  constructor(message: string = 'Resource not found', errorCode?: string) {
+  constructor(message: string = 'Không tìm thấy tài nguyên', errorCode?: string) {
     super(message, 404, errorCode)
   }
 }
 
 export class ConflictError extends AppError {
-  constructor(message: string = 'Resource conflict', errorCode?: string) {
+  constructor(message: string = 'Xung đột tài nguyên', errorCode?: string) {
     super(message, 409, errorCode)
   }
 }
 
 export class DatabaseError extends AppError {
-  constructor(message: string = 'Database operation failed', errorCode?: string) {
+  constructor(message: string = 'Thao tác cơ sở dữ liệu thất bại', errorCode?: string) {
     super(message, 500, errorCode)
   }
 }
 
 export class ExternalServiceError extends AppError {
-  constructor(message: string = 'External service error', errorCode?: string) {
+  constructor(message: string = 'Lỗi dịch vụ bên ngoài', errorCode?: string) {
     super(message, 502, errorCode)
   }
 }
@@ -68,7 +68,7 @@ export class RateLimitError extends AppError {
   public readonly resetTime?: Date
 
   constructor(
-    message: string = 'Rate limit exceeded',
+    message: string = 'Vượt quá giới hạn truy cập',
     errorCode?: string,
     rateLimit?: {
       retryAfter?: number
@@ -85,9 +85,9 @@ export class RateLimitError extends AppError {
   }
 }
 
-// Error codes for consistent error identification
+// Mã lỗi dùng để định danh lỗi nhất quán
 export const ErrorCodes = {
-  // Authentication
+  // Xác thực
   INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
   ACCOUNT_INACTIVE: 'ACCOUNT_INACTIVE',
   ACCOUNT_BANNED: 'ACCOUNT_BANNED',
@@ -96,18 +96,18 @@ export const ErrorCodes = {
   EMAIL_NOT_VERIFIED: 'EMAIL_NOT_VERIFIED',
   EMAIL_ALREADY_VERIFIED: 'EMAIL_ALREADY_VERIFIED',
 
-  // Validation
+  // Xác thực dữ liệu
   REQUIRED_FIELD_MISSING: 'REQUIRED_FIELD_MISSING',
   INVALID_EMAIL_FORMAT: 'INVALID_EMAIL_FORMAT',
   PASSWORD_TOO_WEAK: 'PASSWORD_TOO_WEAK',
   INVALID_INPUT_FORMAT: 'INVALID_INPUT_FORMAT',
 
-  // Resource conflicts
+  // Xung đột tài nguyên
   USER_ALREADY_EXISTS: 'USER_ALREADY_EXISTS',
   USERNAME_TAKEN: 'USERNAME_TAKEN',
   EMAIL_ALREADY_REGISTERED: 'EMAIL_ALREADY_REGISTERED',
 
-  // Resource not found
+  // Không tìm thấy tài nguyên
   USER_NOT_FOUND: 'USER_NOT_FOUND',
   COURSE_NOT_FOUND: 'COURSE_NOT_FOUND',
   ROLE_NOT_FOUND: 'ROLE_NOT_FOUND',
@@ -119,15 +119,15 @@ export const ErrorCodes = {
   QUIZ_NOT_FOUND: 'QUIZ_NOT_FOUND',
   QUIZ_QUESTION_NOT_FOUND: 'QUIZ_QUESTION_NOT_FOUND',
 
-  // Resource conflicts
+  // Xung đột tài nguyên
   DUPLICATE_ENTRY: 'DUPLICATE_ENTRY',
 
-  // Review specific errors
+  // Nhóm lỗi đánh giá
   REVIEW_ALREADY_EXISTS: 'REVIEW_ALREADY_EXISTS',
   UNAUTHORIZED_ACTION: 'UNAUTHORIZED_ACTION',
   INSUFFICIENT_PERMISSIONS: 'INSUFFICIENT_PERMISSIONS',
 
-  // Coupon specific errors
+  // Nhóm lỗi mã giảm giá
   COUPON_CODE_EXISTS: 'COUPON_CODE_EXISTS',
   COUPON_EXPIRED: 'COUPON_EXPIRED',
   COUPON_NOT_ACTIVE: 'COUPON_NOT_ACTIVE',
@@ -135,20 +135,20 @@ export const ErrorCodes = {
   COUPON_NOT_APPLICABLE: 'COUPON_NOT_APPLICABLE',
   INVALID_COUPON_CODE: 'INVALID_COUPON_CODE',
 
-  // Quiz Question specific errors
+  // Nhóm lỗi câu hỏi quiz
   INVALID_CORRECT_ANSWER_INDEX: 'INVALID_CORRECT_ANSWER_INDEX',
   INVALID_TRUE_FALSE_OPTIONS: 'INVALID_TRUE_FALSE_OPTIONS',
   INVALID_SINGLE_CHOICE_ANSWERS: 'INVALID_SINGLE_CHOICE_ANSWERS',
 
-  // Database
+  // Cơ sở dữ liệu
   DB_CONNECTION_FAILED: 'DB_CONNECTION_FAILED',
   DB_OPERATION_FAILED: 'DB_OPERATION_FAILED',
 
-  // Configuration
+  // Cấu hình
   CONFIG_MISSING: 'CONFIG_MISSING',
   DEFAULT_ROLE_NOT_CONFIGURED: 'DEFAULT_ROLE_NOT_CONFIGURED',
 
-  // General
+  // Chung
   INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
   RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED'
 } as const

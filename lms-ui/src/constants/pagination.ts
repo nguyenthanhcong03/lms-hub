@@ -1,19 +1,18 @@
-// Pagination configuration constants
+// Hằng số cấu hình phân trang
 export const PAGINATION_CONSTANTS = {
-	// Default page size
-	DEFAULT_PAGE_SIZE: 10,
+  // Kích thước trang mặc định
+  DEFAULT_PAGE_SIZE: 10,
 
-	// Available page size options
-	PAGE_SIZE_OPTIONS: [5, 10, 20, 50],
+  // Các tùy chọn kích thước trang
+  PAGE_SIZE_OPTIONS: [5, 10, 20, 50],
 
-	// Default starting page
-	DEFAULT_PAGE: 1,
+  // Trang bắt đầu mặc định
+  DEFAULT_PAGE: 1,
 
-	// Pagination limits
-	MIN_PAGE_SIZE: 5,
-	MAX_PAGE_SIZE: 100,
-};
+  // Giới hạn phân trang
+  MIN_PAGE_SIZE: 5,
+  MAX_PAGE_SIZE: 100
+}
 
-// Type for page size options
-export type PageSizeOption =
-	(typeof PAGINATION_CONSTANTS.PAGE_SIZE_OPTIONS)[number];
+// Kiểu cho tùy chọn kích thước trang
+export type PageSizeOption = (typeof PAGINATION_CONSTANTS.PAGE_SIZE_OPTIONS)[number]

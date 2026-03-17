@@ -365,7 +365,7 @@ export class CommentService {
 
     // Only author can update
     if (comment.userId.toString() !== userId) {
-      throw new ValidationError('You can only update your own comments', ErrorCodes.UNAUTHORIZED_ACTION)
+      throw new ValidationError('Bạn chỉ có thể cập nhật bình luận của chính mình', ErrorCodes.UNAUTHORIZED_ACTION)
     }
 
     // Reset to pending if content changes
@@ -412,7 +412,7 @@ export class CommentService {
 
     // Only author can delete (or admin, but that should be handled by permissions)
     if (comment.userId.toString() !== userId) {
-      throw new ValidationError('You can only delete your own comments', ErrorCodes.UNAUTHORIZED_ACTION)
+      throw new ValidationError('Bạn chỉ có thể xóa bình luận của chính mình', ErrorCodes.UNAUTHORIZED_ACTION)
     }
 
     if (deleteReplies) {

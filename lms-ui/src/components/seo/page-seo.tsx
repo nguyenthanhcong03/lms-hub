@@ -1,139 +1,138 @@
-import { Metadata } from "next";
-import { generateMetadata } from "./seo-head";
-import { PAGE_SEO, SEO_TEMPLATES } from "@/configs/seo";
+import { Metadata } from 'next'
+import { generateMetadata } from './seo-head'
+import { PAGE_SEO, SEO_TEMPLATES } from '@/configs/seo'
 
-// Home page SEO - Use the default title directly to avoid duplication
+// SEO trang chủ - dùng trực tiếp tiêu đề mặc định để tránh lặp lại
 export function generateHomeMetadata(): Metadata {
   return generateMetadata({
-    title: "", // Empty title means use default title without template
+    title: '', // Tiêu đề rỗng nghĩa là dùng tiêu đề mặc định không kèm template
     description: PAGE_SEO.home.description,
-    canonical: "/",
+    canonical: '/',
     openGraph: {
-      type: "website",
-      title: PAGE_SEO.home.title, // Use page title for OpenGraph
-      description: PAGE_SEO.home.description,
-    },
-  });
+      type: 'website',
+      title: PAGE_SEO.home.title, // Dùng tiêu đề trang cho OpenGraph
+      description: PAGE_SEO.home.description
+    }
+  })
 }
 
-// About page SEO
+// SEO trang giới thiệu
 export function generateAboutMetadata(): Metadata {
   return generateMetadata({
     title: PAGE_SEO.about.title,
     description: PAGE_SEO.about.description,
-    canonical: "/about",
+    canonical: '/about',
     openGraph: {
-      type: "website",
+      type: 'website',
       title: PAGE_SEO.about.title,
-      description: PAGE_SEO.about.description,
-    },
-  });
+      description: PAGE_SEO.about.description
+    }
+  })
 }
 
-// Courses page SEO
+// SEO trang khóa học
 export function generateCoursesMetadata(): Metadata {
   return generateMetadata({
     title: PAGE_SEO.courses.title,
     description: PAGE_SEO.courses.description,
-    canonical: "/courses",
+    canonical: '/courses',
     openGraph: {
-      type: "website",
+      type: 'website',
       title: PAGE_SEO.courses.title,
-      description: PAGE_SEO.courses.description,
-    },
-  });
+      description: PAGE_SEO.courses.description
+    }
+  })
 }
 
-// Blog page SEO
+// SEO trang blog
 export function generateBlogMetadata(): Metadata {
   return generateMetadata({
     title: PAGE_SEO.blog.title,
     description: PAGE_SEO.blog.description,
-    canonical: "/blogs",
+    canonical: '/blogs',
     openGraph: {
-      type: "website",
+      type: 'website',
       title: PAGE_SEO.blog.title,
-      description: PAGE_SEO.blog.description,
-    },
-  });
+      description: PAGE_SEO.blog.description
+    }
+  })
 }
 
-// Contact page SEO
+// SEO trang liên hệ
 export function generateContactMetadata(): Metadata {
   return generateMetadata({
     title: PAGE_SEO.contact.title,
     description: PAGE_SEO.contact.description,
-    canonical: "/contact",
+    canonical: '/contact',
     openGraph: {
-      type: "website",
+      type: 'website',
       title: PAGE_SEO.contact.title,
-      description: PAGE_SEO.contact.description,
-    },
-  });
+      description: PAGE_SEO.contact.description
+    }
+  })
 }
 
-// Cart page SEO
+// SEO trang giỏ hàng
 export function generateCartMetadata(): Metadata {
   return generateMetadata({
-    title: "Shopping Cart - Complete Your Course Purchase",
+    title: 'Giỏ hàng - Hoàn tất mua khóa học',
     description:
-      "Review your selected courses and complete your purchase. Secure checkout with lifetime access to your courses.",
-    canonical: "/cart",
+      'Xem lại các khóa học đã chọn và hoàn tất thanh toán. Thanh toán an toàn với quyền truy cập trọn đời vào khóa học.',
+    canonical: '/cart',
     openGraph: {
-      type: "website",
-      title: "Shopping Cart - Complete Your Course Purchase",
-      description: "Review your selected courses and complete your purchase.",
+      type: 'website',
+      title: 'Giỏ hàng - Hoàn tất mua khóa học',
+      description: 'Xem lại các khóa học đã chọn và hoàn tất thanh toán.'
     },
-    noIndex: true, // Cart pages should not be indexed
-  });
+    noIndex: true // Trang giỏ hàng không nên được lập chỉ mục
+  })
 }
 
-// Profile page SEO
+// SEO trang hồ sơ
 export function generateProfileMetadata(): Metadata {
   return generateMetadata({
-    title: "My Profile - Manage Your Learning Journey",
-    description:
-      "Manage your LMSHub profile, track your course progress, view certificates, and customize your learning experience.",
-    canonical: "/my-profile",
+    title: 'Hồ sơ của tôi - Quản lý hành trình học tập',
+    description: 'Quản lý hồ sơ LMSHub, theo dõi tiến độ học, xem chứng chỉ và tùy chỉnh trải nghiệm học tập của bạn.',
+    canonical: '/my-profile',
     openGraph: {
-      type: "profile",
-      title: "My Profile - Manage Your Learning Journey",
-      description: "Manage your LMSHub profile and track your course progress.",
+      type: 'profile',
+      title: 'Hồ sơ của tôi - Quản lý hành trình học tập',
+      description: 'Quản lý hồ sơ LMSHub và theo dõi tiến độ học tập của bạn.'
     },
-    noIndex: true, // Profile pages should not be indexed
-  });
+    noIndex: true // Trang hồ sơ không nên được lập chỉ mục
+  })
 }
 
-// Individual course page SEO
+// SEO trang khóa học chi tiết
 export function generateCourseMetadata(course: {
-  title: string;
-  description: string;
-  slug: string;
-  thumbnail?: string;
-  instructor?: { name: string };
-  level?: string;
-  category?: string;
+  title: string
+  description: string
+  slug: string
+  thumbnail?: string
+  instructor?: { name: string }
+  level?: string
+  category?: string
 }): Metadata {
-  const title = SEO_TEMPLATES.course.title.replace("%s", course.title);
-  const description = course.description.slice(0, 160) + (course.description.length > 160 ? "..." : "");
+  const title = SEO_TEMPLATES.course.title.replace('%s', course.title)
+  const description = course.description.slice(0, 160) + (course.description.length > 160 ? '...' : '')
 
   const keywords = [
     course.title.toLowerCase(),
-    `${course.title.toLowerCase()} course`,
-    "online course",
-    "learn " + course.title.toLowerCase(),
-  ];
+    `${course.title.toLowerCase()} khóa học`,
+    'khóa học online',
+    'học ' + course.title.toLowerCase()
+  ]
 
   if (course.category) {
-    keywords.push(course.category.toLowerCase());
+    keywords.push(course.category.toLowerCase())
   }
 
   if (course.instructor) {
-    keywords.push(course.instructor.name.toLowerCase());
+    keywords.push(course.instructor.name.toLowerCase())
   }
 
   if (course.level) {
-    keywords.push(`${course.level.toLowerCase()} level`);
+    keywords.push(`${course.level.toLowerCase()} trình độ`)
   }
 
   return generateMetadata({
@@ -142,35 +141,35 @@ export function generateCourseMetadata(course: {
     keywords,
     canonical: `/courses/${course.slug}`,
     openGraph: {
-      type: "article",
+      type: 'article',
       title,
       description,
-      image: course.thumbnail,
-    },
-  });
+      image: course.thumbnail
+    }
+  })
 }
 
-// Individual blog post SEO
+// SEO bài viết blog chi tiết
 export function generateBlogPostMetadata(blog: {
-  title: string;
-  description: string;
-  slug: string;
-  thumbnail?: string;
-  author?: { name: string };
-  createdAt: string;
-  tags?: string[];
+  title: string
+  description: string
+  slug: string
+  thumbnail?: string
+  author?: { name: string }
+  createdAt: string
+  tags?: string[]
 }): Metadata {
-  const title = SEO_TEMPLATES.blog.title.replace("%s", blog.title);
-  const description = blog.description.slice(0, 160) + (blog.description.length > 160 ? "..." : "");
+  const title = SEO_TEMPLATES.blog.title.replace('%s', blog.title)
+  const description = blog.description.slice(0, 160) + (blog.description.length > 160 ? '...' : '')
 
-  const keywords = [blog.title.toLowerCase(), "education blog", "learning tips"];
+  const keywords = [blog.title.toLowerCase(), 'blog giáo dục', 'mẹo học tập']
 
   if (blog.tags) {
-    keywords.push(...blog.tags.map((tag) => tag.toLowerCase()));
+    keywords.push(...blog.tags.map((tag) => tag.toLowerCase()))
   }
 
   if (blog.author) {
-    keywords.push(blog.author.name.toLowerCase());
+    keywords.push(blog.author.name.toLowerCase())
   }
 
   return generateMetadata({
@@ -179,75 +178,75 @@ export function generateBlogPostMetadata(blog: {
     keywords,
     canonical: `/blogs/${blog.slug}`,
     openGraph: {
-      type: "article",
+      type: 'article',
       title,
       description,
-      image: blog.thumbnail,
+      image: blog.thumbnail
     },
     twitter: {
       title,
       description,
-      image: blog.thumbnail,
-    },
-  });
+      image: blog.thumbnail
+    }
+  })
 }
 
-// Learning page SEO (protected)
+// SEO trang học tập (được bảo vệ)
 export function generateLearningMetadata(course: { title: string; slug: string }): Metadata {
   return generateMetadata({
-    title: `Learning: ${course.title}`,
-    description: `Continue learning ${course.title}. Access your course materials, track progress, and complete lessons.`,
+    title: `Học tập: ${course.title}`,
+    description: `Tiếp tục học ${course.title}. Truy cập tài liệu khóa học, theo dõi tiến độ và hoàn thành bài học.`,
     canonical: `/learning/${course.slug}`,
-    noIndex: true, // Learning pages should not be indexed
+    noIndex: true, // Trang học tập không nên được lập chỉ mục
     noFollow: true,
     openGraph: {
-      type: "website",
-      title: `Learning: ${course.title}`,
-      description: `Continue learning ${course.title}`,
-    },
-  });
+      type: 'website',
+      title: `Học tập: ${course.title}`,
+      description: `Tiếp tục học ${course.title}`
+    }
+  })
 }
 
-// Search results SEO
+// SEO kết quả tìm kiếm
 export function generateSearchMetadata(query?: string): Metadata {
-  const title = query ? `Search Results for "${query}" | LMSHub` : "Search Courses and Blogs | LMSHub";
+  const title = query ? `Kết quả tìm kiếm cho "${query}" | LMSHub` : 'Tìm kiếm khóa học và bài viết | LMSHub'
 
   const description = query
-    ? `Find courses and blog posts related to "${query}". Discover relevant learning content and educational resources.`
-    : "Search through our extensive library of courses and educational blog posts. Find the perfect learning content for your needs.";
+    ? `Tìm khóa học và bài viết liên quan đến "${query}". Khám phá nội dung học tập và tài nguyên giáo dục phù hợp.`
+    : 'Tìm kiếm trong thư viện khóa học và bài viết giáo dục phong phú của chúng tôi. Tìm nội dung học tập phù hợp với nhu cầu của bạn.'
 
   return generateMetadata({
     title,
     description,
-    canonical: `/search${query ? `?q=${encodeURIComponent(query)}` : ""}`,
-    keywords: query ? [query, "search", "courses", "blogs"] : ["search", "courses", "blogs"],
-    noIndex: !query, // Only index search results with queries
+    canonical: `/search${query ? `?q=${encodeURIComponent(query)}` : ''}`,
+    keywords: query ? [query, 'tìm kiếm', 'khóa học', 'bài viết'] : ['tìm kiếm', 'khóa học', 'bài viết'],
+    noIndex: !query, // Chỉ lập chỉ mục kết quả tìm kiếm có truy vấn
     openGraph: {
-      type: "website",
+      type: 'website',
       title,
-      description,
-    },
-  });
+      description
+    }
+  })
 }
 
-// Category page SEO
+// SEO trang danh mục
 export function generateCategoryMetadata(category: { name: string; description?: string; slug: string }): Metadata {
-  const title = `${category.name} Courses | LMSHub`;
+  const title = `Khóa học ${category.name} | LMSHub`
   const description =
     category.description ||
-    `Explore ${
+    `Khám phá các khóa học ${
       category.name
-    } courses on LMSHub. Learn from expert instructors and advance your skills in ${category.name.toLowerCase()}.`;
+    } trên LMSHub. Học cùng giảng viên giàu kinh nghiệm và nâng cao kỹ năng của bạn trong lĩnh vực ${category.name.toLowerCase()}.`
 
   return generateMetadata({
     title,
     description,
-    keywords: [category.name.toLowerCase(), `${category.name.toLowerCase()} courses`, "online learning"],
+    keywords: [category.name.toLowerCase(), `${category.name.toLowerCase()} khóa học`, 'học trực tuyến'],
     canonical: `/categories/${category.slug}`,
     openGraph: {
-      type: "website",
+      type: 'website',
       title,
-      description,
-    },
-  });
+      description
+    }
+  })
 }

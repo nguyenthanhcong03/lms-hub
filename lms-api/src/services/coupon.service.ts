@@ -222,7 +222,7 @@ export class CouponService {
     const coupon = await Coupon.findOne({ code: code.toUpperCase() }).populate('courseIds', 'title price')
 
     if (!coupon) {
-      throw new NotFoundError('Invalid coupon code', ErrorCodes.COUPON_NOT_FOUND)
+      throw new NotFoundError('Mã giảm giá không hợp lệ', ErrorCodes.COUPON_NOT_FOUND)
     }
 
     const now = new Date()
@@ -255,7 +255,7 @@ export class CouponService {
       const allCoursesAreValid = courseIds.every((courseId) => validCourseIds.includes(courseId))
 
       if (!allCoursesAreValid) {
-        throw new ValidationError('Coupon is not applicable to the selected courses', ErrorCodes.INVALID_INPUT_FORMAT)
+        throw new ValidationError('Coupon is not applicable to the đã chọn courses', ErrorCodes.INVALID_INPUT_FORMAT)
       }
     }
 

@@ -59,7 +59,7 @@ const DataTableToolbar = <TData,>({
       </div>
 
       <div className='flex items-center gap-2'>
-        {/* Bulk Actions */}
+        {/* Thao tác hàng loạt */}
         {hasSelectedRows && (
           <>
             <Button

@@ -23,7 +23,7 @@ import { Banknote, Calendar, Clock, CreditCard, Download, Loader2, Package, X } 
 import Image from 'next/image'
 import { useState } from 'react'
 
-// Status colors and labels with modern design
+// Màu sắc và nhãn trạng thái
 const STATUS_CONFIG = {
   pending: {
     label: 'Chờ xử lý',
@@ -48,7 +48,7 @@ const STATUS_CONFIG = {
   }
 } as const
 
-// Payment method labels
+// Nhãn phương thức thanh toán
 const PAYMENT_METHOD_LABELS = {
   bank_transfer: 'Chuyển khoản ngân hàng'
 } as const
@@ -60,23 +60,23 @@ interface OrderCardProps {
   cancelMutation: ReturnType<typeof useCancelOrder>
 }
 
-// Order card component - Arrow function
+// Thành phần thẻ đơn hàng
 const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProps) => {
   const statusConfig = STATUS_CONFIG[order.status]
   const StatusIcon = statusConfig.icon
   const [isDownloading, setIsDownloading] = useState(false)
 
-  // Check if this specific order is being cancelled
+  // Kiểm tra đơn hàng này có đang bị hủy không
   const isCancelling = cancelMutation.isPending && cancelMutation.variables === order._id
 
-  // Handle invoice download
+  // Xử lý tải hóa đơn
   const handleDownloadInvoice = async () => {
     try {
       setIsDownloading(true)
       await OrderService.downloadInvoice(order._id, order.code)
-      toast.success('Invoice downloaded successfully')
+      toast.success('Tải hóa đơn thành công')
     } catch {
-      toast.error('Failed to download invoice. Please try again.')
+      toast.error('Không thể tải hóa đơn. Vui lòng thử lại.')
     } finally {
       setIsDownloading(false)
     }
@@ -84,7 +84,7 @@ const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProp
 
   return (
     <Card className='overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-md transition-all duration-300 hover:shadow-xl sm:shadow-lg'>
-      {/* Order Header */}
+      {/* Tiêu đề đơn hàng */}
       <CardHeader className='border-b border-gray-100/50 bg-gradient-to-r from-gray-50 to-white p-3 sm:p-6'>
         <div className='flex flex-col items-start justify-between gap-3 sm:flex-row sm:gap-0'>
           <div className='flex min-w-0 flex-1 items-start gap-2 sm:gap-3'>
@@ -117,7 +117,7 @@ const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProp
       </CardHeader>
 
       <CardContent className='p-3 sm:p-4'>
-        {/* Course Items */}
+        {/* Danh sách khóa học */}
         <div className='mb-3 space-y-2 sm:mb-4 sm:space-y-3'>
           {order?.items.map((item) => (
             <div
@@ -132,7 +132,7 @@ const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProp
                   {item.title}
                 </h4>
 
-                {/* Price Display with Old Price */}
+                {/* Hiển thị giá cùng giá gốc */}
                 <div className='space-y-0.5 sm:space-y-1'>
                   {item.oldPrice && item.oldPrice > item.price && (
                     <div className='flex items-center gap-1.5 sm:gap-2'>
@@ -140,7 +140,7 @@ const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProp
                         {formatPrice(item.oldPrice)}
                       </span>
                       <span className='rounded-full bg-red-600 px-1.5 py-0.5 text-[10px] font-medium text-white shadow-sm sm:px-2 sm:py-1 sm:text-xs'>
-                        {Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)}% OFF
+                        {Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)}% GIẢM
                       </span>
                     </div>
                   )}
@@ -151,20 +151,22 @@ const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProp
           ))}
         </div>
 
-        {/* Summary & Actions */}
+        {/* Tóm tắt và thao tác */}
         <div className='flex flex-col items-start justify-between gap-3 border-t border-gray-100 pt-2 sm:flex-row sm:items-center sm:pt-3'>
           <div className='space-y-0.5 sm:space-y-1'>
             <div className='flex flex-col gap-1 text-xs text-gray-600 sm:flex-row sm:items-center sm:gap-3 sm:text-sm'>
-              <span>Subtotal: {formatPrice(order.subTotal)}</span>
+              <span>Tạm tính: {formatPrice(order.subTotal)}</span>
               {order.totalDiscount > 0 && (
-                <span className='text-emerald-600'>Discount: -{formatPrice(order.totalDiscount)}</span>
+                <span className='text-emerald-600'>Giảm giá: -{formatPrice(order.totalDiscount)}</span>
               )}
             </div>
-            <div className='text-sm font-bold text-gray-900 sm:text-base'>Total: {formatPrice(order.totalAmount)}</div>
+            <div className='text-sm font-bold text-gray-900 sm:text-base'>
+              Tổng cộng: {formatPrice(order.totalAmount)}
+            </div>
           </div>
 
           <div className='flex w-full items-center gap-1.5 sm:w-auto sm:gap-2'>
-            {/* Action Buttons */}
+            {/* Nút thao tác */}
             {order.status === 'pending' && (
               <>
                 <AlertDialog>
@@ -178,27 +180,27 @@ const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProp
                       {isCancelling ? (
                         <>
                           <Loader2 className='mr-1 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4' />
-                          <span className='hidden sm:inline'>Cancelling...</span>
+                          <span className='hidden sm:inline'>Đang hủy...</span>
                           <span className='sm:hidden'>...</span>
                         </>
                       ) : (
                         <>
                           <X className='mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4' />
-                          Cancel
+                          Hủy đơn
                         </>
                       )}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent className='max-w-[90vw] sm:max-w-lg'>
                     <AlertDialogHeader>
-                      <AlertDialogTitle className='text-base sm:text-lg'>Confirm order cancellation</AlertDialogTitle>
+                      <AlertDialogTitle className='text-base sm:text-lg'>Xác nhận hủy đơn hàng</AlertDialogTitle>
                       <AlertDialogDescription className='text-xs sm:text-sm'>
-                        Are you sure you want to cancel order #{order.code}? This action cannot be undone.
+                        Bạn có chắc muốn hủy đơn hàng #{order.code} không? Hành động này không thể hoàn tác.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter className='flex-col gap-2 sm:flex-row'>
                       <AlertDialogCancel disabled={isCancelling} className='h-9 w-full text-sm sm:w-auto'>
-                        No
+                        Không
                       </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => onCancel(order._id, order.code)}
@@ -208,11 +210,11 @@ const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProp
                         {isCancelling ? (
                           <>
                             <Loader2 className='mr-1 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4' />
-                            <span className='hidden sm:inline'>Cancelling...</span>
+                            <span className='hidden sm:inline'>Đang hủy...</span>
                             <span className='sm:hidden'>...</span>
                           </>
                         ) : (
-                          'Confirm cancellation'
+                          'Xác nhận hủy'
                         )}
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -225,7 +227,7 @@ const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProp
                   className='h-8 flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-xs text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl sm:h-9 sm:flex-none sm:text-sm'
                 >
                   <Banknote className='mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4' />
-                  Pay now
+                  Thanh toán ngay
                 </Button>
               </>
             )}
@@ -241,14 +243,14 @@ const OrderCard = ({ order, onPayment, onCancel, cancelMutation }: OrderCardProp
                 {isDownloading ? (
                   <>
                     <Loader2 className='mr-1 h-3 w-3 animate-spin sm:mr-2 sm:h-4 sm:w-4' />
-                    <span className='hidden sm:inline'>Downloading...</span>
+                    <span className='hidden sm:inline'>Đang tải...</span>
                     <span className='sm:hidden'>...</span>
                   </>
                 ) : (
                   <>
                     <Download className='mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4' />
-                    <span className='hidden sm:inline'>Download invoice</span>
-                    <span className='sm:hidden'>Invoice</span>
+                    <span className='hidden sm:inline'>Tải hóa đơn</span>
+                    <span className='sm:hidden'>Hóa đơn</span>
                   </>
                 )}
               </Button>

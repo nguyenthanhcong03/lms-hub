@@ -13,7 +13,7 @@ import OrderStatusDialog from './order-status-dialog'
 import { TABLE_CONSTANTS, PAGINATION_CONSTANTS, SortOrder } from '@/constants'
 import { IOrder } from '@/types/order'
 
-// Filter state interface for better organization
+// Kiểu trạng thái bộ lọc để tổ chức rõ ràng hơn
 interface FilterState {
   search: string
   status: string[]
@@ -23,18 +23,18 @@ interface FilterState {
 }
 
 const OrdersTable = () => {
-  // Essential table state
+  // Trạng thái cốt lõi của bảng
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false)
   const [statusDialogOpen, setStatusDialogOpen] = useState(false)
   const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null)
 
-  // Pagination state
+  // Trạng thái phân trang
   const [currentPage, setCurrentPage] = useState(PAGINATION_CONSTANTS.DEFAULT_PAGE)
   const [pageSize, setPageSize] = useState(PAGINATION_CONSTANTS.DEFAULT_PAGE_SIZE)
 
-  // Filter state - grouped for better performance
+  // Trạng thái bộ lọc - gom nhóm để tối ưu hiệu năng
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     status: [],
@@ -43,10 +43,10 @@ const OrdersTable = () => {
     sortOrder: TABLE_CONSTANTS.DEFAULT_SORT_ORDER
   })
 
-  // Debounced search to avoid excessive API calls
+  // Debounce tìm kiếm để tránh gọi API quá nhiều
   const debouncedSearch = useDebounce(filters.search, 300)
 
-  // Memoized query parameters
+  // Ghi nhớ tham số truy vấn
   const queryParams = useMemo(
     () => ({
       page: currentPage,
@@ -60,15 +60,14 @@ const OrdersTable = () => {
     [currentPage, pageSize, debouncedSearch, filters]
   )
 
-  // Fetch orders with error handling
+  // Lấy danh sách đơn hàng
   const { data } = useAdminOrders(queryParams)
-  console.log('data', data)
 
-  // Update filters with proper state management
+  // Cập nhật bộ lọc với quản lý state phù hợp
   const updateFilters = useCallback(
     (newFilters: Partial<FilterState>) => {
       setFilters((prev) => ({ ...prev, ...newFilters }))
-      // Reset to first page when filters change
+      // Đặt lại về trang đầu khi bộ lọc thay đổi
       if (currentPage !== 1) {
         setCurrentPage(1)
       }
@@ -76,22 +75,22 @@ const OrdersTable = () => {
     [currentPage]
   )
 
-  // Reset pagination when filters change
+  // Đặt lại phân trang khi bộ lọc thay đổi
   useEffect(() => {
     setCurrentPage(1)
   }, [filters.status, filters.paymentMethod, debouncedSearch])
 
-  // Prepare table data
+  // Chuẩn bị dữ liệu bảng
   const orders = data?.orders ?? []
   const totalCount = data?.pagination?.total ?? 0
 
-  // Handle status click
+  // Xử lý khi bấm trạng thái
   const handleStatusClick = useCallback((order: IOrder) => {
     setSelectedOrder(order)
     setStatusDialogOpen(true)
   }, [])
 
-  // Configure table
+  // Cấu hình bảng
   const table = useReactTable({
     data: orders,
     columns,
@@ -110,27 +109,27 @@ const OrdersTable = () => {
     }
   })
 
-  // Get selected row count for bulk operations
+  // Lấy số dòng đã chọn cho thao tác hàng loạt
   const selectedRowCount = Object.keys(rowSelection).length
 
-  // Handle bulk delete
+  // Xử lý xóa hàng loạt
   const handleBulkDelete = useCallback(() => {
     if (selectedRowCount > 0) {
       setBulkDeleteDialogOpen(true)
     }
   }, [selectedRowCount])
 
-  // Handle pagination
+  // Xử lý phân trang
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page)
   }, [])
 
   const handlePageSizeChange = useCallback((size: number) => {
     setPageSize(size)
-    setCurrentPage(1) // Reset to first page
+    setCurrentPage(1) // Đặt lại về trang đầu
   }, [])
 
-  // Calculate pagination info
+  // Tính toán thông tin phân trang
   const pagination = useMemo(
     () => ({
       page: currentPage,
@@ -145,7 +144,7 @@ const OrdersTable = () => {
 
   return (
     <div className='space-y-4'>
-      {/* Toolbar with filters and actions */}
+      {/* Thanh công cụ với bộ lọc và hành động */}
       <DataTableToolbar
         table={table}
         filters={filters}
@@ -154,12 +153,12 @@ const OrdersTable = () => {
         onBulkDelete={handleBulkDelete}
       />
 
-      {/* Main data table */}
+      {/* Bảng dữ liệu chính */}
       <div className='overflow-hidden rounded-xs border'>
         <DataTable table={table} />
       </div>
 
-      {/* Pagination */}
+      {/* Phân trang */}
       <DataTablePagination
         pagination={pagination}
         currentDataLength={orders.length}
@@ -168,7 +167,7 @@ const OrdersTable = () => {
         onPageSizeChange={handlePageSizeChange}
       />
 
-      {/* Bulk delete dialog */}
+      {/* Hộp thoại xóa hàng loạt */}
       {bulkDeleteDialogOpen && (
         <OrdersBulkDeleteDialog
           open={bulkDeleteDialogOpen}
@@ -176,12 +175,12 @@ const OrdersTable = () => {
           selectedOrders={Object.keys(rowSelection)}
           onSuccess={() => {
             setRowSelection({})
-            // Optionally refetch data or handle success
+            // Có thể gọi lại dữ liệu hoặc xử lý thành công tại đây
           }}
         />
       )}
 
-      {/* Status update dialog */}
+      {/* Hộp thoại cập nhật trạng thái */}
       {statusDialogOpen && selectedOrder && (
         <OrderStatusDialog order={selectedOrder} open={statusDialogOpen} onOpenChange={setStatusDialogOpen} />
       )}

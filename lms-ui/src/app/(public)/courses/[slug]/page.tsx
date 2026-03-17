@@ -1,51 +1,51 @@
-import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
-import CoursesService from "@/services/courses";
-import CourseContent from "./components/course-content";
+import { notFound } from 'next/navigation'
+import dynamic from 'next/dynamic'
+import CoursesService from '@/services/courses'
+import CourseContent from './components/course-content'
 
-// Dynamic imports for heavy components
-const CourseHero = dynamic(() => import("./components/course-hero")); // Can be SSR
+// Import động cho các component nặng
+const CourseHero = dynamic(() => import('./components/course-hero')) // Có thể SSR
 
-const RelatedCourses = dynamic(() => import("./components/related-courses")); // Can be SSR
+const RelatedCourses = dynamic(() => import('./components/related-courses')) // Có thể SSR
 
 interface CourseDetailPageProps {
   params: Promise<{
-    slug: string;
-  }>;
+    slug: string
+  }>
 }
 
-// Server-side data fetching function
+// Hàm lấy dữ liệu phía server
 async function fetchCourseData(slug: string) {
   try {
-    const course = await CoursesService.getPublicCourseBySlug(slug);
-    return course;
+    const course = await CoursesService.getPublicCourseBySlug(slug)
+    return course
   } catch {
-    return null;
+    return null
   }
 }
 
 const CourseDetailPage = async ({ params }: CourseDetailPageProps) => {
-  const resolvedParams = await params;
+  const resolvedParams = await params
 
-  // Fetch course data on server side
-  const course = await fetchCourseData(resolvedParams.slug);
+  // Lấy dữ liệu khóa học ở phía server
+  const course = await fetchCourseData(resolvedParams.slug)
 
-  // If course not found, trigger Next.js not-found page
+  // Nếu không tìm thấy khóa học, kích hoạt trang not-found của Next.js
   if (!course) {
-    notFound();
+    notFound()
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Course Hero Section */}
+    <div className='min-h-screen bg-gray-50'>
+      {/* Phần hero của khóa học */}
       <CourseHero course={course} />
 
       <CourseContent course={course} />
 
-      {/* Related Courses */}
+      {/* Khóa học liên quan */}
       <RelatedCourses currentCourseId={course._id} />
     </div>
-  );
-};
+  )
+}
 
-export default CourseDetailPage;
+export default CourseDetailPage

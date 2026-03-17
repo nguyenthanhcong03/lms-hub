@@ -8,7 +8,7 @@ import CategoriesBulkDeleteDialog from './categories-bulk-delete-dialog'
 import { columns } from './categories-columns'
 import DataTableToolbar from './data-table-toolbar'
 
-// Filter state interface for better organization
+// Kiểu trạng thái bộ lọc để tổ chức rõ ràng hơn
 interface FilterState {
   search: string
   status: string[]
@@ -17,16 +17,16 @@ interface FilterState {
 }
 
 const CategoriesTable = () => {
-  // Essential table state
+  // Trạng thái cốt lõi của bảng
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false)
 
-  // Pagination state
+  // Trạng thái phân trang
   const [currentPage, setCurrentPage] = useState(PAGINATION_CONSTANTS.DEFAULT_PAGE)
   const [pageSize, setPageSize] = useState(PAGINATION_CONSTANTS.DEFAULT_PAGE_SIZE)
 
-  // Filter state - grouped for better performance
+  // Trạng thái bộ lọc - gom nhóm để tối ưu hiệu năng
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     status: [],
@@ -34,10 +34,10 @@ const CategoriesTable = () => {
     sortOrder: TABLE_CONSTANTS.DEFAULT_SORT_ORDER
   })
 
-  // Debounce search input
+  // Debounce ô tìm kiếm
   const debouncedSearch = useDebounce(filters.search, TABLE_CONSTANTS.SEARCH_DEBOUNCE_MS)
 
-  // Optimized query parameters
+  // Tối ưu tham số truy vấn
   const queryParams = useMemo(
     () => ({
       page: currentPage,
@@ -52,12 +52,12 @@ const CategoriesTable = () => {
 
   const { data: categoriesData, isLoading } = useCategories(queryParams)
 
-  // Reset to first page when filters change (optimized dependencies)
+  // Trả về trang đầu khi bộ lọc thay đổi (tối ưu dependencies)
   useEffect(() => {
     setCurrentPage(PAGINATION_CONSTANTS.DEFAULT_PAGE)
   }, [debouncedSearch, filters.status, filters.sortBy, filters.sortOrder])
 
-  // Memoized handlers for better performance
+  // Memoized handlers để cải thiện hiệu năng
   const handleSearchChange = useCallback((search: string) => {
     setFilters((prev) => ({ ...prev, search }))
   }, [])
@@ -82,7 +82,7 @@ const CategoriesTable = () => {
 
   const handlePageSizeChange = useCallback((size: number) => {
     setPageSize(size)
-    setCurrentPage(PAGINATION_CONSTANTS.DEFAULT_PAGE) // Reset to first page when page size changes
+    setCurrentPage(PAGINATION_CONSTANTS.DEFAULT_PAGE) // Trả về trang đầu khi thay đổi kích thước trang
   }, [])
 
   const handleBulkDelete = useCallback(() => {
@@ -90,18 +90,18 @@ const CategoriesTable = () => {
   }, [])
 
   const handleBulkDeleteSuccess = useCallback(() => {
-    setRowSelection({}) // Clear selection after successful delete
+    setRowSelection({}) // Xóa vùng chọn sau khi xóa thành công
   }, [])
 
-  // Memoized categories data
+  // Dữ liệu danh mục đã được memo hóa
   const categories = useMemo(() => categoriesData?.categories || [], [categoriesData?.categories])
 
-  // Get selected categories for bulk operations
+  // Lấy danh sách danh mục đã chọn cho thao tác hàng loạt
   const selectedCategories = useMemo(() => {
     return categories.filter((_, index) => rowSelection[index])
   }, [categories, rowSelection])
 
-  // Memoized table configuration
+  // Cấu hình bảng đã được memo hóa
   const table = useReactTable({
     data: categories,
     columns,
@@ -143,7 +143,7 @@ const CategoriesTable = () => {
         />
       )}
 
-      {/* Bulk Delete Dialog */}
+      {/* Hộp thoại xóa hàng loạt */}
       <CategoriesBulkDeleteDialog
         selectedCategories={selectedCategories}
         open={bulkDeleteDialogOpen}

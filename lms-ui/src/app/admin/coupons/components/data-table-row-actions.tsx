@@ -43,10 +43,10 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
   const handleCopyCode = async () => {
     try {
       await navigator.clipboard.writeText(coupon.code)
-      toast.success(`Coupon code "${coupon.code}" copied to clipboard!`)
+      toast.success(`Đã sao chép mã giảm giá "${coupon.code}" vào bộ nhớ tạm!`)
     } catch (error) {
-      console.error('Failed to copy coupon code:', error)
-      toast.error('Failed to copy coupon code')
+      console.error('Không thể sao chép mã giảm giá:', error)
+      toast.error('Không thể sao chép mã giảm giá')
     }
   }
 
@@ -56,19 +56,19 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
         <DropdownMenuTrigger asChild>
           <Button variant='ghost' className='data-[state=open]:bg-muted flex h-8 w-8 p-0'>
             <DotsHorizontalIcon className='h-4 w-4' />
-            <span className='sr-only'>Open menu</span>
+            <span className='sr-only'>Mở menu</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end' className='w-[160px]'>
           <DropdownMenuItem onClick={handleCopyCode}>
-            Copy Code
+            Sao chép mã
             <DropdownMenuShortcut>
               <IconCopy size={16} />
             </DropdownMenuShortcut>
           </DropdownMenuItem>
           {hasPermission(PERMISSIONS.COUPON_UPDATE) && (
             <DropdownMenuItem onClick={handleEditClick}>
-              Edit
+              Chỉnh sửa
               <DropdownMenuShortcut>
                 <IconEdit size={16} />
               </DropdownMenuShortcut>
@@ -79,7 +79,7 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
           )}
           {hasPermission(PERMISSIONS.COUPON_DELETE) && (
             <DropdownMenuItem onClick={handleDeleteClick} className='text-red-500!'>
-              Delete
+              Xóa
               <DropdownMenuShortcut>
                 <IconTrash size={16} />
               </DropdownMenuShortcut>
@@ -88,12 +88,12 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Edit Dialog - Only render when UPDATE permission and dialog is open */}
+      {/* Hộp thoại chỉnh sửa - chỉ hiển thị khi có quyền cập nhật và hộp thoại đang mở */}
       {hasPermission(PERMISSIONS.COUPON_UPDATE) && editDialogOpen && (
         <CouponsActionDialog mode='edit' coupon={coupon} open={editDialogOpen} onOpenChange={setEditDialogOpen} />
       )}
 
-      {/* Delete Dialog - Only render when DELETE permission and dialog is open */}
+      {/* Hộp thoại xóa - chỉ hiển thị khi có quyền xóa và hộp thoại đang mở */}
       {hasPermission(PERMISSIONS.COUPON_DELETE) && deleteDialogOpen && (
         <CouponsDeleteDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} currentRow={coupon} />
       )}

@@ -113,7 +113,7 @@ export class OrderService {
       })
 
       if (!coupon) {
-        throw new AppError('Invalid or expired coupon code', 400)
+        throw new AppError('Mã giảm giá không hợp lệ hoặc đã hết hạn', 400)
       }
 
       // Check if coupon is applicable
@@ -124,7 +124,7 @@ export class OrderService {
         )
 
         if (!hasApplicableCourses) {
-          throw new AppError('Coupon is not applicable to any selected courses', 400)
+          throw new AppError('Coupon is not applicable to any đã chọn courses', 400)
         }
       }
 
@@ -298,7 +298,7 @@ export class OrderService {
    */
   static async getOrderById(orderId: string): Promise<IOrder> {
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      throw new AppError('Invalid order ID', 400)
+      throw new AppError('Order ID không hợp lệ', 400)
     }
 
     const order = await Order.findById(orderId).populate({
@@ -320,7 +320,7 @@ export class OrderService {
     orderId: string
   ): Promise<{ order: IOrder; user: { username: string; email: string } }> {
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      throw new AppError('Invalid order ID', 400)
+      throw new AppError('Order ID không hợp lệ', 400)
     }
 
     const order = await Order.findById(orderId).populate({
@@ -352,7 +352,7 @@ export class OrderService {
     currentUserId: string
   ): Promise<{ order: IOrder; user: { username: string; email: string } }> {
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
-      throw new AppError('Invalid order ID', 400)
+      throw new AppError('Order ID không hợp lệ', 400)
     }
 
     const order = await Order.findById(orderId).populate({
@@ -528,7 +528,7 @@ export class OrderService {
     // Validate all IDs first
     const invalidIds = orderIds.filter((id) => !mongoose.Types.ObjectId.isValid(id))
     if (invalidIds.length > 0) {
-      throw new AppError(`Invalid order IDs: ${invalidIds.join(', ')}`, 400)
+      throw new AppError(`Order ID không hợp lệs: ${invalidIds.join(', ')}`, 400)
     }
 
     // Process deletions one by one to handle user course removal
@@ -553,7 +553,9 @@ export class OrderService {
         await Order.findByIdAndDelete(orderId)
         deletedCount++
       } catch (error) {
-        errors.push(`Failed to delete order ${orderId}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+        errors.push(
+          `Xóa đơn hàng thất bại ${orderId}: ${error instanceof Error ? error.message : 'Lỗi không xác định'}`
+        )
       }
     }
 

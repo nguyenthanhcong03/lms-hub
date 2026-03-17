@@ -1,20 +1,18 @@
-import dynamic from "next/dynamic";
-import HeroSection from "./components/hero-section";
+import dynamic from 'next/dynamic'
+import HeroSection from './components/hero-section'
 
-// Static import for critical above-the-fold content
+// Import tĩnh cho nội dung quan trọng ở vùng đầu trang
 
-const ContactInfoSection = dynamic(
-	() => import("./components/contact-info-section")
-);
+const ContactInfoSection = dynamic(() => import('./components/contact-info-section'))
 
 export default function ContactPage() {
-	return (
-		<>
-			{/* Critical above-the-fold content - loads immediately */}
-			<HeroSection />
+  return (
+    <>
+      {/* Nội dung quan trọng ở vùng đầu trang - tải ngay */}
+      <HeroSection />
 
-			{/* Below-the-fold content - progressive loading with SEO */}
-			<ContactInfoSection />
-		</>
-	);
+      {/* Nội dung phía dưới - tải dần, vẫn thân thiện SEO */}
+      <ContactInfoSection />
+    </>
+  )
 }

@@ -5,7 +5,7 @@ import Loader from '@/components/loader'
 import { useCart } from '@/hooks/use-cart'
 import { ShoppingCart } from 'lucide-react'
 
-// Dynamic imports for cart components (user-specific, interactive)
+// Import động cho các component giỏ hàng (theo người dùng, có tương tác)
 const CartItemComponent = dynamic(() => import('./components/cart-item'), {
   ssr: false
 })
@@ -18,7 +18,7 @@ const EmptyCart = dynamic(() => import('./components/empty-cart'), {
   ssr: false
 })
 
-// Main cart page - Arrow function
+// Trang giỏ hàng
 const CartPage = () => {
   const { data: cart, isLoading } = useCart()
 
@@ -39,20 +39,20 @@ const CartPage = () => {
   return (
     <div className='container mx-auto px-4 py-6 sm:px-6 sm:py-8'>
       <div className='mx-auto max-w-6xl'>
-        {/* Page Header */}
+        {/* Phần đầu trang */}
         <div className='mb-6 sm:mb-8'>
           <h1 className='flex items-center gap-2 text-2xl font-bold sm:gap-3 sm:text-3xl'>
             <ShoppingCart className='h-6 w-6 sm:h-8 sm:w-8' />
-            Giỏ Hàng
+            Giỏ hàng
           </h1>
           <p className='text-muted-foreground mt-1 text-sm sm:mt-2 sm:text-base'>
             Xem lại và quản lý các khóa học đã chọn ({cart.items.length} {cart.items.length === 1 ? 'mục' : 'mục'})
           </p>
         </div>
 
-        {/* Main Content */}
+        {/* Nội dung chính */}
         <div className='grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-3'>
-          {/* Cart Items */}
+          {/* Danh sách sản phẩm trong giỏ */}
           <div className='space-y-3 sm:space-y-4 lg:col-span-2'>
             <div className='overflow-hidden rounded-xs border border-gray-200 bg-white shadow-md sm:shadow-lg'>
               <div className='border-b border-gray-100 p-4 sm:p-6'>
@@ -70,7 +70,7 @@ const CartPage = () => {
             </div>
           </div>
 
-          {/* Cart Summary */}
+          {/* Tóm tắt giỏ hàng */}
           <div className='lg:col-span-1'>
             <CartSummary cart={cart} />
           </div>

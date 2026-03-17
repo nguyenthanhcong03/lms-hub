@@ -3,20 +3,20 @@ import { SearchService } from '../services/search.service'
 import { sendSuccess } from '../utils/success'
 
 /**
- * Search Controller
- * Handles search requests for courses and blogs
+ * Controller tìm kiếm
+ * Xử lý các yêu cầu tìm kiếm cho khóa học và bài viết
  */
 export class SearchController {
   /**
-   * Search for courses and blogs
+   * Tìm kiếm khóa học và bài viết
    * GET /api/v1/search?q=query
    */
   static async search(req: Request, res: Response): Promise<void> {
     const { q } = req.query
 
-    // Perform search
+    // Thực hiện tìm kiếm
     const results = await SearchService.search(q as string)
 
-    sendSuccess.ok(res, 'Search completed successfully', results)
+    sendSuccess.ok(res, 'Tìm kiếm hoàn tất thành công', results)
   }
 }

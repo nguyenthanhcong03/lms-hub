@@ -30,7 +30,7 @@ export const validate = (schema: z.ZodSchema) => {
           return `${path}: ${err.message}`
         })
 
-        throw new ValidationError(`Validation failed: ${errorMessages.join(', ')}`, ErrorCodes.INVALID_INPUT_FORMAT)
+        throw new ValidationError(`Xác thực dữ liệu thất bại: ${errorMessages.join(', ')}`, ErrorCodes.INVALID_INPUT_FORMAT)
       }
 
       // Re-throw other errors
@@ -53,7 +53,7 @@ export const validateBody = (schema: z.ZodSchema) => {
           return `${path}: ${err.message}`
         })
 
-        throw new ValidationError(`Validation failed: ${errorMessages.join(', ')}`, ErrorCodes.INVALID_INPUT_FORMAT)
+        throw new ValidationError(`Xác thực dữ liệu thất bại: ${errorMessages.join(', ')}`, ErrorCodes.INVALID_INPUT_FORMAT)
       }
 
       throw error
@@ -77,7 +77,7 @@ export const validateQuery = (schema: z.ZodSchema) => {
           return `${path}: ${err.message}`
         })
 
-        throw new ValidationError(`Validation failed: ${errorMessages.join(', ')}`, ErrorCodes.INVALID_INPUT_FORMAT)
+        throw new ValidationError(`Xác thực dữ liệu thất bại: ${errorMessages.join(', ')}`, ErrorCodes.INVALID_INPUT_FORMAT)
       }
 
       throw error
@@ -99,7 +99,7 @@ export const validateParams = (schema: z.ZodSchema) => {
           return `${path}: ${err.message}`
         })
 
-        throw new ValidationError(`Validation failed: ${errorMessages.join(', ')}`, ErrorCodes.INVALID_INPUT_FORMAT)
+        throw new ValidationError(`Xác thực dữ liệu thất bại: ${errorMessages.join(', ')}`, ErrorCodes.INVALID_INPUT_FORMAT)
       }
 
       throw error
@@ -124,11 +124,11 @@ export const validateRegistration = (req: Request, res: Response, next: NextFunc
   const { username, email, password } = req.body
 
   if (!username || !email || !password) {
-    throw new ValidationError('Username, email, and password are required', ErrorCodes.REQUIRED_FIELD_MISSING)
+    throw new ValidationError('Tên người dùng, email và mật khẩu là bắt buộc', ErrorCodes.REQUIRED_FIELD_MISSING)
   }
 
   if (!validateEmail(email)) {
-    throw new ValidationError('Please provide a valid email address', ErrorCodes.INVALID_EMAIL_FORMAT)
+    throw new ValidationError('Vui lòng cung cấp địa chỉ email hợp lệ', ErrorCodes.INVALID_EMAIL_FORMAT)
   }
 
   if (!validatePassword(password)) {
@@ -139,7 +139,7 @@ export const validateRegistration = (req: Request, res: Response, next: NextFunc
   }
 
   if (username.length < 3 || username.length > 50) {
-    throw new ValidationError('Username must be between 3 and 50 characters', ErrorCodes.INVALID_INPUT_FORMAT)
+    throw new ValidationError('Tên người dùng phải có từ 3 đến 50 ký tự', ErrorCodes.INVALID_INPUT_FORMAT)
   }
 
   next()
@@ -149,11 +149,11 @@ export const validateLogin = (req: Request, res: Response, next: NextFunction): 
   const { email, password } = req.body
 
   if (!email || !password) {
-    throw new ValidationError('Email and password are required', ErrorCodes.REQUIRED_FIELD_MISSING)
+    throw new ValidationError('Email và mật khẩu là bắt buộc', ErrorCodes.REQUIRED_FIELD_MISSING)
   }
 
   if (!validateEmail(email)) {
-    throw new ValidationError('Please provide a valid email address', ErrorCodes.INVALID_EMAIL_FORMAT)
+    throw new ValidationError('Vui lòng cung cấp địa chỉ email hợp lệ', ErrorCodes.INVALID_EMAIL_FORMAT)
   }
 
   next()

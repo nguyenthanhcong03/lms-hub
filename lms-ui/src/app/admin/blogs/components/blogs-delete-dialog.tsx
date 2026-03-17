@@ -5,7 +5,7 @@ import { useDeleteBlog } from '@/hooks/use-blogs'
 import { IBlog } from '@/types/blog'
 
 interface BlogsDeleteDialogProps {
-  currentRow: IBlog // Alternative prop name for compatibility
+  currentRow: IBlog // Tên prop thay thế để tương thích
   open: boolean
   onOpenChange: (open: boolean) => void
 }

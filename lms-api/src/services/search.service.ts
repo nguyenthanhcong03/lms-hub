@@ -8,19 +8,19 @@ export interface SearchResult {
 }
 
 /**
- * Search Service
- * Handles searching across courses and blogs
+ * Dịch vụ tìm kiếm
+ * Xử lý tìm kiếm trên khóa học và bài viết
  */
 export class SearchService {
   /**
-   * Search for courses and blogs based on query string
-   * Returns 5 latest courses and 5 latest blogs matching the query
+   * Tìm kiếm khóa học và bài viết dựa trên chuỗi truy vấn
+   * Trả về 5 khóa học mới nhất và 5 bài viết mới nhất khớp với truy vấn
    */
   static async search(query: string): Promise<SearchResult> {
-    // Build search regex for case-insensitive search
+    // Tạo regex tìm kiếm không phân biệt hoa thường
     const searchRegex = new RegExp(query, 'i')
 
-    // Search courses
+    // Tìm kiếm khóa học
     const courses = await Course.aggregate([
       {
         $match: {
@@ -45,7 +45,7 @@ export class SearchService {
       { $limit: 5 }
     ])
 
-    // Search blogs
+    // Tìm kiếm bài viết
     const blogs = await Blog.aggregate([
       {
         $match: {

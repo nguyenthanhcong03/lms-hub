@@ -1,148 +1,148 @@
-"use client";
+'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { DEFAULT_AVATAR } from "@/constants";
-import { useCourseReviewsWithLoadMore, useDeleteReview } from "@/hooks/use-reviews";
-import { useAuthStore } from "@/stores/auth-store";
-import { formatRelativeTime } from "@/utils/format";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { Check, Edit, Filter, MoreHorizontal, Star, Trash2 } from "lucide-react";
-import { useState } from "react";
-import WriteReviewDialog from "./write-review-dialog";
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { DEFAULT_AVATAR } from '@/constants'
+import { useCourseReviewsWithLoadMore, useDeleteReview } from '@/hooks/use-reviews'
+import { useAuthStore } from '@/stores/auth-store'
+import { formatRelativeTime } from '@/utils/format'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { Check, Edit, Filter, MoreHorizontal, Star, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import WriteReviewDialog from './write-review-dialog'
 
-dayjs.extend(relativeTime);
+dayjs.extend(relativeTime)
 
 interface Review {
-  _id: string;
-  userId: string;
+  _id: string
+  userId: string
   user: {
-    _id: string;
-    username: string;
-    email: string;
-    avatar?: string;
-  };
-  star: number;
-  createdAt: string;
-  content: string;
+    _id: string
+    username: string
+    email: string
+    avatar?: string
+  }
+  star: number
+  createdAt: string
+  content: string
 }
 
 interface CourseReviewsProps {
-  courseTitle?: string;
-  courseId: string;
-  fallbackAverageRating?: number;
-  fallbackTotalReviews?: number;
+  courseTitle?: string
+  courseId: string
+  fallbackAverageRating?: number
+  fallbackTotalReviews?: number
 }
 
 const CourseReviews = ({
   courseTitle,
   courseId,
   fallbackAverageRating = 0,
-  fallbackTotalReviews = 0,
+  fallbackTotalReviews = 0
 }: CourseReviewsProps) => {
-  const [selectedRatingFilter, setSelectedRatingFilter] = useState<number | null>(null);
-  const [editingReview, setEditingReview] = useState<Review | null>(null);
-  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [selectedRatingFilter, setSelectedRatingFilter] = useState<number | null>(null)
+  const [editingReview, setEditingReview] = useState<Review | null>(null)
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null)
 
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useAuthStore((state) => state.user)
 
-  const deleteReviewMutation = useDeleteReview();
+  const deleteReviewMutation = useDeleteReview()
 
   const { reviews, averageRating, total, ratingDistribution, isLoading, isLoadingMore, hasNextPage, loadMore, reset } =
     useCourseReviewsWithLoadMore(courseId, {
       limit: 5,
-      minStar: selectedRatingFilter || undefined,
-    });
+      minStar: selectedRatingFilter || undefined
+    })
 
   const ratingDistributionArray = [5, 4, 3, 2, 1].map((stars) => {
-    const count = parseInt(ratingDistribution[stars.toString()]?.toString() || "0");
-    const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
-    return { stars, count, percentage };
-  });
+    const count = parseInt(ratingDistribution[stars.toString()]?.toString() || '0')
+    const percentage = total > 0 ? Math.round((count / total) * 100) : 0
+    return { stars, count, percentage }
+  })
 
   const formatReviewCount = (count: number) => {
-    if (count >= 1000) return `${(count / 1000).toFixed(1)}k`;
-    return count.toString();
-  };
+    if (count >= 1000) return `${(count / 1000).toFixed(1)}k`
+    return count.toString()
+  }
 
-  const isOwner = (review: Review) => currentUser?._id === review.userId;
+  const isOwner = (review: Review) => currentUser?._id === review.userId
 
   const handleEditReview = (review: Review) => {
-    setEditingReview(review);
-    setOpenDropdownId(null);
-  };
+    setEditingReview(review)
+    setOpenDropdownId(null)
+  }
 
   const handleDeleteReview = async (reviewId: string) => {
-    setOpenDropdownId(null);
-    if (window.confirm("Bạn có chắc muốn xoá đánh giá này không?")) {
-      await deleteReviewMutation.mutateAsync({ reviewId, courseId });
+    setOpenDropdownId(null)
+    if (window.confirm('Bạn có chắc muốn xoá đánh giá này không?')) {
+      await deleteReviewMutation.mutateAsync({ reviewId, courseId })
     }
-  };
+  }
 
   const handleFilterChange = (rating: number | null) => {
-    setSelectedRatingFilter(rating);
-    setOpenDropdownId(null);
-    reset();
-  };
+    setSelectedRatingFilter(rating)
+    setOpenDropdownId(null)
+    reset()
+  }
 
   const getFilterLabel = () => {
-    if (selectedRatingFilter === null) return "Lọc đánh giá";
-    return `${selectedRatingFilter} sao trở lên`;
-  };
+    if (selectedRatingFilter === null) return 'Lọc đánh giá'
+    return `${selectedRatingFilter} sao trở lên`
+  }
 
-  const isFilterActive = selectedRatingFilter !== null;
+  const isFilterActive = selectedRatingFilter !== null
 
   if (isLoading) {
     return (
-      <div className="bg-background rounded-xs shadow-sm border p-6">
-        <div className="animate-pulse space-y-4">
+      <div className='bg-background rounded-xs border p-6 shadow-sm'>
+        <div className='animate-pulse space-y-4'>
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="flex space-x-4">
-              <div className="w-12 h-12 bg-muted rounded-full"></div>
-              <div className="flex-1 space-y-2">
-                <div className="h-4 bg-muted rounded w-1/3"></div>
-                <div className="h-3 bg-muted rounded"></div>
+            <div key={i} className='flex space-x-4'>
+              <div className='bg-muted h-12 w-12 rounded-full'></div>
+              <div className='flex-1 space-y-2'>
+                <div className='bg-muted h-4 w-1/3 rounded'></div>
+                <div className='bg-muted h-3 rounded'></div>
               </div>
             </div>
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="bg-background rounded-xs shadow-sm border overflow-hidden">
-      {/* Header */}
-      <div className="p-6 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h3 className="text-xl font-semibold">Đánh giá học viên</h3>
+    <div className='bg-background overflow-hidden rounded-xs border shadow-sm'>
+      {/* Tiêu đề */}
+      <div className='flex flex-col gap-4 border-b p-6 sm:flex-row sm:items-center sm:justify-between'>
+        <h3 className='text-xl font-semibold'>Đánh giá học viên</h3>
 
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           {currentUser && (
             <WriteReviewDialog courseTitle={courseTitle} courseId={courseId}>
-              <Button size="sm">Viết đánh giá</Button>
+              <Button size='sm'>Viết đánh giá</Button>
             </WriteReviewDialog>
           )}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant={isFilterActive ? "default" : "outline"} size="sm">
-                <Filter className="h-4 w-4 mr-2" />
+              <Button variant={isFilterActive ? 'default' : 'outline'} size='sm'>
+                <Filter className='mr-2 h-4 w-4' />
                 {getFilterLabel()}
               </Button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => handleFilterChange(null)} className="flex justify-between">
+            <DropdownMenuContent align='end' className='w-48'>
+              <DropdownMenuItem onClick={() => handleFilterChange(null)} className='flex justify-between'>
                 Tất cả đánh giá
-                {selectedRatingFilter === null && <Check className="w-4 h-4" />}
+                {selectedRatingFilter === null && <Check className='h-4 w-4' />}
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
@@ -151,10 +151,10 @@ const CourseReviews = ({
                 <DropdownMenuItem
                   key={rating}
                   onClick={() => handleFilterChange(rating)}
-                  className="flex justify-between"
+                  className='flex justify-between'
                 >
                   <span>{rating} sao trở lên</span>
-                  {selectedRatingFilter === rating && <Check className="w-4 h-4" />}
+                  {selectedRatingFilter === rating && <Check className='h-4 w-4' />}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -162,77 +162,77 @@ const CourseReviews = ({
         </div>
       </div>
 
-      {/* Rating Overview */}
-      <div className="p-6 border-b grid sm:grid-cols-2 gap-8">
-        <div className="text-center">
-          <div className="text-5xl font-bold mb-2">{(averageRating || fallbackAverageRating).toFixed(1)}</div>
+      {/* Tổng quan đánh giá */}
+      <div className='grid gap-8 border-b p-6 sm:grid-cols-2'>
+        <div className='text-center'>
+          <div className='mb-2 text-5xl font-bold'>{(averageRating || fallbackAverageRating).toFixed(1)}</div>
 
-          <div className="flex justify-center mb-2">
+          <div className='mb-2 flex justify-center'>
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                className={`w-6 h-6 ${
+                className={`h-6 w-6 ${
                   i < Math.floor(averageRating || fallbackAverageRating)
-                    ? "text-yellow-500 fill-yellow-500"
-                    : "text-muted"
+                    ? 'fill-yellow-500 text-yellow-500'
+                    : 'text-muted'
                 }`}
               />
             ))}
           </div>
 
-          <p className="text-sm text-muted-foreground">{formatReviewCount(total || fallbackTotalReviews)} đánh giá</p>
+          <p className='text-muted-foreground text-sm'>{formatReviewCount(total || fallbackTotalReviews)} đánh giá</p>
         </div>
 
-        <div className="space-y-2">
+        <div className='space-y-2'>
           {ratingDistributionArray.map((item) => (
-            <div key={item.stars} className="flex items-center gap-3">
-              <span className="w-10 text-sm">{item.stars}⭐</span>
+            <div key={item.stars} className='flex items-center gap-3'>
+              <span className='w-10 text-sm'>{item.stars}⭐</span>
 
-              <div className="flex-1 bg-muted rounded-full h-2">
-                <div className="bg-primary h-2 rounded-full" style={{ width: `${item.percentage}%` }} />
+              <div className='bg-muted h-2 flex-1 rounded-full'>
+                <div className='bg-primary h-2 rounded-full' style={{ width: `${item.percentage}%` }} />
               </div>
 
-              <span className="w-10 text-sm text-right">{item.percentage}%</span>
+              <span className='w-10 text-right text-sm'>{item.percentage}%</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Reviews */}
+      {/* Danh sách đánh giá */}
       {reviews.length === 0 ? (
-        <div className="p-12 text-center">
-          <Star className="w-10 h-10 mx-auto text-muted mb-4" />
-          <h4 className="font-medium mb-2">Chưa có đánh giá</h4>
-          <p className="text-sm text-muted-foreground mb-6">Hãy là người đầu tiên đánh giá khóa học này</p>
+        <div className='p-12 text-center'>
+          <Star className='text-muted mx-auto mb-4 h-10 w-10' />
+          <h4 className='mb-2 font-medium'>Chưa có đánh giá</h4>
+          <p className='text-muted-foreground mb-6 text-sm'>Hãy là người đầu tiên đánh giá khóa học này</p>
 
           {currentUser ? (
             <WriteReviewDialog courseTitle={courseTitle} courseId={courseId}>
               <Button>Viết đánh giá đầu tiên</Button>
             </WriteReviewDialog>
           ) : (
-            <p className="text-sm text-muted-foreground">Đăng nhập để viết đánh giá</p>
+            <p className='text-muted-foreground text-sm'>Đăng nhập để viết đánh giá</p>
           )}
         </div>
       ) : (
-        <div className="divide-y">
+        <div className='divide-y'>
           {reviews.map((review) => (
-            <div key={review._id} className="p-6 flex gap-4">
+            <div key={review._id} className='flex gap-4 p-6'>
               <Avatar>
                 <AvatarImage src={review?.user?.avatar || DEFAULT_AVATAR} />
                 <AvatarFallback>{review?.user?.username.slice(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
 
-              <div className="flex-1">
-                <div className="flex justify-between mb-1">
+              <div className='flex-1'>
+                <div className='mb-1 flex justify-between'>
                   <div>
-                    <h5 className="font-medium">{review.user.username}</h5>
+                    <h5 className='font-medium'>{review.user.username}</h5>
 
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <div className="flex">
+                    <div className='text-muted-foreground flex items-center gap-2 text-sm'>
+                      <div className='flex'>
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`w-4 h-4 ${i < review.star ? "text-yellow-500 fill-yellow-500" : "text-muted"}`}
+                            className={`h-4 w-4 ${i < review.star ? 'fill-yellow-500 text-yellow-500' : 'text-muted'}`}
                           />
                         ))}
                       </div>
@@ -247,19 +247,19 @@ const CourseReviews = ({
                       onOpenChange={(o) => setOpenDropdownId(o ? review._id : null)}
                     >
                       <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="ghost">
-                          <MoreHorizontal className="w-4 h-4" />
+                        <Button size='icon' variant='ghost'>
+                          <MoreHorizontal className='h-4 w-4' />
                         </Button>
                       </DropdownMenuTrigger>
 
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align='end'>
                         <DropdownMenuItem onClick={() => handleEditReview(review)}>
-                          <Edit className="w-4 h-4 mr-2" />
+                          <Edit className='mr-2 h-4 w-4' />
                           Chỉnh sửa
                         </DropdownMenuItem>
 
-                        <DropdownMenuItem onClick={() => handleDeleteReview(review._id)} className="text-red-600">
-                          <Trash2 className="w-4 h-4 mr-2" />
+                        <DropdownMenuItem onClick={() => handleDeleteReview(review._id)} className='text-red-600'>
+                          <Trash2 className='mr-2 h-4 w-4' />
                           Xoá
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -267,7 +267,7 @@ const CourseReviews = ({
                   )}
                 </div>
 
-                <p className="text-sm leading-relaxed">{review.content}</p>
+                <p className='text-sm leading-relaxed'>{review.content}</p>
               </div>
             </div>
           ))}
@@ -275,9 +275,9 @@ const CourseReviews = ({
       )}
 
       {hasNextPage && (
-        <div className="p-6 text-center border-t">
-          <Button variant="outline" onClick={loadMore} disabled={isLoadingMore}>
-            {isLoadingMore ? "Đang tải..." : "Xem thêm đánh giá"}
+        <div className='border-t p-6 text-center'>
+          <Button variant='outline' onClick={loadMore} disabled={isLoadingMore}>
+            {isLoadingMore ? 'Đang tải...' : 'Xem thêm đánh giá'}
           </Button>
         </div>
       )}
@@ -290,13 +290,13 @@ const CourseReviews = ({
           editMode={{
             reviewId: editingReview._id,
             initialStar: editingReview.star,
-            initialContent: editingReview.content,
+            initialContent: editingReview.content
           }}
           onClose={() => setEditingReview(null)}
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CourseReviews;
+export default CourseReviews

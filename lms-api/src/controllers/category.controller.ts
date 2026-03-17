@@ -21,7 +21,7 @@ export class CategoryController {
     const categoryData: CreateCategoryInput = req.body
     const category = await CategoryService.createCategory(categoryData)
 
-    sendSuccess.created(res, 'Category created successfully', { category })
+    sendSuccess.created(res, 'Category được tạo thành công', { category })
   }
 
   /**
@@ -31,7 +31,7 @@ export class CategoryController {
     const query: Partial<GetCategoriesQuery> = req.query
     const result = await CategoryService.getCategories(query)
 
-    sendSuccess.ok(res, 'Categories fetched successfully', result)
+    sendSuccess.ok(res, 'Categories được tải thành công', result)
   }
 
   /**
@@ -40,7 +40,7 @@ export class CategoryController {
   static async getAllCategories(req: Request, res: Response): Promise<void> {
     const categories = await CategoryService.getAllCategories()
 
-    sendSuccess.ok(res, 'Categories fetched successfully', { categories })
+    sendSuccess.ok(res, 'Categories được tải thành công', { categories })
   }
 
   /**
@@ -50,7 +50,7 @@ export class CategoryController {
     const { categoryId } = req.params
     const category = await CategoryService.getCategoryById(categoryId)
 
-    sendSuccess.ok(res, 'Category fetched successfully', { category })
+    sendSuccess.ok(res, 'Category được tải thành công', { category })
   }
 
   /**
@@ -61,7 +61,7 @@ export class CategoryController {
     const updateData: UpdateCategoryInput = req.body
     const category = await CategoryService.updateCategory(categoryId, updateData)
 
-    sendSuccess.ok(res, 'Category updated successfully', { category })
+    sendSuccess.ok(res, 'Category được cập nhật thành công', { category })
   }
 
   /**
@@ -71,7 +71,7 @@ export class CategoryController {
     const { categoryId } = req.params
     await CategoryService.deleteCategory(categoryId)
 
-    sendSuccess.ok(res, 'Category deleted successfully')
+    sendSuccess.ok(res, 'Category được xóa thành công')
   }
 
   /**
@@ -81,6 +81,6 @@ export class CategoryController {
     const bulkDeleteData: BulkDeleteCategoriesInput = req.body
     const result = await CategoryService.bulkDeleteCategories(bulkDeleteData)
 
-    sendSuccess.ok(res, 'Categories deleted successfully', result)
+    sendSuccess.ok(res, 'Categories được xóa thành công', result)
   }
 }

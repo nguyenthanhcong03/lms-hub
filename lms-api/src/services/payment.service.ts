@@ -77,7 +77,7 @@ export class PaymentService {
 
     return {
       success: true,
-      message: 'Order updated successfully and courses enrolled',
+      message: 'Order được cập nhật thành công and courses enrolled',
       order: {
         code: updatedOrder.code,
         status: updatedOrder.status,

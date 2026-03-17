@@ -7,34 +7,34 @@ import { AuthenticationError, ErrorCodes } from '../utils/errors'
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    // Get token from Authorization header
+    // Lấy token từ header Authorization
     const authHeader = req.headers.authorization
 
     const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null
 
     if (!token) {
-      throw new AuthenticationError('Access token is required', ErrorCodes.TOKEN_INVALID)
+      throw new AuthenticationError('Access token là bắt buộc', ErrorCodes.TOKEN_INVALID)
     }
 
-    // Verify token
+    // Xác minh token
     const decoded = verifyToken(token) as { userId: string }
 
-    // Check if user exists and is active
+    // Kiểm tra người dùng có tồn tại và đang hoạt động không
     const user = await User.findById(decoded.userId).select('-password')
 
     if (!user) {
-      throw new AuthenticationError('Invalid token - user not found', ErrorCodes.USER_NOT_FOUND)
+      throw new AuthenticationError('Token không hợp lệ - không tìm thấy người dùng', ErrorCodes.USER_NOT_FOUND)
     }
 
     if (user.status === UserStatus.INACTIVE) {
-      throw new AuthenticationError('Account is not active', ErrorCodes.ACCOUNT_INACTIVE)
+      throw new AuthenticationError('Tài khoản chưa được kích hoạt', ErrorCodes.ACCOUNT_INACTIVE)
     }
 
     if (user.status === UserStatus.BANNED) {
-      throw new AuthenticationError('Account is banned', ErrorCodes.ACCOUNT_BANNED)
+      throw new AuthenticationError('Tài khoản đã bị cấm', ErrorCodes.ACCOUNT_BANNED)
     }
 
-    // Attach user info to request
+    // Gắn thông tin người dùng vào request
     req.user = {
       userId: user._id.toString(),
       roles: user.roles.map((role) => role.toString())
@@ -42,11 +42,11 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     next()
   } catch (error) {
-    // If it's already one of our custom errors, pass it to the error handler
+    // Nếu đây đã là lỗi tùy chỉnh của hệ thống thì chuyển cho middleware xử lý lỗi
     if (error instanceof AuthenticationError) {
       return next(error)
     }
 
-    next(new AuthenticationError('Invalid token', ErrorCodes.TOKEN_INVALID))
+    next(new AuthenticationError('Token không hợp lệ', ErrorCodes.TOKEN_INVALID))
   }
 }

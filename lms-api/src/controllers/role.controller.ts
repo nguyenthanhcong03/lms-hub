@@ -18,13 +18,13 @@ export class RoleController {
   static async getRoles(req: Request, res: Response): Promise<void> {
     const roles = await RoleController.roleService.getAllRoles()
 
-    sendSuccess.ok(res, 'Roles retrieved successfully', roles)
+    sendSuccess.ok(res, 'Roles được lấy thành công', roles)
   }
 
   static async getPublicRoles(req: Request, res: Response): Promise<void> {
     const roles = await RoleController.roleService.getPublicRoles()
 
-    sendSuccess.ok(res, 'Public roles retrieved successfully', roles)
+    sendSuccess.ok(res, 'Public roles được lấy thành công', roles)
   }
 
   /**
@@ -35,7 +35,7 @@ export class RoleController {
 
     const role = await RoleController.roleService.getRoleById(roleId)
 
-    sendSuccess.ok(res, 'Role retrieved successfully', role)
+    sendSuccess.ok(res, 'Role được lấy thành công', role)
   }
 
   /**
@@ -49,7 +49,7 @@ export class RoleController {
       permissions
     })
 
-    sendSuccess.created(res, 'Role created successfully', role)
+    sendSuccess.created(res, 'Role được tạo thành công', role)
   }
 
   /**
@@ -61,7 +61,7 @@ export class RoleController {
 
     const role = await RoleController.roleService.updateRole(roleId, updateData)
 
-    sendSuccess.ok(res, 'Role updated successfully', role)
+    sendSuccess.ok(res, 'Role được cập nhật thành công', role)
   }
 
   /**
@@ -72,7 +72,7 @@ export class RoleController {
 
     await RoleController.roleService.deleteRole(roleId)
 
-    sendSuccess.ok(res, 'Role deleted successfully')
+    sendSuccess.ok(res, 'Role được xóa thành công')
   }
 
   /**
@@ -86,12 +86,12 @@ export class RoleController {
 
     if (!canViewAnyUser && req.user?.userId !== userId) {
       res.status(403)
-      return sendSuccess.ok(res, 'Access denied: You can only view your own permissions', [])
+      return sendSuccess.ok(res, 'Từ chối truy cập: Bạn chỉ có thể xem quyền của chính mình', [])
     }
 
     const permissions = await RoleController.roleService.getUserPermissions(userId)
 
-    sendSuccess.ok(res, 'User permissions retrieved successfully', { permissions })
+    sendSuccess.ok(res, 'User permissions được lấy thành công', { permissions })
   }
 
   /**
@@ -102,6 +102,6 @@ export class RoleController {
 
     const permissions = await RoleController.roleService.getAllPermissions(roleId)
 
-    sendSuccess.ok(res, 'Role permissions retrieved successfully', { permissions })
+    sendSuccess.ok(res, 'Role permissions được lấy thành công', { permissions })
   }
 }

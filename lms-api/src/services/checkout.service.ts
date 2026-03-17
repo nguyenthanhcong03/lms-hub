@@ -42,11 +42,11 @@ export class CheckoutService {
     const { cart, isValid, errors } = await CartService.validateCart(userId)
 
     if (!isValid) {
-      throw new AppError(`Cart validation failed: ${errors.join(', ')}`, 400)
+      throw new AppError(`Xác thực giỏ hàng thất bại: ${errors.join(', ')}`, 400)
     }
 
     if (cart.items.length === 0) {
-      throw new AppError('Cart is empty', 400)
+      throw new AppError('Giỏ hàng đang trống', 400)
     }
 
     // Calculate subtotal
@@ -65,7 +65,7 @@ export class CheckoutService {
       })
 
       if (!coupon) {
-        throw new AppError('Invalid or expired coupon code', 400)
+        throw new AppError('Mã giảm giá không hợp lệ hoặc đã hết hạn', 400)
       }
 
       // Check if coupon is applicable to cart items
@@ -75,7 +75,7 @@ export class CheckoutService {
         const hasApplicableCourses = coupon.courseIds.some((courseId) => cartCourseIds.includes(courseId.toString()))
 
         if (!hasApplicableCourses) {
-          throw new AppError('Coupon is not applicable to any courses in your cart', 400)
+          throw new AppError('Mã giảm giá không áp dụng cho khóa học nào trong giỏ hàng của bạn', 400)
         }
       }
 
@@ -120,7 +120,7 @@ export class CheckoutService {
     const cart = await CartService.getCart(userId)
 
     if (cart.items.length === 0) {
-      throw new AppError('Cart is empty', 400)
+      throw new AppError('Giỏ hàng đang trống', 400)
     }
 
     // Extract course IDs from cart
@@ -160,7 +160,7 @@ export class CheckoutService {
     } catch (error) {
       return {
         isValid: false,
-        errors: [error instanceof AppError ? error.message : 'Checkout validation failed']
+        errors: [error instanceof AppError ? error.message : 'Xác thực thanh toán thất bại']
       }
     }
   }

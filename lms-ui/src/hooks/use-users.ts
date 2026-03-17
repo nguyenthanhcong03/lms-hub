@@ -1,93 +1,93 @@
-import UsersService from "@/services/users";
-import type { UpdateUserRequest, UsersFilterParams } from "@/types/user";
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import UsersService from '@/services/users'
+import type { UpdateUserRequest, UsersFilterParams } from '@/types/user'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
-// Query keys for users
+// Khóa truy vấn cho users
 export const userKeys = {
-  all: ["users"] as const,
-  lists: () => [...userKeys.all, "list"] as const,
+  all: ['users'] as const,
+  lists: () => [...userKeys.all, 'list'] as const,
   list: (filters: UsersFilterParams) => [...userKeys.lists(), filters] as const,
-  details: () => [...userKeys.all, "detail"] as const,
-  detail: (id: string) => [...userKeys.details(), id] as const,
-};
+  details: () => [...userKeys.all, 'detail'] as const,
+  detail: (id: string) => [...userKeys.details(), id] as const
+}
 
-// Default empty params object for stable reference
-const DEFAULT_PARAMS: UsersFilterParams = {};
+// Đối tượng params rỗng mặc định để giữ tham chiếu ổn định
+const DEFAULT_PARAMS: UsersFilterParams = {}
 
-// Hook to get all users with optional filtering
+// Hook để get all users with optional filtering
 export function useUsers(params?: UsersFilterParams) {
-  const normalizedParams = params || DEFAULT_PARAMS;
+  const normalizedParams = params || DEFAULT_PARAMS
 
   return useQuery({
     queryKey: userKeys.list(normalizedParams),
     queryFn: () => UsersService.getUsers(normalizedParams),
-    placeholderData: keepPreviousData,
-  });
+    placeholderData: keepPreviousData
+  })
 }
 
-// Hook to get a single user by ID
+// Hook để get a single user by ID
 export function useUser(id: string) {
   return useQuery({
     queryKey: userKeys.detail(id),
     queryFn: () => UsersService.getUser(id),
-    enabled: !!id,
-  });
+    enabled: !!id
+  })
 }
 
-// Note: User creation is handled by registration/external auth
-// This functionality is intentionally removed from admin panel
+// Lưu ý: Tạo người dùng do đăng ký/xác thực ngoài xử lý
+// Chức năng này đã được chủ đích loại bỏ khỏi admin panel
 
-// Hook to update a user
+// Hook để update a user
 export function useUpdateUser() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (userData: UpdateUserRequest) => UsersService.updateUser(userData),
     onSuccess: (updatedUser) => {
-      // Update the user in the cache
-      queryClient.setQueryData(userKeys.detail(updatedUser._id), updatedUser);
-      // Invalidate users list to ensure consistency
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      // Cập nhật người dùng trong cache
+      queryClient.setQueryData(userKeys.detail(updatedUser._id), updatedUser)
+      // Làm mới danh sách người dùng để đảm bảo nhất quán
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() })
     },
     onError: (error) => {
-      toast.error(error?.message || "Failed to update user");
-    },
-  });
+      toast.error(error?.message || 'Không cập nhật được người dùng')
+    }
+  })
 }
 
-// Hook to delete a user
+// Hook để delete a user
 export function useDeleteUser() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (id: string) => UsersService.deleteUser(id),
     onSuccess: (_, deletedUserId) => {
-      // Remove user from cache
+      // Xóa người dùng khỏi cache
       queryClient.removeQueries({
-        queryKey: userKeys.detail(deletedUserId),
-      });
-      // Invalidate users list
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-    },
-  });
+        queryKey: userKeys.detail(deletedUserId)
+      })
+      // Làm mới danh sách người dùng
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() })
+    }
+  })
 }
 
-// Hook to bulk delete users
+// Hook để bulk delete users
 export function useBulkDeleteUsers() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (userIds: string[]) => UsersService.bulkDeleteUsers(userIds),
     onSuccess: (_, deletedUserIds) => {
-      // Remove all deleted users from cache
+      // Xóa toàn bộ người dùng đã xóa khỏi cache
       deletedUserIds.forEach((userId) => {
         queryClient.removeQueries({
-          queryKey: userKeys.detail(userId),
-        });
-      });
-      // Invalidate users list
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-    },
-  });
+          queryKey: userKeys.detail(userId)
+        })
+      })
+      // Làm mới danh sách người dùng
+      queryClient.invalidateQueries({ queryKey: userKeys.lists() })
+    }
+  })
 }

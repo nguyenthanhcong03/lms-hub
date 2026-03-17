@@ -18,7 +18,7 @@ export const columns: ColumnDef<IBlog>[] = [
       <Checkbox
         checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
+        aria-label='Chọn tất cả'
         className='translate-y-[2px]'
       />
     ),
@@ -26,7 +26,7 @@ export const columns: ColumnDef<IBlog>[] = [
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
+        aria-label='Chọn hàng'
         className='translate-y-[2px]'
       />
     ),

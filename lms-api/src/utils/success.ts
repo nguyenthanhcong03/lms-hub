@@ -1,6 +1,6 @@
-import { Response } from 'express'
+﻿import { Response } from 'express'
 
-// Success response structure
+// Cấu trúc phản hồi thành công
 export interface SuccessResponse<T = unknown> {
   success: true
   message: string
@@ -14,14 +14,14 @@ export interface SuccessResponse<T = unknown> {
     }
     filters?: Record<string, unknown>
     sort?: Record<string, unknown>
-    [key: string]: unknown // Allow additional custom metadata
+    [key: string]: unknown // Cho phép thêm metadata tùy chỉnh
   }
   statusCode: number
 }
 
-// Success response builder class
+// Lớp dựng phản hồi thành công
 export class SuccessResponseBuilder<T = unknown> {
-  private _message: string = 'Operation successful'
+  private _message: string = 'Thao tác thành công'
   private _data?: T
   private _meta?: SuccessResponse<T>['meta']
   private _statusCode: number = 200
@@ -84,9 +84,9 @@ export class SuccessResponseBuilder<T = unknown> {
   }
 }
 
-// Quick success response functions
+// Các hàm phản hồi thành công nhanh
 export const sendSuccess = {
-  // 200 - OK
+  // 200 - Thành công
   ok: <T = unknown>(res: Response, message: string, data?: T, meta?: SuccessResponse<T>['meta']) => {
     SuccessResponseBuilder.create<T>(message)
       .statusCode(200)
@@ -95,7 +95,7 @@ export const sendSuccess = {
       .send(res)
   },
 
-  // 201 - Created
+  // 201 - Đã tạo
   created: <T = unknown>(res: Response, message: string, data?: T) => {
     SuccessResponseBuilder.create<T>(message)
       .statusCode(201)

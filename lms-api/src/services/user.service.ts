@@ -1,4 +1,4 @@
-import mongoose, { FilterQuery } from 'mongoose'
+﻿import mongoose, { FilterQuery } from 'mongoose'
 import { UserStatus, UserType } from '../enums'
 import { Role } from '../models/role'
 import { IUser, User } from '../models/user'
@@ -6,8 +6,8 @@ import { GetUsersOptions, UpdateProfileData, UpdateUserData } from '../types/use
 import { ConflictError, ErrorCodes, NotFoundError, ValidationError } from '../utils/errors'
 
 /**
- * User Management Service
- * Handles CRUD operations and user-related business logic
+ * Dịch vụ quản lý người dùng
+ * Xử lý các thao tác CRUD và nghiệp vụ liên quan người dùng
  */
 
 interface GetUsersResult {
@@ -24,17 +24,17 @@ interface GetUsersResult {
 
 export class UserService {
   /**
-   * Get all users with pagination and filtering
+   * Lấy danh sách người dùng có phân trang và lọc
    */
   static async getUsers(options: GetUsersOptions = {}): Promise<GetUsersResult> {
     const { page = 1, limit = 10, search, status, userType, roles } = options
 
-    // Convert string to number using + operator
+    // Chuyển chuỗi sang số bằng toán tử +
     const pageNum = +page
     const limitNum = +limit
     const skip = (pageNum - 1) * limitNum
 
-    // Build filter object
+    // Tạo điều kiện lọc
     const filter: FilterQuery<IUser> = {}
 
     if (search) {
@@ -43,34 +43,34 @@ export class UserService {
 
     if (status) {
       if (Array.isArray(status)) {
-        // Multiple status values
+        // Nhiều giá trị trạng thái
         filter.status = { $in: status }
       } else if (typeof status === 'string' && status.includes(',')) {
-        // Comma-separated string
+        // Chuỗi phân tách bằng dấu phẩy
         const statusArray = status.split(',').map((s) => s.trim())
         filter.status = { $in: statusArray }
       } else {
-        // Single status value
+        // Một giá trị trạng thái
         filter.status = status
       }
     }
 
     if (userType) {
       if (Array.isArray(userType)) {
-        // Multiple userType values
+        // Nhiều giá trị userType
         filter.userType = { $in: userType }
       } else if (typeof userType === 'string' && userType.includes(',')) {
-        // Comma-separated string
+        // Chuỗi phân tách bằng dấu phẩy
         const userTypeArray = userType.split(',').map((s) => s.trim())
         filter.userType = { $in: userTypeArray }
       } else {
-        // Single userType value
+        // Một giá trị userType
         filter.userType = userType
       }
     }
 
     if (roles && roles.length > 0) {
-      // Find roles by ID or name
+      // Tìm vai trò theo ID hoặc tên
       const roleIds = []
       for (const roleData of roles) {
         let role
@@ -88,10 +88,10 @@ export class UserService {
       }
     }
 
-    // Build sort object - default to createdAt desc
+    // Tạo điều kiện sắp xếp - mặc định createdAt giảm dần
     const sort: Record<string, 1 | -1> = { createdAt: -1 }
 
-    // Execute queries in parallel
+    // Thực thi truy vấn song song
     const [users, total] = await Promise.all([
       User.find(filter)
         .populate('roles', 'name description')
@@ -119,7 +119,7 @@ export class UserService {
   }
 
   /**
-   * Get user by ID
+   * Lấy người dùng theo ID
    */
   static async getUserById(userId: string): Promise<IUser> {
     const user = await User.findById(userId)
@@ -128,46 +128,46 @@ export class UserService {
       .select('-password')
 
     if (!user) {
-      throw new NotFoundError('User not found', ErrorCodes.USER_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy người dùng', ErrorCodes.USER_NOT_FOUND)
     }
 
     return user
   }
 
   /**
-   * Update user profile (for user-owned updates)
+   * Cập nhật hồ sơ người dùng (người dùng tự cập nhật)
    */
   static async updateProfile(userId: string, updateData: UpdateProfileData): Promise<IUser> {
     const user = await User.findById(userId)
     if (!user) {
-      throw new NotFoundError('User not found', ErrorCodes.USER_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy người dùng', ErrorCodes.USER_NOT_FOUND)
     }
 
-    // Check if username is being updated and is unique
+    // Kiểm tra username mới có bị trùng không
     if (updateData.username && updateData.username !== user.username) {
       const existingUsername = await User.findOne({
         username: updateData.username,
         _id: { $ne: userId }
       })
       if (existingUsername) {
-        throw new ConflictError('Username already exists', ErrorCodes.USERNAME_TAKEN)
+        throw new ConflictError('Tên người dùng đã tồn tại', ErrorCodes.USERNAME_TAKEN)
       }
       user.username = updateData.username
     }
 
-    // Check if email is being updated and is unique
+    // Kiểm tra email mới có bị trùng không
     if (updateData.email && updateData.email !== user.email) {
       const existingEmail = await User.findOne({
         email: updateData.email,
         _id: { $ne: userId }
       })
       if (existingEmail) {
-        throw new ConflictError('Email already exists', ErrorCodes.EMAIL_ALREADY_REGISTERED)
+        throw new ConflictError('Email đã tồn tại', ErrorCodes.EMAIL_ALREADY_REGISTERED)
       }
       user.email = updateData.email
     }
 
-    // Update avatar if provided
+    // Cập nhật avatar nếu có
     if (updateData.avatar !== undefined) {
       user.avatar = updateData.avatar
     }
@@ -178,15 +178,15 @@ export class UserService {
   }
 
   /**
-   * Update user (for admin-level updates)
+   * Cập nhật người dùng (quyền quản trị)
    */
   static async updateUser(userId: string, updateData: UpdateUserData): Promise<IUser> {
     const user = await User.findById(userId)
     if (!user) {
-      throw new NotFoundError('User not found', ErrorCodes.USER_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy người dùng', ErrorCodes.USER_NOT_FOUND)
     }
 
-    // Update roles if provided
+    // Cập nhật vai trò nếu có truyền
     if (updateData.roles && updateData.roles.length > 0) {
       const roles = []
       for (const roleData of updateData.roles) {
@@ -198,14 +198,14 @@ export class UserService {
         }
 
         if (!role) {
-          throw new NotFoundError(`Role not found: ${roleData}`, ErrorCodes.ROLE_NOT_FOUND)
+          throw new NotFoundError(`Không tìm thấy vai trò: ${roleData}`, ErrorCodes.ROLE_NOT_FOUND)
         }
         roles.push(role._id)
       }
       user.roles = roles
     }
 
-    // Update status if provided
+    // Cập nhật trạng thái nếu có truyền
     if (updateData.status) {
       user.status = updateData.status
     }
@@ -216,12 +216,12 @@ export class UserService {
   }
 
   /**
-   * Delete user (soft delete by setting status to DELETED)
+   * Xóa người dùng
    */
   static async deleteUser(userId: string): Promise<void> {
     const user = await User.findById(userId)
     if (!user) {
-      throw new NotFoundError('User not found', ErrorCodes.USER_NOT_FOUND)
+      throw new NotFoundError('Không tìm thấy người dùng', ErrorCodes.USER_NOT_FOUND)
     }
 
     await User.findByIdAndDelete(userId)

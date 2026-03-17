@@ -1,4 +1,4 @@
-import { Category, ICategory } from '../models/category'
+﻿import { Category, ICategory } from '../models/category'
 import { Course } from '../models/course'
 import { AppError } from '../utils/errors'
 import { CategoryStatus, CourseStatus } from '../enums'
@@ -10,8 +10,8 @@ import {
 } from '../schemas/category.schema'
 
 /**
- * Category Management Service
- * Simple CRUD operations for categories
+ * Dịch vụ quản lý danh mục
+ * Các thao tác tạo, đọc, cập nhật, xóa cơ bản cho danh mục
  */
 
 interface GetCategoriesResult {
@@ -28,19 +28,19 @@ interface GetCategoriesResult {
 
 export class CategoryService {
   /**
-   * Create a new category
+   * Tạo danh mục mới
    */
   static async createCategory(categoryData: CreateCategoryInput): Promise<ICategory> {
-    // Check if name already exists
+    // Kiểm tra tên đã tồn tại chưa
     const existingCategoryByName = await Category.findOne({ name: categoryData.name })
     if (existingCategoryByName) {
-      throw new AppError('Category with this name already exists', 400)
+      throw new AppError('Đã tồn tại danh mục với tên này', 400)
     }
 
-    // Check if slug already exists
+    // Kiểm tra slug đã tồn tại chưa
     const existingCategoryBySlug = await Category.findOne({ slug: categoryData.slug })
     if (existingCategoryBySlug) {
-      throw new AppError('Category with this slug already exists', 400)
+      throw new AppError('Đã tồn tại danh mục với slug này', 400)
     }
 
     const category = new Category(categoryData)
@@ -50,16 +50,16 @@ export class CategoryService {
   }
 
   /**
-   * Get all categories with pagination
+   * Lấy danh sách danh mục có phân trang
    */
   static async getCategories(options: Partial<GetCategoriesQuery> = {}): Promise<GetCategoriesResult> {
     const { page = 1, limit = 10, search, status, sortBy = 'createdAt', sortOrder = 'desc' } = options
-    // Convert string to number using + operator
+    // Chuyển chuỗi sang số bằng toán tử +
     const pageNum = +page
     const limitNum = +limit
     const skip = (pageNum - 1) * limitNum
 
-    // Build filter query
+    // Tạo điều kiện lọc
     const filter: Record<string, unknown> = {}
 
     if (search) {
@@ -68,23 +68,23 @@ export class CategoryService {
 
     if (status) {
       if (Array.isArray(status)) {
-        // Multiple status values
+        // Nhiều giá trị trạng thái
         filter.status = { $in: status }
       } else if (typeof status === 'string' && status.includes(',')) {
-        // Comma-separated string
+        // Chuỗi phân tách bằng dấu phẩy
         const statusArray = status.split(',').map((s) => s.trim())
         filter.status = { $in: statusArray }
       } else {
-        // Single status value
+        // Một giá trị trạng thái
         filter.status = status
       }
     }
 
-    // Build sort object
+    // Tạo điều kiện sắp xếp
     const sort: Record<string, 1 | -1> = {}
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1
 
-    // Execute queries in parallel
+    // Thực thi truy vấn song song
     const [categories, total] = await Promise.all([
       Category.find(filter).sort(sort).skip(skip).limit(limitNum).lean(),
       Category.countDocuments(filter)
@@ -106,44 +106,44 @@ export class CategoryService {
   }
 
   /**
-   * Get category by ID
+   * Lấy danh mục theo ID
    */
   static async getCategoryById(categoryId: string): Promise<ICategory> {
     const category = await Category.findById(categoryId)
 
     if (!category) {
-      throw new AppError('Category not found', 404)
+      throw new AppError('Không tìm thấy danh mục', 404)
     }
 
     return category
   }
 
   /**
-   * Update category
+   * Cập nhật danh mục
    */
   static async updateCategory(categoryId: string, updateData: UpdateCategoryInput): Promise<ICategory> {
     const category = await Category.findById(categoryId)
     if (!category) {
-      throw new AppError('Category not found', 404)
+      throw new AppError('Không tìm thấy danh mục', 404)
     }
 
-    // Check if name is being updated and already exists
+    // Kiểm tra tên mới có bị trùng không
     if (updateData.name && updateData.name !== category.name) {
       const existingCategory = await Category.findOne({ name: updateData.name })
       if (existingCategory) {
-        throw new AppError('Category with this name already exists', 400)
+        throw new AppError('Đã tồn tại danh mục với tên này', 400)
       }
     }
 
-    // Check if slug is being updated and already exists
+    // Kiểm tra slug mới có bị trùng không
     if (updateData.slug && updateData.slug !== category.slug) {
       const existingCategory = await Category.findOne({ slug: updateData.slug })
       if (existingCategory) {
-        throw new AppError('Category with this slug already exists', 400)
+        throw new AppError('Đã tồn tại danh mục với slug này', 400)
       }
     }
 
-    // Update the category
+    // Cập nhật danh mục
     Object.assign(category, updateData)
     await category.save()
 
@@ -151,25 +151,25 @@ export class CategoryService {
   }
 
   /**
-   * Delete category
+   * Xóa danh mục
    */
   static async deleteCategory(categoryId: string): Promise<void> {
     const category = await Category.findById(categoryId)
     if (!category) {
-      throw new AppError('Category not found', 404)
+      throw new AppError('Không tìm thấy danh mục', 404)
     }
 
-    // Check if category is used by any courses
+    // Kiểm tra danh mục có đang được khóa học nào dùng không
     const coursesCount = await Course.countDocuments({ categoryId: categoryId })
     if (coursesCount > 0) {
-      throw new AppError(`Cannot delete category. It is used by ${coursesCount} course(s)`, 400)
+      throw new AppError(`Không thể xóa danh mục. Đang được ${coursesCount} khóa học sử dụng`, 400)
     }
 
     await Category.findByIdAndDelete(categoryId)
   }
 
   /**
-   * Bulk delete categories
+   * Xóa hàng loạt danh mục
    */
   static async bulkDeleteCategories(data: BulkDeleteCategoriesInput): Promise<{
     deletedCount: number
@@ -177,19 +177,19 @@ export class CategoryService {
   }> {
     const { categoryIds } = data
 
-    // Remove duplicates
+    // Loại bỏ phần tử trùng lặp
     const uniqueCategoryIds = [...new Set(categoryIds)]
 
-    // Validate all categories exist
+    // Kiểm tra tất cả danh mục có tồn tại
     const categories = await Category.find({ _id: { $in: uniqueCategoryIds } })
     const foundCategoryIds = categories.map((cat) => cat._id.toString())
     const notFoundIds = uniqueCategoryIds.filter((id) => !foundCategoryIds.includes(id))
 
     if (notFoundIds.length > 0) {
-      throw new AppError(`Categories not found: ${notFoundIds.join(', ')}`, 404)
+      throw new AppError(`Không tìm thấy danh mục: ${notFoundIds.join(', ')}`, 404)
     }
 
-    // Check which categories are used by courses
+    // Kiểm tra danh mục nào đang được khóa học sử dụng
     const courseCounts = await Promise.all(
       uniqueCategoryIds.map(async (categoryId) => {
         const count = await Course.countDocuments({ categoryId })
@@ -207,14 +207,14 @@ export class CategoryService {
       const inUseDetails = categoriesInUse
         .map((item) => {
           const category = categoryNames.find((cat) => cat._id.toString() === item.categoryId)
-          return `${category?.name || item.categoryId} (${item.count} course(s))`
+          return `${category?.name || item.categoryId} (${item.count} khóa học)`
         })
         .join(', ')
 
-      throw new AppError(`Cannot delete categories that are in use: ${inUseDetails}`, 400)
+      throw new AppError(`Không thể xóa các danh mục đang được sử dụng: ${inUseDetails}`, 400)
     }
 
-    // Delete all categories
+    // Xóa tất cả danh mục
     const result = await Category.deleteMany({ _id: { $in: uniqueCategoryIds } })
 
     return {
@@ -224,18 +224,18 @@ export class CategoryService {
   }
 
   /**
-   * Get all active categories with course counts
+   * Lấy tất cả danh mục đang hoạt động kèm số lượng khóa học
    */
   static async getAllCategories(): Promise<Array<{ name: string; courseCount: number }>> {
-    // Fetch only active categories (only name field needed)
+    // Chỉ lấy danh mục đang hoạt động (chỉ cần trường name)
     const categories = await Category.find({ status: CategoryStatus.ACTIVE }).select('name').sort({ name: 1 }).lean()
 
-    // Get course counts for each category
+    // Lấy số lượng khóa học cho từng danh mục
     const categoriesWithCounts = await Promise.all(
       categories.map(async (category) => {
         const courseCount = await Course.countDocuments({
           categoryId: category._id,
-          status: CourseStatus.PUBLISHED // Only count published courses
+          status: CourseStatus.PUBLISHED // Chỉ đếm khóa học đã xuất bản
         })
 
         return {

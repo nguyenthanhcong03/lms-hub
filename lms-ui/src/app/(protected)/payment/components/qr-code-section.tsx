@@ -19,7 +19,7 @@ export function QRCodeSection({ qrCodeUrl, orderCode, paymentStatus }: QRCodeSec
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-    toast.success('Downloading QR code...')
+    toast.success('Đang tải mã QR...')
   }
 
   return (
@@ -28,7 +28,7 @@ export function QRCodeSection({ qrCodeUrl, orderCode, paymentStatus }: QRCodeSec
         Phương thức 1: Quét mã QR để thanh toán
       </h3>
 
-      {/* QR Code */}
+      {/* Mã QR */}
       <div className='relative inline-block'>
         <div className='relative h-64 w-64 rounded-lg border-gray-200 bg-white p-3 shadow-sm sm:h-80 sm:w-80 sm:p-4'>
           <div className='absolute top-0 left-0 z-10 h-6 w-6 border-t-2 border-l-2 border-blue-500 sm:h-8 sm:w-8 sm:border-t-4 sm:border-l-4'></div>
@@ -37,7 +37,7 @@ export function QRCodeSection({ qrCodeUrl, orderCode, paymentStatus }: QRCodeSec
           <div className='absolute right-0 bottom-0 z-10 h-6 w-6 border-r-2 border-b-2 border-blue-500 sm:h-8 sm:w-8 sm:border-r-4 sm:border-b-4'></div>
           <Image
             src={qrCodeUrl}
-            alt='Payment QR Code'
+            alt='Mã QR thanh toán'
             width={300}
             height={300}
             className='mx-auto'

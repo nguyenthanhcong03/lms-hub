@@ -8,11 +8,11 @@ interface CheckoutActionsProps {
   onCheckout: () => void
 }
 
-// Checkout actions component - Arrow function
+// Thành phần nút thanh toán
 const CheckoutActions = ({ isCheckoutPending, onCheckout }: CheckoutActionsProps) => {
   return (
     <div className='space-y-3 sm:space-y-4'>
-      {/* Checkout Button */}
+      {/* Nút thanh toán */}
       <Button
         onClick={onCheckout}
         disabled={isCheckoutPending}
@@ -32,7 +32,7 @@ const CheckoutActions = ({ isCheckoutPending, onCheckout }: CheckoutActionsProps
         )}
       </Button>
 
-      {/* Security Notice */}
+      {/* Thông báo bảo mật */}
       <p className='text-center text-[10px] text-gray-500 sm:text-xs'>
         🔒 Thanh toán an toàn - Hoàn tiền trong 30 ngày
       </p>

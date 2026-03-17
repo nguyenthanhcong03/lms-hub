@@ -104,5 +104,5 @@ export interface QuizAttemptSubmitResponse {
 // Quiz answer format for backend submission
 export interface QuizAnswerSubmission {
 	questionId: string;
-	selectedOptionIndexes: number[]; // Array of selected option indices (for multiple choice support)
+	selectedOptionIndexes: number[]; // Array of đã chọn option indices (for multiple choice support)
 }

@@ -37,29 +37,29 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
   const router = useRouter()
   const user = useAuthStore((state) => state.user)
 
-  // Check if user is already enrolled in the course
+  // Kiểm tra người dùng đã đăng ký khóa học chưa
   const isEnrolled = user?.courses?.includes(course._id) ?? false
 
-  // Free enrollment mutation using the custom hook
+  // Mutation đăng ký miễn phí bằng custom hook
   const enrollFreeMutation = useEnrollFree()
 
-  // Add to cart mutation using the custom hook
+  // Mutation thêm vào giỏ hàng bằng custom hook
   const addToCartMutation = useAddToCart()
   const { data: cart, refetch: refetchCart } = useCart({ enabled: !!user })
 
   const handleEnrollNow = () => {
     if (!user) {
-      toast.warning('Please login to enroll in the course')
+      toast.warning('Vui lòng đăng nhập để đăng ký khóa học')
       return
     }
 
     enrollFreeMutation.mutate(course._id, {
       onSuccess: () => {
-        toast.success('Successfully enrolled in the course!')
+        toast.success('Đăng ký khóa học thành công!')
         router.push(getRoutes.learning(course.slug, getLastLessonForCourse(course.slug) || lastLessonId || undefined))
       },
       onError: (error: Error) => {
-        toast.error(error.message || 'Failed to enroll in the course')
+        toast.error(error.message || 'Không thể đăng ký khóa học')
       }
     })
   }
@@ -92,7 +92,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
           toast.success('Khóa học đã được thêm vào giỏ hàng!')
         },
         onError: (error: Error) => {
-          toast.error(error.message || 'Failed to add course to cart')
+          toast.error(error.message || 'Không thêm được khóa học vào giỏ hàng')
         }
       }
     )
@@ -122,7 +122,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
           router.push(ROUTE_CONFIG.CART)
         },
         onError: (error: Error) => {
-          toast.error(error.message || 'Failed to add course to cart')
+          toast.error(error.message || 'Không thêm được khóa học vào giỏ hàng')
         }
       }
     )
@@ -132,17 +132,17 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
     ? Math.round(((course.oldPrice - course.price) / course.oldPrice) * 100)
     : 0
 
-  // Calculate days remaining until milestone date
+  // Tính số ngày còn lại đến mốc thời gian
   const calculateDaysRemaining = () => {
     const today = new Date()
-    const milestoneDate = new Date('2025-10-20') // Set your milestone date (YYYY-MM-DD)
+    const milestoneDate = new Date('2025-10-20') // Đặt mốc thời gian (YYYY-MM-DD)
 
-    // If milestone has passed, return 0
+    // Nếu đã qua mốc thì trả về 0
     if (today > milestoneDate) return 0
 
-    // Calculate difference in milliseconds
+    // Tính chênh lệch theo mili giây
     const diffTime = milestoneDate.getTime() - today.getTime()
-    // Convert to days and round down
+    // Đổi sang ngày và làm tròn lên
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
     return diffDays
@@ -168,7 +168,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
 
   return (
     <div className='overflow-hidden rounded-xs border border-gray-200 bg-white shadow-lg'>
-      {/* Video Preview */}
+      {/* Xem trước video */}
       <div className='group relative aspect-video cursor-pointer bg-gray-900'>
         <Image
           src={course.image || DEFAULT_THUMBNAIL}
@@ -178,7 +178,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
         />
       </div>
 
-      {/* Pricing */}
+      {/* Giá */}
       <div className='p-4 sm:p-6'>
         <div className='mb-4 sm:mb-6'>
           {course.isFree ? (
@@ -210,10 +210,10 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
           )}
         </div>
 
-        {/* Action Buttons */}
+        {/* Nút hành động */}
         <div className='mb-4 space-y-2 sm:mb-6 sm:space-y-3'>
           {isEnrolled ? (
-            // User is already enrolled - show continue learning button
+            // Người dùng đã đăng ký - hiển thị nút tiếp tục học
             <Button
               size='lg'
               className='h-12 w-full bg-green-600 text-sm hover:bg-green-700 sm:text-base'
@@ -223,7 +223,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
               Tiếp tục học
             </Button>
           ) : course.isFree ? (
-            // Course is free and user is not enrolled - show enroll button
+            // Khóa học miễn phí và người dùng chưa đăng ký - hiển thị nút đăng ký
             <Button
               size='lg'
               className='h-12 w-full bg-green-600 text-sm hover:bg-green-700 sm:text-base'
@@ -258,7 +258,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
           )}
         </div>
 
-        {/* Secondary Actions */}
+        {/* Hành động phụ */}
         <div className='mb-4 grid grid-cols-3 gap-1 sm:mb-6 sm:gap-2'>
           <Button
             variant='ghost'
@@ -289,14 +289,14 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
           </Button>
         </div>
 
-        {/* Money-back Guarantee */}
+        {/* Cam kết hoàn tiền */}
         {!course.isFree && (
           <div className='mb-4 rounded-xs border border-green-200 bg-green-50 p-2.5 text-center sm:mb-6 sm:p-3'>
             <p className='text-xs font-medium text-green-800 sm:text-sm'>Cam kết hoàn tiền trong 30 ngày</p>
           </div>
         )}
 
-        {/* Course Includes */}
+        {/* Khóa học bao gồm */}
         <div>
           <h4 className='mb-2 text-sm font-medium text-gray-900 sm:mb-3 sm:text-base'>Khóa học này bao gồm:</h4>
           <div className='space-y-1.5 sm:space-y-2'>
@@ -308,7 +308,7 @@ const EnrollmentCard = ({ course, lastLessonId }: EnrollmentCardProps) => {
                     return IconComponent
                   }
                 }
-                return Award // Default icon
+                return Award // Biểu tượng mặc định
               }
 
               const IconComponent = getIcon(feature)

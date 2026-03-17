@@ -1,77 +1,73 @@
-"use client";
+'use client'
 
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { MdNotifications, MdSearch } from "react-icons/md";
-import { UserNav } from "@/components/auth/user-nav";
-import { useEffect, useState, useRef } from "react";
+import { AdminSidebar } from '@/components/admin/admin-sidebar'
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { MdNotifications, MdSearch } from 'react-icons/md'
+import { UserNav } from '@/components/auth/user-nav'
+import { useEffect, useState, useRef } from 'react'
 
 interface AdminLayoutProps {
-  children: React.ReactNode;
-  title?: string;
-  actions?: React.ReactNode;
-  showTopActions?: boolean;
+  children: React.ReactNode
+  title?: string
+  actions?: React.ReactNode
+  showTopActions?: boolean
 }
 
 function AdminHeader({
-  title = "Admin Panel",
+  title = 'Bảng quản trị',
   actions,
   showTopActions = true,
-  scrollContainerRef,
+  scrollContainerRef
 }: {
-  title?: string;
-  actions?: React.ReactNode;
-  showTopActions?: boolean;
-  scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
+  title?: string
+  actions?: React.ReactNode
+  showTopActions?: boolean
+  scrollContainerRef?: React.RefObject<HTMLDivElement | null>
 }) {
-  const [offset, setOffset] = useState(0);
+  const [offset, setOffset] = useState(0)
 
   useEffect(() => {
-    const scrollContainer = scrollContainerRef?.current;
-    if (!scrollContainer) return;
+    const scrollContainer = scrollContainerRef?.current
+    if (!scrollContainer) return
 
     const onScroll = () => {
-      const scrollTop = scrollContainer.scrollTop;
-      setOffset(scrollTop);
-      // Debug: uncomment to see scroll values
+      const scrollTop = scrollContainer.scrollTop
+      setOffset(scrollTop)
+      // Gỡ lỗi: bỏ chú thích để xem giá trị cuộn
       // console.log("Scroll offset:", scrollTop);
-    };
+    }
 
-    // Add scroll listener to the scrollable container
-    scrollContainer.addEventListener("scroll", onScroll, { passive: true });
+    // Thêm bộ lắng nghe cuộn cho vùng có thể cuộn
+    scrollContainer.addEventListener('scroll', onScroll, { passive: true })
 
-    // Clean up the event listener on unmount
-    return () => scrollContainer.removeEventListener("scroll", onScroll);
-  }, [scrollContainerRef]);
+    // Dọn dẹp bộ lắng nghe khi unmount
+    return () => scrollContainer.removeEventListener('scroll', onScroll)
+  }, [scrollContainerRef])
 
   return (
     <header
-      className={`
-        flex h-16 shrink-0 items-center gap-2 border-b px-4
-        sticky top-0 z-10 transition-all duration-200
-        ${offset > 0 ? "shadow-md backdrop-blur-md bg-background/95 border-border" : "bg-background border-border"}
-      `}
+      className={`sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b px-4 transition-all duration-200 ${offset > 0 ? 'bg-background/95 border-border shadow-md backdrop-blur-md' : 'bg-background border-border'} `}
     >
-      <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="mr-2" />
+      <SidebarTrigger className='-ml-1' />
+      <Separator orientation='vertical' className='mr-2' />
 
-      <div className="flex-1 flex items-center justify-between">
-        <h1 className="text-lg font-semibold">{title}</h1>
+      <div className='flex flex-1 items-center justify-between'>
+        <h1 className='text-lg font-semibold'>{title}</h1>
 
-        <div className="flex items-center gap-2">
-          {/* Custom actions */}
+        <div className='flex items-center gap-2'>
+          {/* Hành động tùy chỉnh */}
           {actions}
 
-          {/* Default top actions - now always visible */}
+          {/* Hành động mặc định phía trên - luôn hiển thị */}
           {showTopActions && (
             <>
-              <Button variant="ghost" size="icon" title="Search">
-                <MdSearch className="h-4 w-4" />
+              <Button variant='ghost' size='icon' title='Tìm kiếm'>
+                <MdSearch className='h-4 w-4' />
               </Button>
-              <Button variant="ghost" size="icon" title="Notifications">
-                <MdNotifications className="h-4 w-4" />
+              <Button variant='ghost' size='icon' title='Thông báo'>
+                <MdNotifications className='h-4 w-4' />
               </Button>
               <UserNav />
             </>
@@ -79,40 +75,40 @@ function AdminHeader({
         </div>
       </div>
     </header>
-  );
+  )
 }
 
 export function AdminLayout({ children, title, actions, showTopActions = true }: AdminLayoutProps) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  // Prevent body scrolling when admin layout is mounted
+  // Ngăn cuộn trang khi layout admin được mount
   useEffect(() => {
-    // Store original overflow style
-    const originalOverflow = document.body.style.overflow;
+    // Lưu lại overflow ban đầu
+    const originalOverflow = document.body.style.overflow
 
-    // Prevent body scroll
-    document.body.style.overflow = "hidden";
+    // Chặn cuộn body
+    document.body.style.overflow = 'hidden'
 
-    // Cleanup on unmount
+    // Dọn dẹp khi unmount
     return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, []);
+      document.body.style.overflow = originalOverflow
+    }
+  }, [])
 
   return (
     <SidebarProvider>
-      <div className="fixed inset-0 flex w-full h-full overflow-hidden bg-background">
+      <div className='bg-background fixed inset-0 flex h-full w-full overflow-hidden'>
         <AdminSidebar />
-        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden h-full">
+        <div ref={scrollContainerRef} className='h-full flex-1 overflow-x-hidden overflow-y-auto'>
           <AdminHeader
             title={title}
             actions={actions}
             showTopActions={showTopActions}
             scrollContainerRef={scrollContainerRef}
           />
-          <main className="p-6 bg-muted/10">{children}</main>
+          <main className='bg-muted/10 p-6'>{children}</main>
         </div>
       </div>
     </SidebarProvider>
-  );
+  )
 }

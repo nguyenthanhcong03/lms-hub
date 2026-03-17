@@ -21,14 +21,14 @@ export class OrderController {
   static async createOrder(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User authentication required', 401)
+      throw new AppError('Yêu cầu xác thực người dùng', 401)
     }
 
     const orderData: CreateOrderInput = req.body
 
     const order = await OrderService.createOrder(userId, orderData)
 
-    sendSuccess.created(res, 'Order created successfully', order)
+    sendSuccess.created(res, 'Order được tạo thành công', order)
   }
 
   /**
@@ -38,7 +38,7 @@ export class OrderController {
     const query = req.query as unknown as GetOrdersQuery
     const result = await OrderService.getOrders(query)
 
-    sendSuccess.ok(res, 'Orders retrieved successfully', result)
+    sendSuccess.ok(res, 'Orders được lấy thành công', result)
   }
 
   /**
@@ -47,13 +47,13 @@ export class OrderController {
   static async getUserOrders(req: Request, res: Response): Promise<void> {
     const userId = req.user?.userId
     if (!userId) {
-      throw new AppError('User authentication required', 401)
+      throw new AppError('Yêu cầu xác thực người dùng', 401)
     }
 
     const query = req.query as unknown as Partial<GetOrdersQuery>
 
     const result = await OrderService.getUserOrders(userId, query)
-    sendSuccess.ok(res, 'User orders retrieved successfully', result)
+    sendSuccess.ok(res, 'User orders được lấy thành công', result)
   }
 
   /**
@@ -63,7 +63,7 @@ export class OrderController {
     const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
     const order = await OrderService.getOrderById(id)
 
-    sendSuccess.ok(res, 'Order retrieved successfully', order)
+    sendSuccess.ok(res, 'Order được lấy thành công', order)
   }
 
   /**
@@ -73,7 +73,7 @@ export class OrderController {
     const { code } = req.params
     const order = await OrderService.getOrderByCode(code)
 
-    sendSuccess.ok(res, 'Order retrieved successfully', { order })
+    sendSuccess.ok(res, 'Order được lấy thành công', { order })
   }
 
   /**
@@ -84,7 +84,7 @@ export class OrderController {
     const statusData: UpdateOrderStatusInput = req.body
 
     const order = await OrderService.updateOrderStatus(id, statusData)
-    sendSuccess.ok(res, 'Order status updated successfully', { order })
+    sendSuccess.ok(res, 'Order status được cập nhật thành công', { order })
   }
 
   /**
@@ -96,13 +96,13 @@ export class OrderController {
     const userRoles = req.user?.roles
 
     if (!userId) {
-      throw new AppError('User authentication required', 401)
+      throw new AppError('Yêu cầu xác thực người dùng', 401)
     }
 
     // Admin can cancel any order, user can only cancel their own
     const isAdmin = userRoles?.includes('admin')
     const order = await OrderService.cancelOrder(id, isAdmin ? undefined : userId)
-    sendSuccess.ok(res, 'Order canceled successfully', { order })
+    sendSuccess.ok(res, 'Order được hủy thành công', { order })
   }
 
   /**
@@ -111,7 +111,7 @@ export class OrderController {
   static async deleteOrder(req: Request, res: Response): Promise<void> {
     const { id } = req.params
     await OrderService.deleteOrder(id)
-    sendSuccess.ok(res, 'Order deleted successfully')
+    sendSuccess.ok(res, 'Order được xóa thành công')
   }
 
   /**
@@ -120,7 +120,7 @@ export class OrderController {
   static async bulkDeleteOrders(req: Request, res: Response): Promise<void> {
     const bulkDeleteData: BulkDeleteOrdersInput = req.body
     const result = await OrderService.bulkDeleteOrders(bulkDeleteData)
-    sendSuccess.ok(res, 'Orders deleted successfully', result)
+    sendSuccess.ok(res, 'Orders được xóa thành công', result)
   }
 
   /**
@@ -131,7 +131,7 @@ export class OrderController {
     const userId = req.user?.userId
 
     if (!userId) {
-      throw new AppError('User authentication required', 401)
+      throw new AppError('Yêu cầu xác thực người dùng', 401)
     }
 
     // Get order with user details and check access permissions

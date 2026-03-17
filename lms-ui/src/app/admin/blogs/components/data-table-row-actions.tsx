@@ -71,12 +71,12 @@ const DataTableRowActions = ({ row }: DataTableRowActionsProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Edit Dialog - Only render when UPDATE permission and dialog is open */}
+      {/* Hộp thoại chỉnh sửa - chỉ hiển thị khi có quyền cập nhật và hộp thoại đang mở */}
       {hasPermission(PERMISSIONS.BLOG_UPDATE) && editDialogOpen && (
         <BlogsActionDialog mode='edit' blog={blog} open={editDialogOpen} onOpenChange={setEditDialogOpen} />
       )}
 
-      {/* Delete Dialog - Only render when DELETE permission and dialog is open */}
+      {/* Hộp thoại xóa - chỉ hiển thị khi có quyền xóa và hộp thoại đang mở */}
       {hasPermission(PERMISSIONS.BLOG_DELETE) && deleteDialogOpen && (
         <BlogsDeleteDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} currentRow={blog} />
       )}

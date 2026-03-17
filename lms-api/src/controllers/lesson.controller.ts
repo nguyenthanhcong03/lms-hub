@@ -12,7 +12,7 @@ export class LessonController {
 
     const result = await LessonService.createLesson(lessonData)
 
-    sendSuccess.created(res, 'Lesson created successfully', result)
+    sendSuccess.created(res, 'Lesson được tạo thành công', result)
   }
 
   /**
@@ -23,7 +23,7 @@ export class LessonController {
 
     const result = await LessonService.getLessons(chapterId)
 
-    sendSuccess.ok(res, 'Lessons retrieved successfully', result)
+    sendSuccess.ok(res, 'Lessons được lấy thành công', result)
   }
 
   /**
@@ -35,7 +35,7 @@ export class LessonController {
 
     const lesson = await LessonService.getLessonById(id, includeQuestions === 'true')
 
-    sendSuccess.ok(res, 'Lesson retrieved successfully', lesson)
+    sendSuccess.ok(res, 'Lesson được lấy thành công', lesson)
   }
 
   /**
@@ -47,7 +47,7 @@ export class LessonController {
 
     const lesson = await LessonService.updateLesson(id, updateData)
 
-    sendSuccess.ok(res, 'Lesson updated successfully', lesson)
+    sendSuccess.ok(res, 'Lesson được cập nhật thành công', lesson)
   }
 
   /**
@@ -58,7 +58,7 @@ export class LessonController {
 
     await LessonService.deleteLesson(id)
 
-    sendSuccess.ok(res, 'Lesson deleted successfully')
+    sendSuccess.ok(res, 'Lesson được xóa thành công')
   }
 
   /**
@@ -69,7 +69,7 @@ export class LessonController {
 
     const result = await LessonService.getLessons(chapterId)
 
-    sendSuccess.ok(res, 'Chapter lessons retrieved successfully', { lessons: result })
+    sendSuccess.ok(res, 'Chapter lessons được lấy thành công', { lessons: result })
   }
 
   /**
@@ -81,7 +81,7 @@ export class LessonController {
 
     const result = await LessonService.getCourseLessons(courseId, query)
 
-    sendSuccess.ok(res, 'Course lessons retrieved successfully', result)
+    sendSuccess.ok(res, 'Course lessons được lấy thành công', result)
   }
 
   /**
@@ -92,6 +92,6 @@ export class LessonController {
 
     const lessons = await LessonService.reorderLessons(reorderData)
 
-    sendSuccess.ok(res, 'Lessons reordered successfully', { lessons })
+    sendSuccess.ok(res, 'Lessons được sắp xếp lại thành công', { lessons })
   }
 }

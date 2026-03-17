@@ -25,7 +25,7 @@ interface DataTableToolbarProps {
   onBulkDelete: () => void
 }
 
-// Filter options for status
+// Tùy chọn lọc theo trạng thái
 const statusOptions = [
   {
     label: 'Chờ thanh toán',
@@ -44,7 +44,7 @@ const statusOptions = [
   }
 ] as const
 
-// Filter options for payment methods
+// Tùy chọn lọc theo phương thức thanh toán
 const paymentMethodOptions = [
   {
     label: 'Chuyển khoản',
@@ -62,22 +62,22 @@ const DataTableToolbar = ({
 }: DataTableToolbarProps) => {
   const isFiltered = filters.search || filters.status.length > 0 || filters.paymentMethod.length > 0
 
-  // Handle search input
+  // Xử lý ô tìm kiếm
   const handleSearchChange = (value: string) => {
     onFiltersChange({ search: value })
   }
 
-  // Handle status filter change
+  // Xử lý thay đổi bộ lọc trạng thái
   const handleStatusChange = (values: string[]) => {
     onFiltersChange({ status: values })
   }
 
-  // Handle payment method filter change
+  // Xử lý thay đổi bộ lọc phương thức thanh toán
   const handlePaymentMethodChange = (values: string[]) => {
     onFiltersChange({ paymentMethod: values })
   }
 
-  // Reset all filters
+  // Đặt lại toàn bộ bộ lọc
   const resetFilters = () => {
     onFiltersChange({
       search: '',
@@ -89,7 +89,7 @@ const DataTableToolbar = ({
   return (
     <div className='flex items-center justify-between'>
       <div className='flex flex-1 items-center space-x-2'>
-        {/* Search input */}
+        {/* Ô tìm kiếm */}
         <div className='relative'>
           <Search className='text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2' />
           <Input
@@ -100,7 +100,7 @@ const DataTableToolbar = ({
           />
         </div>
 
-        {/* Status filter */}
+        {/* Bộ lọc trạng thái */}
         <DataTableFacetedFilter
           title='Trạng thái'
           options={statusOptions}
@@ -108,7 +108,7 @@ const DataTableToolbar = ({
           onSelectionChange={handleStatusChange}
         />
 
-        {/* Payment method filter */}
+        {/* Bộ lọc phương thức thanh toán */}
         <DataTableFacetedFilter
           title='Phương thức thanh toán'
           options={paymentMethodOptions}
@@ -116,7 +116,7 @@ const DataTableToolbar = ({
           onSelectionChange={handlePaymentMethodChange}
         />
 
-        {/* Reset filters button */}
+        {/* Nút xóa bộ lọc */}
         {isFiltered && (
           <Button variant='ghost' onClick={resetFilters} className='h-8 px-2 lg:px-3'>
             Xóa bộ lọc
@@ -126,7 +126,7 @@ const DataTableToolbar = ({
       </div>
 
       <div className='flex items-center space-x-2'>
-        {/* Bulk delete button */}
+        {/* Nút xóa hàng loạt */}
         {selectedRowCount > 0 && (
           <Button variant='destructive' size='sm' onClick={onBulkDelete} className='h-8'>
             <Trash2 className='mr-2 h-4 w-4' />
@@ -134,7 +134,7 @@ const DataTableToolbar = ({
           </Button>
         )}
 
-        {/* Column visibility toggle */}
+        {/* Bật/tắt hiển thị cột */}
         <DataTableViewOptions table={table} />
       </div>
     </div>
