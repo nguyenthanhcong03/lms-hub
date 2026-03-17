@@ -151,41 +151,4 @@ export class AuthController {
 
     sendSuccess.ok(res, result.message)
   }
-
-  // Google Register
-  static async googleRegister(req: Request, res: Response): Promise<void> {
-    const { idToken } = req.body
-
-    const result = await AuthService.googleRegister({ idToken })
-
-    sendSuccess.created(res, 'Google registration successful', result)
-  }
-
-  // Google Login
-  static async googleLogin(req: Request, res: Response): Promise<void> {
-    const { idToken } = req.body
-
-    const result = await AuthService.googleLogin({ idToken })
-
-    res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, getRefreshCookieOptions())
-
-    sendSuccess.ok(res, 'Google login successful', { token: result.token })
-  }
-
-  // Facebook Register
-  static async facebookRegister(req: Request, res: Response): Promise<void> {
-    const { accessToken } = req.body
-    const result = await AuthService.facebookRegister({ accessToken })
-    sendSuccess.created(res, 'Facebook registration successful', result)
-  }
-
-  // Facebook Login
-  static async facebookLogin(req: Request, res: Response): Promise<void> {
-    const { accessToken } = req.body
-    const result = await AuthService.facebookLogin({ accessToken })
-
-    res.cookie(REFRESH_COOKIE_NAME, result.refreshToken, getRefreshCookieOptions())
-
-    sendSuccess.ok(res, 'Facebook login successful', { token: result.token })
-  }
 }

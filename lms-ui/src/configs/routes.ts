@@ -7,7 +7,7 @@ export const ROUTE_CONFIG = {
   DEMO: '/demo',
   CART: '/cart',
   SEARCH: '/search',
-  QR_PAYMENT: '/qr-payment',
+  QR_PAYMENT: '/payment',
   AUTH: {
     SIGN_IN: '/auth/sign-in',
     SIGN_UP: '/auth/sign-up',

@@ -7,11 +7,7 @@ import { loadUserPermissions } from '../middlewares/rbac.middleware'
 import { validate } from '../middlewares/validation.middleware'
 import {
   changePasswordSchema,
-  facebookLoginSchema,
-  facebookRegisterSchema,
   forgotPasswordSchema,
-  googleLoginSchema,
-  googleRegisterSchema,
   loginSchema,
   refreshTokenSchema,
   registerSchema,
@@ -52,24 +48,6 @@ router.post(
   validate(resetPasswordSchema),
   asyncHandler(AuthController.resetPassword)
 )
-
-// Google authentication routes
-router.post(
-  '/register-google',
-  createAccountRateLimit,
-  validate(googleRegisterSchema),
-  asyncHandler(AuthController.googleRegister)
-)
-router.post('/login-google', authRateLimit, validate(googleLoginSchema), asyncHandler(AuthController.googleLogin))
-
-// Facebook authentication routes
-router.post(
-  '/register-facebook',
-  createAccountRateLimit,
-  validate(facebookRegisterSchema),
-  asyncHandler(AuthController.facebookRegister)
-)
-router.post('/login-facebook', authRateLimit, validate(facebookLoginSchema), asyncHandler(AuthController.facebookLogin))
 
 /**
  * Protected Routes (require authentication and admin permissions)

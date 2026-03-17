@@ -1,0 +1,172 @@
+'use client'
+
+import Loader from '@/components/loader'
+import { Button } from '@/components/ui/button'
+import { ROUTE_CONFIG } from '@/configs/routes'
+import { useOrderDetails } from '@/hooks/use-orders'
+import { OrderStatus } from '@/types/order'
+import { useQueryClient } from '@tanstack/react-query'
+import { ArrowLeft } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import { PaymentHeader } from './components/payment-header'
+import { PaymentInstructions } from './components/payment-instructions'
+import { SuccessOverlay } from './components/success-overlay'
+
+function PaymentSuccessPageInner() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const queryClient = useQueryClient()
+  const [paymentStatus, setPaymentStatus] = useState('Chờ thanh toán...')
+  const [isOrderCompleted, setIsOrderCompleted] = useState(false)
+  const [countdown, setCountdown] = useState(5)
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  const orderId = searchParams.get('orderid')
+
+  // Fetch order details dynamically
+  const { data: orderDetails, error, refetch } = useOrderDetails(orderId)
+
+  // QR code configuration
+  const accountNumber = '90909000'
+  const bankName = 'VietinBank'
+
+  // Dynamic values from order details
+
+  const amount = orderDetails?.totalAmount?.toString()
+  // &template=compact
+  // QR Code URL with dynamic data
+  const qrCodeUrl = `https://qr.sepay.vn/img?acc=${accountNumber}&bank=${bankName}&amount=${
+    amount || ''
+  }&des=${orderDetails?.code || ''}`
+
+  // Handle order completion using useCallback to avoid dependency issues
+  const handleOrderCompleted = useCallback(() => {
+    setIsOrderCompleted(true)
+    setPaymentStatus('Thanh toán thành công!')
+    toast.success('Thanh toán thành công! Đang chuyển hướng...')
+
+    // Stop polling
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current)
+    }
+
+    // Start countdown
+    countdownIntervalRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          // Redirect to my-order page
+          router.push(ROUTE_CONFIG.PROFILE.MY_ORDERS)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+  }, [router])
+
+  // Polling effect to check order status
+  useEffect(() => {
+    if (!orderDetails || isOrderCompleted) return
+
+    // Check initial status
+    if (orderDetails.status === OrderStatus.COMPLETED) {
+      handleOrderCompleted()
+      return
+    }
+
+    // Set up polling every 30 seconds
+    pollingIntervalRef.current = setInterval(() => {
+      // Refetch order details to check for status updates
+      refetch()
+    }, 30000)
+
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+      }
+    }
+  }, [orderDetails, isOrderCompleted, handleOrderCompleted, refetch])
+
+  // Effect to handle order status changes
+  useEffect(() => {
+    if (!orderDetails) return
+
+    if (orderDetails.status === OrderStatus.COMPLETED && !isOrderCompleted) {
+      handleOrderCompleted()
+    } else if (orderDetails.status === OrderStatus.PENDING) {
+      setPaymentStatus('Chờ thanh toán...')
+    } else if (orderDetails.status === OrderStatus.CANCELLED) {
+      setPaymentStatus('Đơn hàng đã bị hủy')
+    }
+  }, [orderDetails, orderDetails?.status, isOrderCompleted, handleOrderCompleted])
+
+  // Cleanup effect
+  useEffect(() => {
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+      }
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current)
+      }
+    }
+  }, [])
+
+  // Show error state if failed to fetch order
+  if (error) {
+    return (
+      <div className='flex min-h-screen items-center justify-center bg-gray-50 px-4 py-6 sm:py-8'>
+        <div className='text-center'>
+          <p className='mb-3 text-sm text-red-600 sm:mb-4 sm:text-base'>Unable to load order information</p>
+          <Button onClick={() => router.push('/')} variant='outline' className='h-9 text-xs sm:h-10 sm:text-sm'>
+            <ArrowLeft className='mr-1.5 h-3.5 w-3.5 sm:mr-2 sm:h-4 sm:w-4' />
+            Return to homepage
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className='min-h-screen bg-gray-50 py-4 sm:py-6 md:py-8'>
+      {/* Success Overlay */}
+      {isOrderCompleted && <SuccessOverlay countdown={countdown} />}
+
+      <div className='mx-auto max-w-5xl px-4 sm:px-6'>
+        {/* Back Button */}
+        <div className='mb-4 sm:mb-6'>
+          <Button
+            onClick={() => router.push('/')}
+            variant='ghost'
+            className='inline-flex h-9 items-center gap-1.5 text-xs sm:h-10 sm:gap-2 sm:text-sm'
+            disabled={isOrderCompleted}
+          >
+            <ArrowLeft className='h-3.5 w-3.5 sm:h-4 sm:w-4' />
+            Trở về trang chủ
+          </Button>
+        </div>
+
+        {/* Header */}
+        <PaymentHeader orderCode={orderDetails?.code} />
+
+        {/* Payment Instructions */}
+        <PaymentInstructions
+          qrCodeUrl={qrCodeUrl}
+          amount={amount || '0'}
+          orderCode={orderDetails?.code}
+          paymentStatus={paymentStatus}
+        />
+      </div>
+    </div>
+  )
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <PaymentSuccessPageInner />
+    </Suspense>
+  )
+}

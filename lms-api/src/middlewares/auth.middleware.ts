@@ -47,8 +47,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       return next(error)
     }
 
-    // For any other errors (like JWT verification errors), treat as authentication error
-    console.error('Auth middleware error:', error)
     next(new AuthenticationError('Invalid token', ErrorCodes.TOKEN_INVALID))
   }
 }

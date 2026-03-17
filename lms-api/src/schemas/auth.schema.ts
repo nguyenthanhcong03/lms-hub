@@ -50,30 +50,6 @@ export const resetPasswordSchema = z.object({
   })
 })
 
-export const googleRegisterSchema = z.object({
-  body: z.object({
-    idToken: z.string().min(1, 'Google ID token is required')
-  })
-})
-
-export const googleLoginSchema = z.object({
-  body: z.object({
-    idToken: z.string().min(1, 'Google ID token is required')
-  })
-})
-
-export const facebookRegisterSchema = z.object({
-  body: z.object({
-    accessToken: z.string().min(1, 'Facebook access token is required')
-  })
-})
-
-export const facebookLoginSchema = z.object({
-  body: z.object({
-    accessToken: z.string().min(1, 'Facebook access token is required')
-  })
-})
-
 // Auth response types (inferred from schemas)
 export type RegisterRequest = z.infer<typeof registerSchema>
 export type LoginRequest = z.infer<typeof loginSchema>
@@ -82,7 +58,3 @@ export type UpdateProfileRequest = z.infer<typeof updateProfileSchema>
 export type ChangePasswordRequest = z.infer<typeof changePasswordSchema>
 export type ForgotPasswordRequest = z.infer<typeof forgotPasswordSchema>
 export type ResetPasswordRequest = z.infer<typeof resetPasswordSchema>
-export type GoogleRegisterRequest = z.infer<typeof googleRegisterSchema>
-export type GoogleLoginRequest = z.infer<typeof googleLoginSchema>
-export type FacebookRegisterRequest = z.infer<typeof facebookRegisterSchema>
-export type FacebookLoginRequest = z.infer<typeof facebookLoginSchema>
