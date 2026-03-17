@@ -54,7 +54,6 @@ export enum OrderStatus {
 }
 
 export enum PaymentMethod {
-  STRIPE = 'stripe',
   BANK_TRANSFER = 'bank_transfer'
 }
 

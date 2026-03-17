@@ -16,8 +16,8 @@ export const checkoutPreviewSchema = z.object({
 export const processCheckoutSchema = z.object({
   body: z.object({
     couponCode: z.string().optional(),
-    paymentMethod: z.enum([PaymentMethod.STRIPE, PaymentMethod.BANK_TRANSFER], {
-      message: 'Invalid payment method'
+    paymentMethod: z.enum([PaymentMethod.BANK_TRANSFER], {
+      message: 'Phương thức thanh toán không hợp lệ'
     })
   })
 })

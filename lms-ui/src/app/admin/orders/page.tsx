@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import AdminHeading from "@/components/admin/admin-heading";
-import DataTableSkeleton from "@/components/table/data-table-skeleton";
-import dynamic from "next/dynamic";
+import AdminHeading from '@/components/admin/admin-heading'
+import DataTableSkeleton from '@/components/table/data-table-skeleton'
+import dynamic from 'next/dynamic'
 
-const OrdersTable = dynamic(() => import("./components/orders-table"), {
+const OrdersTable = dynamic(() => import('./components/orders-table'), {
   loading: () => <DataTableSkeleton />,
-  ssr: false,
-});
+  ssr: false
+})
 
 const OrdersPage = () => {
   return (
-    <div className="space-y-6">
-      <AdminHeading title="Orders" description="Manage customer orders and order status" />
+    <div className='space-y-6'>
+      <AdminHeading title='Đơn hàng' description='Quản lý đơn hàng của khách hàng' />
 
       <OrdersTable />
     </div>
-  );
-};
+  )
+}
 
-export default OrdersPage;
+export default OrdersPage

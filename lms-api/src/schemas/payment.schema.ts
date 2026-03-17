@@ -23,21 +23,6 @@ export const sepayWebhookSchema = z.object({
   })
 })
 
-// Stripe create payment intent schema
-export const createPaymentIntentSchema = z.object({
-  body: z.object({
-    orderId: z.string().min(1, 'Order ID is required'),
-    currency: z.string().min(3, 'Currency code is required').max(3, 'Currency code must be 3 characters').optional()
-  })
-})
-
-// Stripe confirm payment schema
-export const confirmPaymentSchema = z.object({
-  body: z.object({
-    paymentIntentId: z.string().min(1, 'Payment intent ID is required')
-  })
-})
-
 // API key validation schema
 export const apiKeyHeaderSchema = z.object({
   headers: z.object({
@@ -56,7 +41,5 @@ export const paymentCallbackQuerySchema = z.object({
 
 // Type exports
 export type SepayWebhookInput = z.infer<typeof sepayWebhookSchema>['body']
-export type CreatePaymentIntentInput = z.infer<typeof createPaymentIntentSchema>['body']
-export type ConfirmPaymentInput = z.infer<typeof confirmPaymentSchema>['body']
 export type ApiKeyHeaderInput = z.infer<typeof apiKeyHeaderSchema>['headers']
 export type PaymentCallbackQuery = z.infer<typeof paymentCallbackQuerySchema>['query']

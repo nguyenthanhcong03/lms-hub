@@ -10,8 +10,8 @@ export const createOrderSchema = z.object({
   body: z.object({
     courseIds: z.array(z.string().min(1, 'Course ID is required')).min(1, 'At least one course is required'),
     couponCode: z.string().optional(),
-    paymentMethod: z.enum([PaymentMethod.STRIPE, PaymentMethod.BANK_TRANSFER], {
-      message: 'Invalid payment method'
+    paymentMethod: z.enum([PaymentMethod.BANK_TRANSFER], {
+      message: 'Phương thức thanh toán không hợp lệ'
     })
   })
 })
@@ -19,8 +19,8 @@ export const createOrderSchema = z.object({
 // Create order from cart schema
 export const createOrderFromCartSchema = z.object({
   body: z.object({
-    paymentMethod: z.enum([PaymentMethod.STRIPE, PaymentMethod.BANK_TRANSFER], {
-      message: 'Invalid payment method'
+    paymentMethod: z.enum([PaymentMethod.BANK_TRANSFER], {
+      message: 'Phương thức thanh toán không hợp lệ'
     }),
     couponCode: z.string().optional()
   })
@@ -41,7 +41,7 @@ export const getOrdersQuerySchema = z.object({
     page: z.string().optional().default('1').transform(Number).pipe(z.number().min(1)),
     limit: z.string().optional().default('10').transform(Number).pipe(z.number().min(1).max(100)),
     status: z.enum([OrderStatus.PENDING, OrderStatus.COMPLETED, OrderStatus.CANCELLED]).optional(),
-    paymentMethod: z.enum([PaymentMethod.STRIPE, PaymentMethod.BANK_TRANSFER]).optional(),
+    paymentMethod: z.enum([PaymentMethod.BANK_TRANSFER]).optional(),
     sortBy: z.enum(['createdAt', 'totalAmount', 'code']).default('createdAt'),
     sortOrder: z.enum(['asc', 'desc']).default('desc'),
     search: z.string().optional()

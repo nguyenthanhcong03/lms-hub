@@ -185,27 +185,8 @@ export class OrderService {
 
     await order.save()
 
-    // Remove ordered items from cart after successful order creation
-    const orderedCourseIds = orderItems.map((item) => item.courseId.toString())
-
-    // Get current cart
-    const cart = await Cart.findOne({ userId })
-    if (cart && cart.items.length > 0) {
-      // Filter out items that were ordered
-      const remainingItems = cart.items.filter((cartItem) => !orderedCourseIds.includes(cartItem.courseId.toString()))
-
-      // Recalculate total price for remaining items
-      const newTotalPrice = remainingItems.reduce((total, item) => total + item.price, 0)
-
-      // Update cart with remaining items
-      await Cart.findOneAndUpdate(
-        { userId },
-        {
-          items: remainingItems,
-          totalPrice: newTotalPrice
-        }
-      )
-    }
+    // Xóa giỏ hàng của người dùng sau khi tạo đơn hàng thành công
+    await Cart.findOneAndDelete({ userId: new mongoose.Types.ObjectId(userId) })
 
     return order
   }

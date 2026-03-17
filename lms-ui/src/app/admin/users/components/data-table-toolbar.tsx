@@ -42,7 +42,7 @@ const DataTableToolbar = <TData,>({
           placeholder="Tìm kiếm người dùng..."
           value={searchValue}
           onChange={(event) => onSearchChange(event.target.value)}
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="w-[150px] lg:w-[250px]"
           disabled={isLoading}
         />
         <div className="flex gap-x-2">

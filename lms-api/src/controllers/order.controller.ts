@@ -60,7 +60,7 @@ export class OrderController {
    * Get order by ID
    */
   static async getOrderById(req: Request, res: Response): Promise<void> {
-    const { id } = req.params
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
     const order = await OrderService.getOrderById(id)
 
     sendSuccess.ok(res, 'Order retrieved successfully', order)
