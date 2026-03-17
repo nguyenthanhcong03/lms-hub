@@ -2,43 +2,43 @@ import { z } from 'zod'
 import { BlogStatus } from '../enums'
 
 /**
- * Blog Validation Schemas
+ * Schema xác thực Blog
  */
 
-// Create blog schema
+// Schema tạo blog
 export const createBlogSchema = z.object({
   body: z.object({
-    title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim(),
-    slug: z.string().min(1, 'Slug is required').max(200, 'Slug too long').trim().toLowerCase(),
-    content: z.string().min(1, 'Content is required'),
-    excerpt: z.string().min(1, 'Excerpt is required').max(500, 'Excerpt too long').trim(),
+    title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim(),
+    slug: z.string().min(1, 'Slug là bắt buộc').max(200, 'Slug quá dài').trim().toLowerCase(),
+    content: z.string().min(1, 'Nội dung là bắt buộc'),
+    excerpt: z.string().min(1, 'Tóm tắt là bắt buộc').max(500, 'Tóm tắt quá dài').trim(),
     thumbnail: z.string().optional(),
     status: z.nativeEnum(BlogStatus).optional().default(BlogStatus.DRAFT),
-    publishedAt: z.string().datetime('Invalid date format').optional(),
-    categoryId: z.string().min(1, 'Category ID is required').optional()
+    publishedAt: z.string().datetime('Định dạng ngày không hợp lệ').optional(),
+    categoryId: z.string().min(1, 'ID danh mục là bắt buộc').optional()
   })
 })
 
-// Update blog schema
+// Schema cập nhật blog
 export const updateBlogSchema = z.object({
   body: z.object({
-    title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim().optional(),
-    slug: z.string().min(1, 'Slug is required').max(200, 'Slug too long').trim().toLowerCase().optional(),
-    content: z.string().min(1, 'Content is required').optional(),
-    excerpt: z.string().min(1, 'Excerpt is required').max(500, 'Excerpt too long').trim().optional(),
-    thumbnail: z.string().min(1, 'Thumbnail is required').url('Thumbnail must be a valid URL').optional(),
+    title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim().optional(),
+    slug: z.string().min(1, 'Slug là bắt buộc').max(200, 'Slug quá dài').trim().toLowerCase().optional(),
+    content: z.string().min(1, 'Nội dung là bắt buộc').optional(),
+    excerpt: z.string().min(1, 'Tóm tắt là bắt buộc').max(500, 'Tóm tắt quá dài').trim().optional(),
+    thumbnail: z.string().min(1, 'Thumbnail là bắt buộc').url('Thumbnail phải là URL hợp lệ').optional(),
     status: z.nativeEnum(BlogStatus).optional(),
-    publishedAt: z.string().datetime('Invalid date format').optional(),
-    categoryId: z.string().min(1, 'Category ID is required').optional()
+    publishedAt: z.string().datetime('Định dạng ngày không hợp lệ').optional(),
+    categoryId: z.string().min(1, 'ID danh mục là bắt buộc').optional()
   })
 })
 
-// Get blogs query schema
+// Schema query lấy danh sách blog
 export const getBlogsSchema = z.object({
   query: z.object({
-    page: z.string().regex(/^\d+$/, 'Page must be a number').optional(),
-    limit: z.string().regex(/^\d+$/, 'Limit must be a number').optional(),
-    search: z.string().max(100, 'Search term too long').optional(),
+    page: z.string().regex(/^\d+$/, 'Page phải là số').optional(),
+    limit: z.string().regex(/^\d+$/, 'Limit phải là số').optional(),
+    search: z.string().max(100, 'Từ khóa tìm kiếm quá dài').optional(),
     status: z
       .union([
         z.nativeEnum(BlogStatus),
@@ -53,31 +53,31 @@ export const getBlogsSchema = z.object({
   })
 })
 
-// Blog params schema
+// Schema params blog theo ID
 export const blogParamsSchema = z.object({
   params: z.object({
-    blogId: z.string().min(1, 'Blog ID is required')
+    blogId: z.string().min(1, 'Blog ID là bắt buộc')
   })
 })
 
-// Blog slug params schema
+// Schema params blog theo slug
 export const blogSlugParamsSchema = z.object({
   params: z.object({
-    slug: z.string().min(1, 'Blog slug is required')
+    slug: z.string().min(1, 'Slug blog là bắt buộc')
   })
 })
 
-// Bulk delete blogs schema
+// Schema xóa nhiều blog
 export const bulkDeleteBlogsSchema = z.object({
   body: z.object({
     blogIds: z
-      .array(z.string().min(1, 'Blog ID is required'))
-      .min(1, 'At least one blog ID is required')
-      .max(100, 'Cannot delete more than 100 blogs at once')
+      .array(z.string().min(1, 'Blog ID là bắt buộc'))
+      .min(1, 'Phải có ít nhất một blog ID')
+      .max(100, 'Không thể xóa quá 100 blog cùng lúc')
   })
 })
 
-// Type exports
+// Export type
 export type CreateBlogInput = z.infer<typeof createBlogSchema>['body']
 export type UpdateBlogInput = z.infer<typeof updateBlogSchema>['body']
 export type GetBlogsQuery = z.infer<typeof getBlogsSchema>['query']

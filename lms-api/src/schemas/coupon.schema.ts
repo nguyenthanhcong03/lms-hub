@@ -2,110 +2,100 @@ import { z } from 'zod'
 import { CouponDiscountType } from '../enums'
 
 /**
- * Coupon Validation Schemas - Simple CRUD
+ * Schema xác thực Mã giảm giá (Coupon) - CRUD đơn giản
  */
 
-// Create coupon schema
+// Schema tạo coupon
 export const createCouponSchema = z.object({
   body: z
     .object({
-      title: z.string().min(1, 'Title is required').max(100, 'Title too long').trim(),
-      code: z.string().min(3, 'Code must be at least 3 characters').max(20, 'Code too long').trim().toUpperCase(),
+      title: z.string().min(1, 'Tiêu đề là bắt buộc').max(100, 'Tiêu đề quá dài').trim(),
+      code: z.string().min(3, 'Mã phải có ít nhất 3 ký tự').max(20, 'Mã quá dài').trim().toUpperCase(),
       discountType: z.enum([CouponDiscountType.PERCENT, CouponDiscountType.FIXED]),
-      discountValue: z.number().min(0, 'Value must be positive'),
+      discountValue: z.number().min(0, 'Giá trị phải là số dương'),
       courseIds: z
-        .array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid course ID'))
+        .array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID khóa học không hợp lệ'))
         .optional()
         .default([]),
-      minPurchaseAmount: z.number().min(0, 'Minimum purchase amount must be positive').optional().default(0),
-      maxUses: z.number().int().min(1, 'Max uses must be at least 1').optional(),
-      startDate: z.string().datetime('Invalid start date format').optional(),
-      endDate: z.string().datetime('Invalid end date format').optional(),
+      minPurchaseAmount: z.number().min(0, 'Giá trị đơn hàng tối thiểu phải là số dương').optional().default(0),
+      maxUses: z.number().int().min(1, 'Số lượt sử dụng tối đa phải >= 1').optional(),
+      startDate: z.string().datetime('Định dạng ngày bắt đầu không hợp lệ').optional(),
+      endDate: z.string().datetime('Định dạng ngày kết thúc không hợp lệ').optional(),
       isActive: z.boolean().optional().default(true)
     })
     .refine(
       (data) => {
-        // Validate that end date is after start date
         if (data.startDate && data.endDate) {
           return new Date(data.endDate) > new Date(data.startDate)
         }
         return true
       },
       {
-        message: 'End date must be after start date',
+        message: 'Ngày kết thúc phải sau ngày bắt đầu',
         path: ['endDate']
       }
     )
     .refine(
       (data) => {
-        // If type is percent, value should be between 1-100
         if (data.discountType === CouponDiscountType.PERCENT) {
           return data.discountValue >= 1 && data.discountValue <= 100
         }
         return true
       },
       {
-        message: 'Percentage value must be between 1 and 100',
+        message: 'Phần trăm giảm giá phải từ 1 đến 100',
         path: ['discountValue']
       }
     )
 })
 
-// Update coupon schema
+// Schema cập nhật coupon
 export const updateCouponSchema = z.object({
   body: z
     .object({
-      title: z.string().min(1, 'Title is required').max(100, 'Title too long').trim().optional(),
-      code: z
-        .string()
-        .min(3, 'Code must be at least 3 characters')
-        .max(20, 'Code too long')
-        .trim()
-        .toUpperCase()
-        .optional(),
+      title: z.string().min(1, 'Tiêu đề là bắt buộc').max(100, 'Tiêu đề quá dài').trim().optional(),
+      code: z.string().min(3, 'Mã phải có ít nhất 3 ký tự').max(20, 'Mã quá dài').trim().toUpperCase().optional(),
       discountType: z.enum([CouponDiscountType.PERCENT, CouponDiscountType.FIXED]).optional(),
-      discountValue: z.number().min(0, 'Value must be positive').optional(),
-      courseIds: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid course ID')).optional(),
-      minPurchaseAmount: z.number().min(0, 'Minimum purchase amount must be positive').optional(),
-      maxUses: z.number().int().min(1, 'Max uses must be at least 1').optional(),
-      startDate: z.string().datetime('Invalid start date format').optional(),
-      endDate: z.string().datetime('Invalid end date format').optional(),
+      discountValue: z.number().min(0, 'Giá trị phải là số dương').optional(),
+      courseIds: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID khóa học không hợp lệ')).optional(),
+      minPurchaseAmount: z.number().min(0, 'Giá trị đơn hàng tối thiểu phải là số dương').optional(),
+      maxUses: z.number().int().min(1, 'Số lượt sử dụng tối đa phải >= 1').optional(),
+      startDate: z.string().datetime('Định dạng ngày bắt đầu không hợp lệ').optional(),
+      endDate: z.string().datetime('Định dạng ngày kết thúc không hợp lệ').optional(),
       isActive: z.boolean().optional()
     })
     .refine(
       (data) => {
-        // Validate that end date is after start date if both are provided
         if (data.startDate && data.endDate) {
           return new Date(data.endDate) > new Date(data.startDate)
         }
         return true
       },
       {
-        message: 'End date must be after start date',
+        message: 'Ngày kết thúc phải sau ngày bắt đầu',
         path: ['endDate']
       }
     )
     .refine(
       (data) => {
-        // If type is percent, value should be between 1-100
         if (data.discountType === CouponDiscountType.PERCENT && data.discountValue !== undefined) {
           return data.discountValue >= 1 && data.discountValue <= 100
         }
         return true
       },
       {
-        message: 'Percentage value must be between 1 and 100',
+        message: 'Phần trăm giảm giá phải từ 1 đến 100',
         path: ['discountValue']
       }
     )
 })
 
-// Get coupons query schema
+// Schema query lấy danh sách coupon
 export const getCouponsSchema = z.object({
   query: z.object({
-    page: z.string().regex(/^\d+$/, 'Page must be a number').optional(),
-    limit: z.string().regex(/^\d+$/, 'Limit must be a number').optional(),
-    search: z.string().max(100, 'Search term too long').optional(),
+    page: z.string().regex(/^\d+$/, 'Page phải là số').optional(),
+    limit: z.string().regex(/^\d+$/, 'Limit phải là số').optional(),
+    search: z.string().max(100, 'Từ khóa tìm kiếm quá dài').optional(),
     isActive: z
       .string()
       .transform((val) => val === 'true')
@@ -118,17 +108,17 @@ export const getCouponsSchema = z.object({
   })
 })
 
-// Apply coupon schema
+// Schema áp dụng coupon
 export const applyCouponSchema = z.object({
   body: z.object({
-    code: z.string().min(1, 'Coupon code is required').trim().toUpperCase(),
+    code: z.string().min(1, 'Mã coupon là bắt buộc').trim().toUpperCase(),
     courseIds: z
-      .array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid course ID'))
-      .min(1, 'At least one course is required')
+      .array(z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID khóa học không hợp lệ'))
+      .min(1, 'Phải có ít nhất một khóa học')
   })
 })
 
-// Type exports
+// Export type
 export type CreateCouponInput = z.infer<typeof createCouponSchema>['body']
 export type UpdateCouponInput = z.infer<typeof updateCouponSchema>['body']
 export type GetCouponsQuery = z.infer<typeof getCouponsSchema>['query']

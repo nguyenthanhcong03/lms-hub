@@ -2,70 +2,70 @@ import { z } from 'zod'
 import { objectIdSchema, paginationSchema } from './common.schema'
 
 /**
- * Lesson and Resource Validation Schemas
+ * Schema validation cho Lesson và Resource
  */
 
-// Create lesson schema (supports both resource and resourceId)
+// Schema tạo lesson (hỗ trợ cả resource và resourceId)
 export const createLessonSchema = z.object({
   body: z
     .object({
-      title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim(),
+      title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim(),
       chapterId: objectIdSchema,
       courseId: objectIdSchema,
       contentType: z.enum(['video', 'quiz', 'article']),
       preview: z.boolean().optional().default(false),
       isPublished: z.boolean().optional().default(false),
       duration: z.number().int().optional(),
-      // Either provide resourceId (existing resource) OR resource (create new resource)
+      // Có thể truyền resourceId (resource đã tồn tại) HOẶC resource (tạo mới)
       resourceId: objectIdSchema.optional(),
       resource: z.record(z.string(), z.any()).optional()
     })
     .refine((data) => data.resourceId || data.resource, {
-      message: 'Either resourceId or resource must be provided',
+      message: 'Phải cung cấp resourceId hoặc resource',
       path: ['resourceId']
     })
 })
 
-// Update lesson schema (with optional resource data)
+// Schema cập nhật lesson (có thể kèm resource)
 export const updateLessonSchema = z.object({
   params: z.object({
     id: objectIdSchema
   }),
   body: z
     .object({
-      title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim().optional(),
+      title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim().optional(),
       chapterId: objectIdSchema.optional(),
-      order: z.number().int().min(1, 'Order must be at least 1').optional(),
+      order: z.number().int().min(1, 'Thứ tự phải >= 1').optional(),
       preview: z.boolean().optional(),
       isPublished: z.boolean().optional(),
-      duration: z.number().int().min(0, 'Duration must be 0 or greater (0 = unlimited)').optional(),
+      duration: z.number().int().min(0, 'Thời lượng phải >= 0 (0 = không giới hạn)').optional(),
       resource: z.record(z.string(), z.any()).optional()
     })
-    .refine((data) => Object.keys(data).length > 0, 'At least one field must be provided for update')
+    .refine((data) => Object.keys(data).length > 0, 'Phải cung cấp ít nhất một field để cập nhật')
 })
 
-// Get lessons query schema (requires chapterId)
+// Schema query lấy danh sách lesson (bắt buộc chapterId)
 export const getLessonsQuerySchema = z.object({
   query: z.object({
     chapterId: objectIdSchema
   })
 })
 
-// Get lesson by ID schema
+// Schema lấy lesson theo ID
 export const getLessonByIdSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Delete lesson schema
+// Schema xoá lesson
 export const deleteLessonSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Get chapter lessons schema
+// Schema lấy lesson theo chapter
 export const getChapterLessonsSchema = z.object({
   params: z.object({
     chapterId: objectIdSchema
@@ -81,7 +81,7 @@ export const getChapterLessonsSchema = z.object({
   })
 })
 
-// Get course lessons schema
+// Schema lấy lesson theo course
 export const getCourseLessonsSchema = z.object({
   params: z.object({
     courseId: objectIdSchema
@@ -98,46 +98,46 @@ export const getCourseLessonsSchema = z.object({
   })
 })
 
-// Reorder lessons schema
+// Schema sắp xếp lại lesson
 export const reorderLessonsSchema = z.object({
   body: z.object({
     lessons: z
       .array(
         z.object({
           id: objectIdSchema,
-          order: z.number().min(0, 'Order must be non-negative')
+          order: z.number().min(0, 'Thứ tự phải >= 0')
         })
       )
-      .min(1, 'At least one lesson is required')
+      .min(1, 'Cần ít nhất một lesson')
   })
 })
 
 /**
- * Video Resource Validation Schemas
+ * Schema validation cho Video Resource
  */
 
-// Create video schema
+// Schema tạo video
 export const createVideoSchema = z.object({
   body: z.object({
-    url: z.string().url('Invalid URL format').min(1, 'URL is required'),
-    description: z.string().min(1, 'Description is required').max(1000, 'Description too long').trim()
+    url: z.string().url('URL không hợp lệ').min(1, 'URL là bắt buộc'),
+    description: z.string().min(1, 'Mô tả là bắt buộc').max(1000, 'Mô tả quá dài').trim()
   })
 })
 
-// Update video schema
+// Schema cập nhật video
 export const updateVideoSchema = z.object({
   params: z.object({
     id: objectIdSchema
   }),
   body: z
     .object({
-      url: z.string().url('Invalid URL format').min(1, 'URL is required').optional(),
-      description: z.string().min(1, 'Description is required').max(1000, 'Description too long').trim().optional()
+      url: z.string().url('URL không hợp lệ').min(1, 'URL là bắt buộc').optional(),
+      description: z.string().min(1, 'Mô tả là bắt buộc').max(1000, 'Mô tả quá dài').trim().optional()
     })
-    .refine((data) => Object.keys(data).length > 0, 'At least one field must be provided for update')
+    .refine((data) => Object.keys(data).length > 0, 'Phải cung cấp ít nhất một field để cập nhật')
 })
 
-// Get videos query schema
+// Schema query video
 export const getVideosQuerySchema = z.object({
   query: paginationSchema.extend({
     search: z.string().optional(),
@@ -146,53 +146,53 @@ export const getVideosQuerySchema = z.object({
   })
 })
 
-// Get video by ID schema
+// Schema lấy video theo ID
 export const getVideoByIdSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Delete video schema
+// Schema xoá video
 export const deleteVideoSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Bulk delete videos schema
+// Schema xoá nhiều video
 export const bulkDeleteVideosSchema = z.object({
   body: z.object({
-    videoIds: z.array(objectIdSchema).min(1, 'At least one video ID is required')
+    videoIds: z.array(objectIdSchema).min(1, 'Cần ít nhất một video ID')
   })
 })
 
 /**
- * Article Resource Validation Schemas
+ * Schema validation cho Article Resource
  */
 
-// Create article schema
+// Schema tạo article
 export const createArticleSchema = z.object({
   body: z.object({
-    title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim(),
-    description: z.string().min(1, 'Description is required').max(5000, 'Description too long').trim()
+    title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim(),
+    description: z.string().min(1, 'Mô tả là bắt buộc').max(5000, 'Mô tả quá dài').trim()
   })
 })
 
-// Update article schema
+// Schema cập nhật article
 export const updateArticleSchema = z.object({
   params: z.object({
     id: objectIdSchema
   }),
   body: z
     .object({
-      title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim().optional(),
-      description: z.string().min(1, 'Description is required').max(5000, 'Description too long').trim().optional()
+      title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim().optional(),
+      description: z.string().min(1, 'Mô tả là bắt buộc').max(5000, 'Mô tả quá dài').trim().optional()
     })
-    .refine((data) => Object.keys(data).length > 0, 'At least one field must be provided for update')
+    .refine((data) => Object.keys(data).length > 0, 'Phải cung cấp ít nhất một field để cập nhật')
 })
 
-// Get articles query schema
+// Schema query article
 export const getArticlesQuerySchema = z.object({
   query: paginationSchema.extend({
     search: z.string().optional(),
@@ -201,14 +201,14 @@ export const getArticlesQuerySchema = z.object({
   })
 })
 
-// Get article by ID schema
+// Schema lấy article theo ID
 export const getArticleByIdSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Delete article schema
+// Schema xoá article
 export const deleteArticleSchema = z.object({
   params: z.object({
     id: objectIdSchema
@@ -216,53 +216,45 @@ export const deleteArticleSchema = z.object({
 })
 
 /**
- * Quiz Resource Validation Schemas
+ * Schema validation cho Quiz Resource
  */
 
-// Create quiz schema
+// Schema tạo quiz
 export const createQuizSchema = z.object({
   body: z.object({
-    title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim(),
-    totalAttemptsAllowed: z
-      .number()
-      .int()
-      .min(1, 'Total attempts must be at least 1')
-      .max(10, 'Total attempts cannot exceed 10'),
-    passingScorePercentage: z
-      .number()
-      .int()
-      .min(1, 'Passing score must be at least 1%')
-      .max(100, 'Passing score cannot exceed 100%'),
+    title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim(),
+    totalAttemptsAllowed: z.number().int().min(1, 'Số lần làm phải >= 1').max(10, 'Số lần làm tối đa là 10'),
+    passingScorePercentage: z.number().int().min(1, 'Điểm đạt phải >= 1%').max(100, 'Điểm đạt tối đa là 100%'),
     description: z.string().trim().optional()
   })
 })
 
-// Update quiz schema
+// Schema cập nhật quiz
 export const updateQuizSchema = z.object({
   params: z.object({
     id: objectIdSchema
   }),
   body: z
     .object({
-      title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim().optional(),
+      title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim().optional(),
       totalAttemptsAllowed: z
         .number()
         .int()
-        .min(1, 'Total attempts must be at least 1')
-        .max(10, 'Total attempts cannot exceed 10')
+        .min(1, 'Số lần làm phải >= 1')
+        .max(10, 'Số lần làm tối đa là 10')
         .optional(),
       passingScorePercentage: z
         .number()
         .int()
-        .min(1, 'Passing score must be at least 1%')
-        .max(100, 'Passing score cannot exceed 100%')
+        .min(1, 'Điểm đạt phải >= 1%')
+        .max(100, 'Điểm đạt tối đa là 100%')
         .optional(),
       description: z.string().trim().optional()
     })
-    .refine((data) => Object.keys(data).length > 0, 'At least one field must be provided for update')
+    .refine((data) => Object.keys(data).length > 0, 'Phải cung cấp ít nhất một field để cập nhật')
 })
 
-// Get quizzes query schema
+// Schema query quiz
 export const getQuizzesQuerySchema = z.object({
   query: paginationSchema.extend({
     search: z.string().optional(),
@@ -271,14 +263,14 @@ export const getQuizzesQuerySchema = z.object({
   })
 })
 
-// Get quiz by ID schema
+// Schema lấy quiz theo ID
 export const getQuizByIdSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Delete quiz schema
+// Schema xoá quiz
 export const deleteQuizSchema = z.object({
   params: z.object({
     id: objectIdSchema

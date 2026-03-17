@@ -2,34 +2,34 @@ import { z } from 'zod'
 import { objectIdSchema } from './common.schema'
 
 /**
- * Cart Validation Schemas
+ * Schema xác thực Giỏ hàng (Cart)
  */
 
-// Add to cart schema
+// Schema thêm vào giỏ hàng
 export const addToCartSchema = z.object({
   body: z.object({
     courseId: objectIdSchema
   })
 })
 
-// Remove from cart schema
+// Schema xóa khỏi giỏ hàng
 export const removeFromCartSchema = z.object({
   params: z.object({
     courseId: objectIdSchema
   })
 })
 
-// Update cart item schema
+// Schema cập nhật item trong giỏ hàng
 export const updateCartItemSchema = z.object({
   params: z.object({
     courseId: objectIdSchema
   }),
   body: z.object({
-    // Reserved for future cart item updates
+    // Dự phòng cho các cập nhật trong tương lai
   })
 })
 
-// Type exports
+// Export type
 export type AddToCartInput = z.infer<typeof addToCartSchema>['body']
 export type RemoveFromCartParams = z.infer<typeof removeFromCartSchema>['params']
 export type UpdateCartItemInput = z.infer<typeof updateCartItemSchema>['body']

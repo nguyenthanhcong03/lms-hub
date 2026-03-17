@@ -2,33 +2,31 @@ import { z } from 'zod'
 import { objectIdSchema, paginationSchema } from './common.schema'
 
 /**
- * Quiz Question Validation Schemas
+ * Schema validation cho Quiz Question
  */
 
-// Individual question object schema
+// Schema cho một câu hỏi
 const questionObjectSchema = z.object({
   quizId: objectIdSchema,
-  question: z.string().min(1, 'Question is required').max(1000, 'Question too long').trim(),
-  explanation: z.string().min(1, 'Explanation is required').max(2000, 'Explanation too long').trim(),
+  question: z.string().min(1, 'Câu hỏi là bắt buộc').max(1000, 'Câu hỏi quá dài').trim(),
+  explanation: z.string().min(1, 'Giải thích là bắt buộc').max(2000, 'Giải thích quá dài').trim(),
   type: z.enum(['multiple_choice', 'true_false', 'single_choice']),
   options: z
-    .array(z.string().min(1, 'Option cannot be empty').trim())
-    .min(2, 'At least 2 options required')
-    .max(6, 'Maximum 6 options allowed'),
-  correctAnswers: z
-    .array(z.number().int().min(0, 'Answer index must be non-negative'))
-    .min(1, 'At least one correct answer required'),
-  point: z.number().int().min(1, 'Point must be at least 1').max(100, 'Point cannot exceed 100')
+    .array(z.string().min(1, 'Lựa chọn không được để trống').trim())
+    .min(2, 'Cần ít nhất 2 lựa chọn')
+    .max(6, 'Tối đa 6 lựa chọn'),
+  correctAnswers: z.array(z.number().int().min(0, 'Chỉ số đáp án phải >= 0')).min(1, 'Cần ít nhất một đáp án đúng'),
+  point: z.number().int().min(1, 'Điểm phải >= 1').max(100, 'Điểm không được vượt quá 100')
 })
 
-// Create quiz question schema
+// Schema tạo câu hỏi quiz
 export const createQuizQuestionSchema = z.object({
   body: z.object({
-    questions: z.array(questionObjectSchema).min(1, 'At least one question is required')
+    questions: z.array(questionObjectSchema).min(1, 'Cần ít nhất một câu hỏi')
   })
 })
 
-// Update quiz question schema
+// Schema cập nhật câu hỏi quiz
 export const updateQuizQuestionSchema = z.object({
   params: z.object({
     id: objectIdSchema
@@ -36,24 +34,24 @@ export const updateQuizQuestionSchema = z.object({
   body: z
     .object({
       quizId: objectIdSchema.optional(),
-      question: z.string().min(1, 'Question is required').max(1000, 'Question too long').trim().optional(),
-      explanation: z.string().min(1, 'Explanation is required').max(2000, 'Explanation too long').trim().optional(),
+      question: z.string().min(1, 'Câu hỏi là bắt buộc').max(1000, 'Câu hỏi quá dài').trim().optional(),
+      explanation: z.string().min(1, 'Giải thích là bắt buộc').max(2000, 'Giải thích quá dài').trim().optional(),
       type: z.enum(['multiple_choice', 'true_false', 'single_choice']).optional(),
       options: z
-        .array(z.string().min(1, 'Option cannot be empty').trim())
-        .min(2, 'At least 2 options required')
-        .max(6, 'Maximum 6 options allowed')
+        .array(z.string().min(1, 'Lựa chọn không được để trống').trim())
+        .min(2, 'Cần ít nhất 2 lựa chọn')
+        .max(6, 'Tối đa 6 lựa chọn')
         .optional(),
       correctAnswers: z
-        .array(z.number().int().min(0, 'Answer index must be non-negative'))
-        .min(1, 'At least one correct answer required')
+        .array(z.number().int().min(0, 'Chỉ số đáp án phải >= 0'))
+        .min(1, 'Cần ít nhất một đáp án đúng')
         .optional(),
-      point: z.number().int().min(1, 'Point must be at least 1').max(100, 'Point cannot exceed 100').optional()
+      point: z.number().int().min(1, 'Điểm phải >= 1').max(100, 'Điểm không được vượt quá 100').optional()
     })
-    .refine((data) => Object.keys(data).length > 0, 'At least one field must be provided for update')
+    .refine((data) => Object.keys(data).length > 0, 'Phải cung cấp ít nhất một field để cập nhật')
 })
 
-// Get quiz questions query schema
+// Schema query danh sách câu hỏi quiz
 export const getQuizQuestionsQuerySchema = z.object({
   query: paginationSchema.extend({
     quizId: objectIdSchema.optional(),
@@ -64,21 +62,21 @@ export const getQuizQuestionsQuerySchema = z.object({
   })
 })
 
-// Get quiz question by ID schema
+// Schema lấy câu hỏi theo ID
 export const getQuizQuestionByIdSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Delete quiz question schema
+// Schema xoá câu hỏi
 export const deleteQuizQuestionSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Get questions by quiz ID schema
+// Schema lấy câu hỏi theo quizId
 export const getQuestionsByQuizSchema = z.object({
   params: z.object({
     quizId: objectIdSchema
@@ -90,14 +88,14 @@ export const getQuestionsByQuizSchema = z.object({
   })
 })
 
-// Bulk delete quiz questions schema
+// Schema xoá nhiều câu hỏi quiz
 export const bulkDeleteQuizQuestionsSchema = z.object({
   body: z.object({
-    questionIds: z.array(objectIdSchema).min(1, 'At least one question ID is required')
+    questionIds: z.array(objectIdSchema).min(1, 'Cần ít nhất một question ID')
   })
 })
 
-// Type exports for the schemas
+// Export type
 export type QuizQuestionData = z.infer<typeof questionObjectSchema>
 export type CreateQuizQuestionInput = z.infer<typeof createQuizQuestionSchema>['body']
 export type UpdateQuizQuestionInput = z.infer<typeof updateQuizQuestionSchema>['body']

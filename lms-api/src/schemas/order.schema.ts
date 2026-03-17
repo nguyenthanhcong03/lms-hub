@@ -2,13 +2,13 @@ import { z } from 'zod'
 import { OrderStatus, PaymentMethod } from '../enums'
 
 /**
- * Order Validation Schemas
+ * Schema validation cho Order
  */
 
-// Create order schema
+// Schema tạo đơn hàng
 export const createOrderSchema = z.object({
   body: z.object({
-    courseIds: z.array(z.string().min(1, 'Course ID is required')).min(1, 'At least one course is required'),
+    courseIds: z.array(z.string().min(1, 'Course ID là bắt buộc')).min(1, 'Cần ít nhất một khóa học'),
     couponCode: z.string().optional(),
     paymentMethod: z.enum([PaymentMethod.BANK_TRANSFER], {
       message: 'Phương thức thanh toán không hợp lệ'
@@ -16,7 +16,7 @@ export const createOrderSchema = z.object({
   })
 })
 
-// Create order from cart schema
+// Schema tạo đơn hàng từ giỏ hàng
 export const createOrderFromCartSchema = z.object({
   body: z.object({
     paymentMethod: z.enum([PaymentMethod.BANK_TRANSFER], {
@@ -26,16 +26,16 @@ export const createOrderFromCartSchema = z.object({
   })
 })
 
-// Update order status schema
+// Schema cập nhật trạng thái đơn hàng
 export const updateOrderStatusSchema = z.object({
   body: z.object({
     status: z.enum([OrderStatus.PENDING, OrderStatus.COMPLETED, OrderStatus.CANCELLED], {
-      message: 'Invalid order status'
+      message: 'Trạng thái đơn hàng không hợp lệ'
     })
   })
 })
 
-// Get orders query schema
+// Schema query danh sách đơn hàng
 export const getOrdersQuerySchema = z.object({
   query: z.object({
     page: z.string().optional().default('1').transform(Number).pipe(z.number().min(1)),
@@ -48,20 +48,20 @@ export const getOrdersQuerySchema = z.object({
   })
 })
 
-// Order ID param schema
+// Schema param Order ID
 export const orderParamsSchema = z.object({
   params: z.object({
-    id: z.string().min(1, 'Order ID is required')
+    id: z.string().min(1, 'Order ID là bắt buộc')
   })
 })
 
-// Bulk delete orders schema
+// Schema xoá nhiều đơn hàng
 export const bulkDeleteOrdersSchema = z.object({
   body: z.object({
     orderIds: z
-      .array(z.string().min(1, 'Order ID is required'))
-      .min(1, 'At least one order ID is required')
-      .max(100, 'Cannot delete more than 100 orders at once')
+      .array(z.string().min(1, 'Order ID là bắt buộc'))
+      .min(1, 'Cần ít nhất một Order ID')
+      .max(100, 'Không thể xoá quá 100 đơn hàng cùng lúc')
   })
 })
 

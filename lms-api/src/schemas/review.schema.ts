@@ -2,24 +2,20 @@ import { z } from 'zod'
 import { objectIdSchema, paginationSchema } from './common.schema'
 import { ReviewStatus } from '../enums'
 
-// Create review schema
+// Schema tạo đánh giá
 export const createReviewSchema = z.object({
   body: z.object({
     courseId: objectIdSchema,
-    star: z
-      .number()
-      .int('Star rating must be a whole number')
-      .min(1, 'Star rating must be at least 1')
-      .max(5, 'Star rating cannot exceed 5'),
+    star: z.number().int('Số sao phải là số nguyên').min(1, 'Số sao phải >= 1').max(5, 'Số sao không được vượt quá 5'),
     content: z
       .string()
       .trim()
-      .min(1, 'Review content must be at least 1 character')
-      .max(1000, 'Review content cannot exceed 1000 characters')
+      .min(1, 'Nội dung đánh giá phải có ít nhất 1 ký tự')
+      .max(1000, 'Nội dung đánh giá không được vượt quá 1000 ký tự')
   })
 })
 
-// Update review schema
+// Schema cập nhật đánh giá
 export const updateReviewSchema = z.object({
   params: z.object({
     id: objectIdSchema
@@ -29,22 +25,22 @@ export const updateReviewSchema = z.object({
     .object({
       star: z
         .number()
-        .int('Star rating must be a whole number')
-        .min(1, 'Star rating must be at least 1')
-        .max(5, 'Star rating cannot exceed 5')
+        .int('Số sao phải là số nguyên')
+        .min(1, 'Số sao phải >= 1')
+        .max(5, 'Số sao không được vượt quá 5')
         .optional(),
       content: z
         .string()
         .trim()
-        .min(1, 'Review content must be at least 1 characters')
-        .max(1000, 'Review content cannot exceed 1000 characters')
+        .min(1, 'Nội dung đánh giá phải có ít nhất 1 ký tự')
+        .max(1000, 'Nội dung đánh giá không được vượt quá 1000 ký tự')
         .optional(),
       status: z.enum([ReviewStatus.ACTIVE, ReviewStatus.INACTIVE]).optional()
     })
-    .refine((data) => Object.keys(data).length > 0, 'At least one field must be provided for update')
+    .refine((data) => Object.keys(data).length > 0, 'Phải cung cấp ít nhất một field để cập nhật')
 })
 
-// Get reviews query schema
+// Schema query danh sách đánh giá
 export const getReviewsQuerySchema = z.object({
   query: paginationSchema.extend({
     courseId: objectIdSchema.optional(),
@@ -54,27 +50,27 @@ export const getReviewsQuerySchema = z.object({
       .string()
       .optional()
       .transform((val) => (val ? parseInt(val, 10) : undefined))
-      .refine((val) => !val || (val >= 1 && val <= 5), 'Star rating must be between 1 and 5'),
+      .refine((val) => !val || (val >= 1 && val <= 5), 'Số sao phải nằm trong khoảng 1 đến 5'),
     sortBy: z.enum(['createdAt', 'updatedAt', 'star']).default('createdAt'),
     sortOrder: z.enum(['asc', 'desc']).default('desc')
   })
 })
 
-// Get review by ID schema
+// Schema lấy đánh giá theo ID
 export const getReviewByIdSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Delete review schema
+// Schema xoá đánh giá
 export const deleteReviewSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Get course reviews schema
+// Schema lấy đánh giá theo course
 export const getCourseReviewsSchema = z.object({
   params: z.object({
     courseId: objectIdSchema
@@ -85,13 +81,13 @@ export const getCourseReviewsSchema = z.object({
       .string()
       .optional()
       .transform((val) => (val ? parseInt(val, 10) : undefined))
-      .refine((val) => !val || (val >= 1 && val <= 5), 'Minimum star rating must be between 1 and 5'),
+      .refine((val) => !val || (val >= 1 && val <= 5), 'Số sao tối thiểu phải từ 1 đến 5'),
     sortBy: z.enum(['createdAt', 'updatedAt', 'star']).default('createdAt'),
     sortOrder: z.enum(['asc', 'desc']).default('desc')
   })
 })
 
-// Get user reviews schema
+// Schema lấy đánh giá theo user
 export const getUserReviewsSchema = z.object({
   params: z.object({
     userId: objectIdSchema
@@ -102,20 +98,20 @@ export const getUserReviewsSchema = z.object({
       .string()
       .optional()
       .transform((val) => (val ? parseInt(val, 10) : undefined))
-      .refine((val) => !val || (val >= 1 && val <= 5), 'Star rating must be between 1 and 5'),
+      .refine((val) => !val || (val >= 1 && val <= 5), 'Số sao phải nằm trong khoảng 1 đến 5'),
     sortBy: z.enum(['createdAt', 'updatedAt', 'star']).default('createdAt'),
     sortOrder: z.enum(['asc', 'desc']).default('desc')
   })
 })
 
-// Get course rating stats schema
+// Schema thống kê rating của course
 export const getCourseRatingStatsSchema = z.object({
   params: z.object({
     courseId: objectIdSchema
   })
 })
 
-// Type exports for the schemas
+// Export type
 export type CreateReviewInput = z.infer<typeof createReviewSchema>['body']
 export type UpdateReviewInput = z.infer<typeof updateReviewSchema>['body']
 export type GetReviewsQuery = z.infer<typeof getReviewsQuerySchema>['query']

@@ -1,10 +1,10 @@
 import { z } from 'zod'
 
 /**
- * Statistics Validation Schemas
+ * Schema validation cho thống kê
  */
 
-// Get monthly revenue trend schema
+// Schema lấy xu hướng doanh thu theo tháng
 export const getMonthlyRevenueTrendSchema = z.object({
   query: z.object({
     months: z
@@ -14,12 +14,12 @@ export const getMonthlyRevenueTrendSchema = z.object({
         if (!val) return true
         const num = parseInt(val)
         return !isNaN(num) && num > 0 && num <= 24
-      }, 'Months must be a number between 1 and 24')
+      }, 'Số tháng phải là số từ 1 đến 24')
       .transform((val) => (val ? parseInt(val) : undefined))
   })
 })
 
-// Get user registration trend schema
+// Schema lấy xu hướng đăng ký người dùng
 export const getUserRegistrationTrendSchema = z.object({
   query: z.object({
     days: z
@@ -29,11 +29,11 @@ export const getUserRegistrationTrendSchema = z.object({
         if (!val) return true
         const num = parseInt(val)
         return !isNaN(num) && num > 0 && num <= 365
-      }, 'Days must be a number between 1 and 365')
+      }, 'Số ngày phải là số từ 1 đến 365')
       .transform((val) => (val ? parseInt(val) : undefined))
   })
 })
 
-// Type exports for TypeScript
+// Export type cho TypeScript
 export type GetMonthlyRevenueTrendQuery = z.infer<typeof getMonthlyRevenueTrendSchema>['query']
 export type GetUserRegistrationTrendQuery = z.infer<typeof getUserRegistrationTrendSchema>['query']

@@ -3,23 +3,23 @@ import { objectIdSchema, paginationSchema } from './common.schema'
 import { CommentStatus } from '~/enums'
 
 /**
- * Comment Validation Schemas
+ * Schema xác thực Bình luận (Comment)
  */
 
-// Reaction type enum validation
+// Enum loại cảm xúc (reaction)
 const reactionTypeSchema = z.enum(['like', 'love', 'care', 'fun', 'wow', 'sad', 'angry'])
 
-// Create comment schema
+// Schema tạo bình luận
 export const createCommentSchema = z.object({
   body: z.object({
-    content: z.string().min(1, 'Content is required').max(2000, 'Content too long').trim(),
+    content: z.string().min(1, 'Nội dung là bắt buộc').max(2000, 'Nội dung quá dài').trim(),
     lessonId: objectIdSchema,
-    parentId: z.union([objectIdSchema, z.null()]).optional(), // For replies - allow null or valid ObjectId
-    mentions: z.array(objectIdSchema).optional() // Mentioned users
+    parentId: z.union([objectIdSchema, z.null()]).optional(), // Dùng cho reply
+    mentions: z.array(objectIdSchema).optional() // Người dùng được mention
   })
 })
 
-// Add reaction schema
+// Schema thêm cảm xúc
 export const addReactionSchema = z.object({
   params: z.object({
     id: objectIdSchema
@@ -29,7 +29,7 @@ export const addReactionSchema = z.object({
   })
 })
 
-// Remove reaction schema
+// Schema xóa cảm xúc
 export const removeReactionSchema = z.object({
   params: z.object({
     id: objectIdSchema
@@ -39,24 +39,24 @@ export const removeReactionSchema = z.object({
   })
 })
 
-// Update comment schema
+// Schema cập nhật bình luận
 export const updateCommentSchema = z.object({
   params: z.object({
     id: objectIdSchema
   }),
   body: z.object({
-    content: z.string().min(1, 'Content is required').max(2000, 'Content too long').trim()
+    content: z.string().min(1, 'Nội dung là bắt buộc').max(2000, 'Nội dung quá dài').trim()
   })
 })
 
-// Get comment by ID schema
+// Schema lấy bình luận theo ID
 export const getCommentByIdSchema = z.object({
   params: z.object({
     id: objectIdSchema
   })
 })
 
-// Get lesson comments schema
+// Schema lấy bình luận theo bài học
 export const getLessonCommentsSchema = z.object({
   params: z.object({
     lessonId: objectIdSchema
@@ -68,7 +68,7 @@ export const getLessonCommentsSchema = z.object({
   })
 })
 
-// Get user comments schema
+// Schema lấy bình luận theo user
 export const getUserCommentsSchema = z.object({
   params: z.object({
     userId: objectIdSchema
@@ -80,7 +80,7 @@ export const getUserCommentsSchema = z.object({
   })
 })
 
-// Get all comments schema (for admin)
+// Schema lấy tất cả bình luận (admin)
 export const getCommentsSchema = z.object({
   query: paginationSchema.extend({
     lessonId: objectIdSchema.optional(),
@@ -90,7 +90,7 @@ export const getCommentsSchema = z.object({
         z.nativeEnum(CommentStatus),
         z.array(z.nativeEnum(CommentStatus)),
         z.string().transform((val) => {
-          // Handle comma-separated values or multiple query params
+          // Xử lý dạng "a,b,c"
           if (val.includes(',')) {
             return val.split(',').map((s) => s.trim())
           }
@@ -104,18 +104,18 @@ export const getCommentsSchema = z.object({
   })
 })
 
-// Moderate comment schema (approve/reject)
+// Schema duyệt bình luận (approve/reject)
 export const moderateCommentSchema = z.object({
   params: z.object({
     id: objectIdSchema
   }),
   body: z.object({
     status: z.enum([CommentStatus.APPROVED, CommentStatus.REJECTED]),
-    reason: z.string().optional() // Optional moderation reason
+    reason: z.string().optional() // Lý do duyệt/từ chối
   })
 })
 
-// Delete comment schema
+// Schema xóa bình luận
 export const deleteCommentSchema = z.object({
   params: z.object({
     id: objectIdSchema
@@ -129,16 +129,16 @@ export const deleteCommentSchema = z.object({
   })
 })
 
-// Bulk moderate comments schema
+// Schema duyệt nhiều bình luận
 export const bulkModerateCommentsSchema = z.object({
   body: z.object({
-    commentIds: z.array(objectIdSchema).min(1, 'At least one comment ID is required'),
+    commentIds: z.array(objectIdSchema).min(1, 'Phải có ít nhất một comment ID'),
     status: z.enum([CommentStatus.APPROVED, CommentStatus.REJECTED]),
     reason: z.string().optional()
   })
 })
 
-// Get comment replies schema
+// Schema lấy reply của bình luận
 export const getCommentRepliesSchema = z.object({
   params: z.object({
     commentId: objectIdSchema
@@ -149,23 +149,23 @@ export const getCommentRepliesSchema = z.object({
       .string()
       .regex(/^[1-5]$/)
       .optional()
-      .default('5'), // Maximum nesting level to fetch
+      .default('5'), // Độ sâu tối đa
     sortBy: z.enum(['createdAt']).default('createdAt'),
-    sortOrder: z.enum(['asc', 'desc']).default('asc') // Replies usually asc
+    sortOrder: z.enum(['asc', 'desc']).default('asc')
   })
 })
 
-// Get comment reactions schema
+// Schema lấy danh sách reaction của bình luận
 export const getCommentReactionsSchema = z.object({
   params: z.object({
     id: objectIdSchema
   }),
   query: z.object({
-    type: reactionTypeSchema.optional() // Filter by reaction type
+    type: reactionTypeSchema.optional() // Lọc theo loại reaction
   })
 })
 
-// Type exports
+// Export type
 export type CreateCommentInput = z.infer<typeof createCommentSchema>['body']
 export type UpdateCommentInput = z.infer<typeof updateCommentSchema>['body']
 export type AddReactionInput = z.infer<typeof addReactionSchema>['body']

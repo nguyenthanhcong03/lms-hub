@@ -1,16 +1,16 @@
 import { z } from 'zod'
 
 /**
- * Payment Validation Schemas
+ * Schema validation cho Payment
  */
 
-// SePay webhook data schema
+// Schema dữ liệu webhook từ SePay
 export const sepayWebhookSchema = z.object({
   body: z.object({
-    id: z.number().int().positive('Transaction ID is required'),
-    gateway: z.string().min(1, 'Gateway is required'),
-    transferType: z.enum(['in', 'out'], { message: 'Transfer type is required' }),
-    transferAmount: z.number().positive('Transfer amount must be positive'),
+    id: z.number().int().positive('Transaction ID là bắt buộc'),
+    gateway: z.string().min(1, 'Gateway là bắt buộc'),
+    transferType: z.enum(['in', 'out'], { message: 'Loại giao dịch là bắt buộc' }),
+    transferAmount: z.number().positive('Số tiền giao dịch phải là số dương'),
     accountNumber: z.string().optional(),
     subAccount: z.string().optional(),
     code: z.string().optional(),
@@ -23,14 +23,14 @@ export const sepayWebhookSchema = z.object({
   })
 })
 
-// API key validation schema
+// Schema validation API key trong header
 export const apiKeyHeaderSchema = z.object({
   headers: z.object({
-    authorization: z.string().min(1, 'Authorization header is required')
+    authorization: z.string().min(1, 'Authorization header là bắt buộc')
   })
 })
 
-// Payment callback query schema
+// Schema query callback từ payment
 export const paymentCallbackQuerySchema = z.object({
   query: z.object({
     status: z.enum(['success', 'failed', 'pending']).optional(),
@@ -39,7 +39,7 @@ export const paymentCallbackQuerySchema = z.object({
   })
 })
 
-// Type exports
+// Export types
 export type SepayWebhookInput = z.infer<typeof sepayWebhookSchema>['body']
 export type ApiKeyHeaderInput = z.infer<typeof apiKeyHeaderSchema>['headers']
 export type PaymentCallbackQuery = z.infer<typeof paymentCallbackQuerySchema>['query']

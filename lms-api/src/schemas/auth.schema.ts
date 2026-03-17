@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { emailSchema, passwordSchema, usernameSchema } from './common.schema'
 
-// Auth request schemas
+// Schema request xác thực (Auth)
 export const registerSchema = z.object({
   body: z.object({
     username: usernameSchema,
@@ -13,13 +13,13 @@ export const registerSchema = z.object({
 export const loginSchema = z.object({
   body: z.object({
     email: emailSchema,
-    password: z.string().min(1, 'Password is required')
+    password: z.string().min(1, 'Mật khẩu là bắt buộc')
   })
 })
 
 export const refreshTokenSchema = z.object({
   body: z.object({
-    refreshToken: z.string().min(1, 'Refresh token is required').optional()
+    refreshToken: z.string().min(1, 'Refresh token là bắt buộc').optional()
   })
 })
 
@@ -32,7 +32,7 @@ export const updateProfileSchema = z.object({
 
 export const changePasswordSchema = z.object({
   body: z.object({
-    currentPassword: z.string().min(1, 'Current password is required'),
+    currentPassword: z.string().min(1, 'Mật khẩu hiện tại là bắt buộc'),
     newPassword: passwordSchema
   })
 })
@@ -45,12 +45,12 @@ export const forgotPasswordSchema = z.object({
 
 export const resetPasswordSchema = z.object({
   body: z.object({
-    token: z.string().min(1, 'Token is required'),
+    token: z.string().min(1, 'Token là bắt buộc'),
     newPassword: passwordSchema
   })
 })
 
-// Auth response types (inferred from schemas)
+// Kiểu dữ liệu response (suy ra từ schema)
 export type RegisterRequest = z.infer<typeof registerSchema>
 export type LoginRequest = z.infer<typeof loginSchema>
 export type RefreshTokenRequest = z.infer<typeof refreshTokenSchema>

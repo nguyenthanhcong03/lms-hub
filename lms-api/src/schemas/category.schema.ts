@@ -2,33 +2,33 @@ import { z } from 'zod'
 import { CategoryStatus } from '../enums'
 
 /**
- * Category Validation Schemas - Simple CRUD
+ * Schema xác thực Danh mục (Category) - CRUD đơn giản
  */
 
-// Create category schema
+// Schema tạo danh mục
 export const createCategorySchema = z.object({
   body: z.object({
-    name: z.string().min(1, 'Name is required').max(100, 'Name too long').trim(),
-    slug: z.string().min(1, 'Slug is required').max(100, 'Slug too long').trim(),
+    name: z.string().min(1, 'Tên là bắt buộc').max(100, 'Tên quá dài').trim(),
+    slug: z.string().min(1, 'Slug là bắt buộc').max(100, 'Slug quá dài').trim(),
     status: z.nativeEnum(CategoryStatus).optional().default(CategoryStatus.ACTIVE)
   })
 })
 
-// Update category schema
+// Schema cập nhật danh mục
 export const updateCategorySchema = z.object({
   body: z.object({
-    name: z.string().min(1, 'Name is required').max(100, 'Name too long').trim().optional(),
-    slug: z.string().min(1, 'Slug is required').max(100, 'Slug too long').trim().optional(),
+    name: z.string().min(1, 'Tên là bắt buộc').max(100, 'Tên quá dài').trim().optional(),
+    slug: z.string().min(1, 'Slug là bắt buộc').max(100, 'Slug quá dài').trim().optional(),
     status: z.nativeEnum(CategoryStatus).optional()
   })
 })
 
-// Get categories query schema
+// Schema query lấy danh sách danh mục
 export const getCategoriesSchema = z.object({
   query: z.object({
-    page: z.string().regex(/^\d+$/, 'Page must be a number').optional(),
-    limit: z.string().regex(/^\d+$/, 'Limit must be a number').optional(),
-    search: z.string().max(100, 'Search term too long').optional(),
+    page: z.string().regex(/^\d+$/, 'Page phải là số').optional(),
+    limit: z.string().regex(/^\d+$/, 'Limit phải là số').optional(),
+    search: z.string().max(100, 'Từ khóa tìm kiếm quá dài').optional(),
     status: z
       .union([
         z.nativeEnum(CategoryStatus),
@@ -41,17 +41,17 @@ export const getCategoriesSchema = z.object({
   })
 })
 
-// Bulk delete categories schema
+// Schema xóa nhiều danh mục
 export const bulkDeleteCategoriesSchema = z.object({
   body: z.object({
     categoryIds: z
-      .array(z.string().min(1, 'Category ID is required'))
-      .min(1, 'At least one category ID is required')
-      .max(100, 'Cannot delete more than 100 categories at once')
+      .array(z.string().min(1, 'Category ID là bắt buộc'))
+      .min(1, 'Phải có ít nhất một category ID')
+      .max(100, 'Không thể xóa quá 100 danh mục cùng lúc')
   })
 })
 
-// Type exports
+// Export type
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>['body']
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>['body']
 export type GetCategoriesQuery = z.infer<typeof getCategoriesSchema>['query']

@@ -3,80 +3,74 @@ import { UserStatus, UserType } from '../enums'
 import { paginationSchema } from './common.schema'
 import mongoose from 'mongoose'
 
-// Base user data schema
+// Schema dữ liệu user cơ bản
 const userDataSchema = z.object({
   username: z
     .string()
-    .min(3, 'Username must be at least 3 characters')
-    .max(50, 'Username must not exceed 50 characters')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens'),
-  email: z.string().email('Invalid email address'),
+    .min(3, 'Username phải có ít nhất 3 ký tự')
+    .max(50, 'Username không được vượt quá 50 ký tự')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Username chỉ được chứa chữ cái, số, dấu gạch dưới và gạch ngang'),
+  email: z.string().email('Email không hợp lệ'),
   userType: z.nativeEnum(UserType).optional(),
   status: z.nativeEnum(UserStatus).optional(),
-  avatar: z.string().url('Invalid avatar URL').optional().or(z.literal(''))
+  avatar: z.string().url('URL avatar không hợp lệ').optional().or(z.literal(''))
 })
 
-// Update user schema
+// Schema cập nhật user
 export const updateUserSchema = z.object({
   params: z.object({
     userId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
-      message: 'Invalid user ID format'
+      message: 'Định dạng user ID không hợp lệ'
     })
   }),
   body: userDataSchema
     .extend({
       password: z
         .string()
-        .min(8, 'Password must be at least 8 characters')
-        .max(100, 'Password must not exceed 100 characters')
-        .regex(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-          'Password must contain at least one lowercase letter, one uppercase letter, and one number'
-        )
+        .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
+        .max(100, 'Mật khẩu không được vượt quá 100 ký tự')
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Mật khẩu phải chứa ít nhất một chữ thường, một chữ hoa và một số')
         .optional(),
       role: z.string().optional()
     })
     .partial()
 })
 
-// Profile update schema (for user-owned updates)
+// Schema cập nhật profile (user tự cập nhật)
 export const updateProfileSchema = z.object({
   body: z
     .object({
       username: z
         .string()
-        .min(3, 'Username must be at least 3 characters')
-        .max(50, 'Username must not exceed 50 characters')
-        .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens')
+        .min(3, 'Username phải có ít nhất 3 ký tự')
+        .max(50, 'Username không được vượt quá 50 ký tự')
+        .regex(/^[a-zA-Z0-9_-]+$/, 'Username chỉ được chứa chữ cái, số, dấu gạch dưới và gạch ngang')
         .optional(),
-      email: z.string().email('Invalid email address').optional(),
+      email: z.string().email('Email không hợp lệ').optional(),
       password: z
         .string()
-        .min(8, 'Password must be at least 8 characters')
-        .max(100, 'Password must not exceed 100 characters')
-        .regex(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-          'Password must contain at least one lowercase letter, one uppercase letter, and one number'
-        )
+        .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
+        .max(100, 'Mật khẩu không được vượt quá 100 ký tự')
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Mật khẩu phải chứa ít nhất một chữ thường, một chữ hoa và một số')
         .optional(),
-      avatar: z.string().url('Invalid avatar URL').optional().or(z.literal(''))
+      avatar: z.string().url('URL avatar không hợp lệ').optional().or(z.literal(''))
     })
     .refine(
       (data) => {
-        // At least one field must be provided
+        // Phải có ít nhất một field
         return Object.keys(data).length > 0
       },
       {
-        message: 'At least one field must be provided'
+        message: 'Phải cung cấp ít nhất một field'
       }
     )
 })
 
-// Admin update user schema (for admin-level updates)
+// Schema admin cập nhật user
 export const adminUpdateUserSchema = z.object({
   params: z.object({
     userId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
-      message: 'Invalid user ID format'
+      message: 'Định dạng user ID không hợp lệ'
     })
   }),
   body: z
@@ -86,16 +80,16 @@ export const adminUpdateUserSchema = z.object({
     })
     .refine(
       (data) => {
-        // At least one field must be provided
+        // Phải có ít nhất một field
         return data.roles !== undefined || data.status !== undefined
       },
       {
-        message: 'At least one field (roles or status) must be provided'
+        message: 'Phải cung cấp ít nhất một field (roles hoặc status)'
       }
     )
 })
 
-// Get users schema
+// Schema lấy danh sách user
 export const getUsersSchema = z.object({
   query: paginationSchema.extend({
     status: z
@@ -103,7 +97,7 @@ export const getUsersSchema = z.object({
         z.nativeEnum(UserStatus),
         z.array(z.nativeEnum(UserStatus)),
         z.string().transform((val) => {
-          // Handle comma-separated values or multiple query params
+          // Xử lý dạng comma-separated hoặc nhiều query params
           if (val.includes(',')) {
             return val.split(',').map((s) => s.trim())
           }
@@ -116,7 +110,7 @@ export const getUsersSchema = z.object({
         z.nativeEnum(UserType),
         z.array(z.nativeEnum(UserType)),
         z.string().transform((val) => {
-          // Handle comma-separated values or multiple query params
+          // Xử lý dạng comma-separated hoặc nhiều query params
           if (val.includes(',')) {
             return val.split(',').map((s) => s.trim())
           }
@@ -129,25 +123,25 @@ export const getUsersSchema = z.object({
   })
 })
 
-// Get user by ID schema
+// Schema lấy user theo ID
 export const getUserByIdSchema = z.object({
   params: z.object({
     userId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
-      message: 'Invalid user ID format'
+      message: 'Định dạng user ID không hợp lệ'
     })
   })
 })
 
-// Delete user schema
+// Schema xoá user
 export const deleteUserSchema = z.object({
   params: z.object({
     userId: z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
-      message: 'Invalid user ID format'
+      message: 'Định dạng user ID không hợp lệ'
     })
   })
 })
 
-// Type exports for use in controllers
+// Export type để dùng trong controller
 export type UpdateUserParams = z.infer<typeof updateUserSchema>['params']
 export type UpdateUserBody = z.infer<typeof updateUserSchema>['body']
 export type UpdateProfileBody = z.infer<typeof updateProfileSchema>['body']

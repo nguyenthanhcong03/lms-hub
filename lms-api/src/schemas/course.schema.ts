@@ -2,15 +2,16 @@ import { z } from 'zod'
 import { CourseLevel, CourseStatus, CourseType } from '../enums'
 
 /**
- * Course Validation Schemas
+ * Schema xác thực Khóa học (Course)
  */
 
-// Base course schema for common fields
+// Schema bài học cơ bản (Q&A)
 const baseLesson = z.object({
-  question: z.string().min(1, 'Question is required').trim(),
-  answer: z.string().min(1, 'Answer is required').trim()
+  question: z.string().min(1, 'Câu hỏi là bắt buộc').trim(),
+  answer: z.string().min(1, 'Câu trả lời là bắt buộc').trim()
 })
 
+// Schema thông tin khóa học
 const baseCourseInfo = z.object({
   requirements: z.array(z.string().trim()).default([]),
   benefits: z.array(z.string().trim()).default([]),
@@ -19,21 +20,21 @@ const baseCourseInfo = z.object({
   qa: z.array(baseLesson).default([])
 })
 
-// Create course schema
+// Schema tạo khóa học
 export const createCourseSchema = z.object({
   body: z.object({
-    title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim(),
-    slug: z.string().min(1, 'Slug is required').max(200, 'Slug too long').trim(),
+    title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim(),
+    slug: z.string().min(1, 'Slug là bắt buộc').max(200, 'Slug quá dài').trim(),
     image: z.string().optional(),
     description: z.string().optional(),
-    excerpt: z.string().max(500, 'Excerpt too long').trim().optional(),
+    excerpt: z.string().max(500, 'Mô tả ngắn quá dài').trim().optional(),
     introUrl: z.string().trim().optional(),
-    price: z.number().min(0, 'Price must be non-negative'),
-    oldPrice: z.number().min(0, 'Old price must be non-negative').optional(),
-    originalPrice: z.number().min(0, 'Original price must be non-negative').optional(),
+    price: z.number().min(0, 'Giá phải >= 0'),
+    oldPrice: z.number().min(0, 'Giá cũ phải >= 0').optional(),
+    originalPrice: z.number().min(0, 'Giá gốc phải >= 0').optional(),
     isFree: z.boolean().optional().default(false),
     status: z.nativeEnum(CourseStatus).optional().default(CourseStatus.DRAFT),
-    categoryId: z.string().min(1, 'Category is required'),
+    categoryId: z.string().min(1, 'Danh mục là bắt buộc'),
     level: z.nativeEnum(CourseLevel),
     info: baseCourseInfo.optional().default(() => ({
       requirements: [],
@@ -45,54 +46,52 @@ export const createCourseSchema = z.object({
   })
 })
 
-// Update course schema
+// Schema cập nhật khóa học
 export const updateCourseSchema = z.object({
   params: z.object({
-    courseId: z.string().min(1, 'Course ID is required')
+    courseId: z.string().min(1, 'Course ID là bắt buộc')
   }),
   body: z.object({
-    title: z.string().min(1, 'Title is required').max(200, 'Title too long').trim().optional(),
-    slug: z.string().min(1, 'Slug is required').max(200, 'Slug too long').trim().optional(),
+    title: z.string().min(1, 'Tiêu đề là bắt buộc').max(200, 'Tiêu đề quá dài').trim().optional(),
+    slug: z.string().min(1, 'Slug là bắt buộc').max(200, 'Slug quá dài').trim().optional(),
     image: z.string().optional(),
     description: z.string().optional(),
-    excerpt: z.string().max(500, 'Excerpt too long').trim().optional(),
+    excerpt: z.string().max(500, 'Mô tả ngắn quá dài').trim().optional(),
     introUrl: z.string().trim().optional(),
-    price: z.number().min(0, 'Price must be non-negative').optional(),
-    oldPrice: z.number().min(0, 'Old price must be non-negative').optional(),
+    price: z.number().min(0, 'Giá phải >= 0').optional(),
+    oldPrice: z.number().min(0, 'Giá cũ phải >= 0').optional(),
     isFree: z.boolean().optional(),
     status: z.nativeEnum(CourseStatus).optional(),
-    authorId: z.string().min(1, 'Author is required').optional(),
-    categoryId: z.string().min(1, 'Category is required').optional(),
+    authorId: z.string().min(1, 'Tác giả là bắt buộc').optional(),
+    categoryId: z.string().min(1, 'Danh mục là bắt buộc').optional(),
     level: z.nativeEnum(CourseLevel).optional(),
     info: baseCourseInfo.optional()
   })
 })
 
-// Get courses schema (for query parameters)
+// Schema query lấy danh sách khóa học
 export const getCoursesSchema = z.object({
   query: z.object({
-    page: z.string().regex(/^\d+$/, 'Page must be a number').optional().default('1'),
-    limit: z.string().regex(/^\d+$/, 'Limit must be a number').optional().default('10'),
+    page: z.string().regex(/^\d+$/, 'Page phải là số').optional().default('1'),
+    limit: z.string().regex(/^\d+$/, 'Limit phải là số').optional().default('10'),
     search: z.string().optional(),
     categoryId: z.string().optional(),
     level: z
       .union([
         z.array(z.nativeEnum(CourseLevel)),
         z.string().refine((val) => {
-          // Allow comma-separated values
           const values = val.split(',').map((v) => v.trim())
           return values.every((v) => Object.values(CourseLevel).includes(v as CourseLevel))
-        }, 'Invalid level value(s)')
+        }, 'Giá trị level không hợp lệ')
       ])
       .optional(),
     status: z
       .union([
         z.nativeEnum(CourseStatus),
         z.string().refine((val) => {
-          // Allow comma-separated values
           const values = val.split(',').map((v) => v.trim())
           return values.every((v) => Object.values(CourseStatus).includes(v as CourseStatus))
-        }, 'Invalid status value(s)'),
+        }, 'Giá trị status không hợp lệ'),
         z.array(z.nativeEnum(CourseStatus))
       ])
       .optional(),
@@ -100,25 +99,24 @@ export const getCoursesSchema = z.object({
       .union([
         z.nativeEnum(CourseType),
         z.string().refine((val) => {
-          // Allow comma-separated values
           const values = val.split(',').map((v) => v.trim())
           return values.every((v) => Object.values(CourseType).includes(v as CourseType))
-        }, 'Invalid type value(s)'),
+        }, 'Giá trị type không hợp lệ'),
         z.array(z.nativeEnum(CourseType))
       ])
       .optional(),
     authorId: z.string().optional(),
     minPrice: z
       .string()
-      .regex(/^\d+(\.\d+)?$/, 'Min price must be a number')
+      .regex(/^\d+(\.\d+)?$/, 'Giá tối thiểu phải là số')
       .optional(),
     maxPrice: z
       .string()
-      .regex(/^\d+(\.\d+)?$/, 'Max price must be a number')
+      .regex(/^\d+(\.\d+)?$/, 'Giá tối đa phải là số')
       .optional(),
     minRating: z
       .string()
-      .regex(/^[0-5](\.\d+)?$/, 'Min rating must be between 0 and 5')
+      .regex(/^[0-5](\.\d+)?$/, 'Rating phải từ 0 đến 5')
       .optional(),
     sortBy: z
       .enum(['newest', 'popular', 'rating', 'price', 'alphabetical', 'createdAt'])
@@ -128,52 +126,53 @@ export const getCoursesSchema = z.object({
   })
 })
 
-// Get course by ID schema
+// Schema lấy khóa học theo ID
 export const getCourseByIdSchema = z.object({
   params: z.object({
-    courseId: z.string().min(1, 'Course ID is required')
+    courseId: z.string().min(1, 'Course ID là bắt buộc')
   })
 })
 
-// Get course by slug schema
+// Schema lấy khóa học theo slug
 export const getCourseBySlugSchema = z.object({
   params: z.object({
-    slug: z.string().min(1, 'Course slug is required').trim()
+    slug: z.string().min(1, 'Slug khóa học là bắt buộc').trim()
   })
 })
 
-// Delete course schema
+// Schema xóa khóa học
 export const deleteCourseSchema = z.object({
   params: z.object({
-    courseId: z.string().min(1, 'Course ID is required')
+    courseId: z.string().min(1, 'Course ID là bắt buộc')
   })
 })
 
-// Update course info schema
+// Schema cập nhật info khóa học
 export const updateCourseInfoSchema = z.object({
   params: z.object({
-    courseId: z.string().min(1, 'Course ID is required')
+    courseId: z.string().min(1, 'Course ID là bắt buộc')
   }),
   body: baseCourseInfo
 })
 
-// Bulk operations schema
+// Schema xóa nhiều khóa học
 export const bulkDeleteSchema = z.object({
   body: z.object({
-    courseIds: z.array(z.string().min(1, 'Course ID is required')).min(1, 'At least one course ID is required')
+    courseIds: z.array(z.string().min(1, 'Course ID là bắt buộc')).min(1, 'Phải có ít nhất một course ID')
   })
 })
 
+// Schema lấy khóa học liên quan
 export const getRelatedCoursesSchema = z.object({
   params: z.object({
-    courseId: z.string().min(1, 'Course ID is required')
+    courseId: z.string().min(1, 'Course ID là bắt buộc')
   }),
   query: z.object({
-    limit: z.string().regex(/^\d+$/, 'Limit must be a valid number').optional().default('5')
+    limit: z.string().regex(/^\d+$/, 'Limit phải là số hợp lệ').optional().default('5')
   })
 })
 
-// Types for TypeScript
+// Export type
 export type CreateCourseInput = z.infer<typeof createCourseSchema>['body']
 export type UpdateCourseInput = z.infer<typeof updateCourseSchema>['body']
 export type GetCoursesQuery = z.infer<typeof getCoursesSchema>['query']
