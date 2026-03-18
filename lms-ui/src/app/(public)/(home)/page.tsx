@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic'
-
 import FloatingButtons from '@/components/floating-buttons'
 import { generateHomeMetadata } from '@/components/seo'
 import BlogsService from '@/services/blogs'

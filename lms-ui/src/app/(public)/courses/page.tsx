@@ -1,7 +1,4 @@
-export const dynamic = 'force-dynamic'
-
 import CoursesService from '@/services/courses'
-
 import CoursesContent from './components/courses-content'
 import CoursesHeader from './components/courses-header'
 
