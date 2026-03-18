@@ -17,7 +17,6 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { ImageUpload } from '@/components/ui/image-upload-simple'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
@@ -33,6 +32,7 @@ import { blogSchema, BlogSchema } from '@/validators/blog.validator'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import { MdAdd, MdEdit } from 'react-icons/md'
 import { toast } from 'sonner'
+import { ImageUpload } from '@/components/ui/image-upload'
 
 interface BlogsActionDialogProps {
   mode?: 'create' | 'edit'

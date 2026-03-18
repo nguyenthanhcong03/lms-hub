@@ -16,6 +16,7 @@ import quizAttemptRoutes from './quiz-attempt.routes'
 import cartRoutes from './cart.routes'
 import orderRoutes from './order.routes'
 import paymentRoutes from './payment.routes'
+import uploadRoutes from './upload.routes'
 import searchRoutes from './search.routes'
 import statsRoutes from './stats.routes'
 
@@ -39,6 +40,7 @@ router.use('/quiz-attempts', quizAttemptRoutes)
 router.use('/cart', cartRoutes)
 router.use('/orders', orderRoutes)
 router.use('/payment', paymentRoutes)
+router.use('/upload', uploadRoutes)
 router.use('/search', searchRoutes)
 router.use('/stats', statsRoutes)
 

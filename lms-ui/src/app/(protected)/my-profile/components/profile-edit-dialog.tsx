@@ -20,7 +20,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
 import { AuthService, CurrentUser, UpdateProfileRequest } from '@/services/auth'
-import { UploadButton } from '@/utils/uploadthing'
+import { UploadService } from '@/services/upload'
 import { MdDelete } from 'react-icons/md'
 import { DEFAULT_AVATAR } from '@/constants'
 
@@ -37,14 +37,6 @@ const profileSchema = yup.object({
 
 type ProfileFormData = yup.InferType<typeof profileSchema>
 
-// Kiểu phản hồi UploadThing
-interface UploadResponse {
-  url: string
-  key: string
-  name: string
-  size: number
-}
-
 interface ProfileEditDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -56,6 +48,7 @@ const ProfileEditDialog = ({ open, onOpenChange, user }: ProfileEditDialogProps)
   const [isLoading, setIsLoading] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState<string>('')
   const [isDeletingAvatar, setIsDeletingAvatar] = useState(false)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const { getCurrentUser } = useAuthStore()
 
   const form = useForm<ProfileFormData>({
@@ -66,16 +59,32 @@ const ProfileEditDialog = ({ open, onOpenChange, user }: ProfileEditDialogProps)
     }
   })
 
-  const handleAvatarUploadComplete = (res: UploadResponse[]) => {
-    if (res?.[0]?.url) {
-      setAvatarUrl(res[0].url)
-      toast.success('Tải lên ảnh đại diện thành công!')
-    }
-  }
+  const handleAvatarFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
 
-  const handleAvatarUploadError = (error: Error) => {
-    console.error('Avatar upload error:', error)
-    toast.error('Không thể tải lên ảnh đại diện. Vui lòng thử lại.')
+    if (!file) {
+      return
+    }
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Chỉ chấp nhận file ảnh')
+      event.target.value = ''
+      return
+    }
+
+    try {
+      setIsUploadingAvatar(true)
+      const uploaded = await UploadService.uploadImage(file, 'avatars')
+      setAvatarUrl(uploaded.url)
+      toast.success('Tải lên ảnh đại diện thành công!')
+    } catch (error) {
+      console.error('Avatar upload error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Không thể tải lên ảnh đại diện. Vui lòng thử lại.'
+      toast.error(errorMessage)
+    } finally {
+      setIsUploadingAvatar(false)
+      event.target.value = ''
+    }
   }
 
   const handleAvatarDelete = async () => {
@@ -180,17 +189,15 @@ const ProfileEditDialog = ({ open, onOpenChange, user }: ProfileEditDialogProps)
 
                   {/* Nút tải lên - chỉ hiển thị khi avatar đang trống */}
                   {currentAvatarUrl === DEFAULT_AVATAR && !isLoading && !isDeletingAvatar && (
-                    <UploadButton
-                      endpoint='imageUploader'
-                      onClientUploadComplete={handleAvatarUploadComplete}
-                      onUploadError={handleAvatarUploadError}
-                      config={{ mode: 'auto' }}
-                      appearance={{
-                        button:
-                          'bg-primary hover:bg-primary/90 ut-ready:bg-primary ut-ready:hover:bg-primary/90 w-[120px] text-xs sm:text-sm h-9 sm:h-10',
-                        allowedContent: 'hidden'
-                      }}
-                    />
+                    <div>
+                      <Input
+                        type='file'
+                        accept='image/*'
+                        onChange={handleAvatarFileChange}
+                        disabled={isUploadingAvatar}
+                        className='w-full max-w-60 text-xs sm:text-sm'
+                      />
+                    </div>
                   )}
                 </div>
               </CardContent>

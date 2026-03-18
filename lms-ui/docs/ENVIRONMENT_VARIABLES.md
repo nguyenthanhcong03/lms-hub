@@ -5,7 +5,6 @@ This document explains all environment variables used in the LMSHub UI applicati
 ## Table of Contents
 
 - [Setup Instructions](#setup-instructions)
-- [File Upload Service](#file-upload-service)
 - [API Configuration](#api-configuration)
 - [Payment Integration](#payment-integration)
 - [OAuth Providers](#oauth-providers)
@@ -24,31 +23,6 @@ This document explains all environment variables used in the LMSHub UI applicati
 
 2. Fill in the values following the instructions below
 3. Never commit `.env` to version control (it should be in `.gitignore`)
-
----
-
-## File Upload Service
-
-### `UPLOADTHING_TOKEN`
-
-**Description:** Secret token for UploadThing file upload service.
-
-**How to Get:**
-
-1. Go to [https://uploadthing.com](https://uploadthing.com)
-2. Sign up or log in to your account
-3. Create a new app or select an existing one
-4. Navigate to the "API Keys" section
-5. Copy the **Secret Key** (not the App ID)
-6. Paste it as the value for `UPLOADTHING_TOKEN`
-
-**Example:**
-
-```env
-UPLOADTHING_TOKEN=your_stripe_secret_key
-```
-
-**Security:** ⚠️ **KEEP SECRET** - This is a secret token and should never be shared or committed to version control.
 
 ---
 
@@ -302,9 +276,6 @@ NEXT_PUBLIC_SITE_URL=https://LMShub.com
 Here's a complete example of a properly configured `.env.local` file:
 
 ```env
-# File Upload
-UPLOADTHING_TOKEN=sk_live_abc123xyz789
-
 # API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:8888/api/v1
 
@@ -331,7 +302,6 @@ NEXT_PUBLIC_SITE_URL=http://localhost:4000
 
 ### ⚠️ Secret Variables (Never Share or Commit)
 
-- `UPLOADTHING_TOKEN`
 - `GOOGLE_CLIENT_SECRET`
 - `FACEBOOK_CLIENT_SECRET`
 - `NEXTAUTH_SECRET`
@@ -373,16 +343,6 @@ NEXT_PUBLIC_SITE_URL=http://localhost:4000
 - Verify redirect URIs are properly configured
 - Check that `FACEBOOK_CLIENT_ID` and `FACEBOOK_CLIENT_SECRET` are correct
 
-### File Upload Fails
-
-**Problem:** File uploads not working.
-
-**Solution:**
-
-- Verify `UPLOADTHING_TOKEN` is the **Secret Key**, not the App ID
-- Check that the token hasn't expired
-- Ensure you've configured allowed file types in UploadThing dashboard
-
 ### API Connection Issues
 
 **Problem:** Cannot connect to backend API.
@@ -401,7 +361,6 @@ For additional help:
 
 - Check the [Next.js Documentation](https://nextjs.org/docs)
 - Review [NextAuth.js Documentation](https://next-auth.js.org/getting-started/introduction)
-- Visit [UploadThing Documentation](https://docs.uploadthing.com)
 - Read [Stripe Documentation](https://stripe.com/docs)
 
 ---
